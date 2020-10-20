@@ -1,3 +1,4 @@
+import java.io.*;
 
 %%
 
@@ -20,14 +21,16 @@
     COMMENT, MULTILINECOMMENT 
   };
 
-  public void getToken(String value)
+  public static Writer writer;
+
+  public void getToken(String value) throws IOException
   {
-    System.out.println(value);
+	  writer.write(value + "\n");
   }
 
-  public void getToken(TokenName token, String value)
+  public void getToken(TokenName token, String value) throws IOException
   {
-    System.out.println(token.toString() + " " + value);
+    writer.write(token.toString() + " " + value + "\n");
   }
 
 %}
