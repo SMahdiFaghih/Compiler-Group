@@ -764,7 +764,7 @@ class main {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { System.out.print(yytext());
+            { writer.write("UNDEFINED_TOKEN" + "\n");
             }
             // fall through
           case 10: break;
