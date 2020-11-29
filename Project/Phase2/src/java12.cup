@@ -44,7 +44,7 @@ terminal ASSIGN; // =
 terminal THIS; // this
 terminal LEFTPAREN, RIGHTPAREN; // ()
 terminal PLUS, MINUS, MULT, DIV; // +, -, *, /
-terminal MOD, LT, LTEQ; // %, <, <=
+terminal MOD, NEG, LT, LTEQ; // %, -, <, <=
 terminal GT, GTEQ, EQEQ, NOTEQ; // >, >=, ==, !=
 terminal ANDAND, OROR, NOT, READINTEGER; // &&, ||, !, ReadInteger
 terminal READLINE, NEW, NEWARRAY; // readLine, new, NewArray
@@ -90,7 +90,15 @@ non terminal Call;
 non terminal Actuals;
 non terminal Constant;
 
-precedence 
+precedence right ASSIGN;
+precedence left OROR;
+precedence left ANDAND;
+precedence left EQEQ, NOTEQ;
+precedence left LT, LTEQ, GT, GTEQ;
+precedence left PLUS, MINUS;
+precedence left MULT, DIV, MOD;
+precedence right NEG, NOT;
+precedence left DOT, LEFTBRACK;
 
 start with Program;
 
@@ -152,7 +160,7 @@ PrintStmt ::= PRINT LEFTPAREN ExprWith RIGHTPAREN SEMICOLON
 	;
 Expr ::= LValue ASSIGN Expr | Constant | LValue | THIS | Call | LEFTPAREN Expr RIGHTPAREN |
 Expr PLUS Expr | Expr MINUS Expr | Expr MULT Expr | Expr DIV Expr |
-Expr MOD Expr | MINUS Expr | Expr LT Expr | Expr LTEQ Expr |
+Expr MOD Expr | NEG Expr | Expr LT Expr | Expr LTEQ Expr |
 Expr GT Expr | Expr GTEQ Expr | Expr EQEQ Expr | Expr NOTEQ Expr |
 Expr ANDAND Expr | Expr OROR Expr | NOT Expr | READINTEGER LEFTPAREN RIGHTPAREN |
 READLINE LEFTPAREN RIGHTPAREN | NEW IDENTIFIER | NEWARRAY LEFTPAREN Expr COMMA Type RIGHTPAREN |
