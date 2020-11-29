@@ -1,58 +1,16 @@
 import java_cup.runtime.*;
 
-
-/* August 1999 - modified by Gerwin Klein <lsf@jflex.de>
-                 to interface with JFlex scanners,
-                 allows empty semicolon in class decls.
-  
-  changed productions:
-
-  class_member_declaration ::=
-	  	field_declaration
-  	|	method_declaration
-    [..]
-  	|	interface_declaration
-    | SEMICOLON
-  	;
-
-  interface_member_declaration ::=
-  		constant_declaration
-	  |	abstract_method_declaration
-  	|	class_declaration
-  	|	interface_declaration
-    | SEMICOLON
-	  ;
-
-*/
-
-
-/* Java 1.2 parser for CUP.  
- * Copyright (C) 1998 C. Scott Ananian <cananian@alumni.princeton.edu>
- * This program is released under the terms of the GPL; see the file
- * COPYING for more details.  There is NO WARRANTY on this code.
- */
-
-/*
-JDK 1.2 Features added:
-  strictfp modifier.
-  explicit_constructor_invocation ::= ...
-        | primary DOT THIS LPAREN argument_list_opt RPAREN SEMICOLON ;
-  field_access ::= ...
-        |       name DOT SUPER DOT IDENTIFIER ;
-  method_invocation ::= ...
-        |       name DOT SUPER DOT IDENTIFIER LPAREN argument_list_opt RPAREN ;
-*/
-
 parser code  {: 
-  public void report_error(String message, Object info) {
-    StringBuilder m = new StringBuilder("Error ");
+  public void report_error(String message, Object info) 
+  {
+    StringBuilder stringBuilder = new StringBuilder("Error ");
 
     if (info instanceof java_cup.runtime.Symbol) 
-      m.append( "("+info.toString()+")" );
+      stringBuilder.append( "("+info.toString()+")" );
      
-    m.append(" : "+message);
+    stringBuilder.append(" : "+message);
    
-    System.out.println(m);
+    System.out.println(stringBuilder);
   }
    
   public void report_fatal_error(String message, Object info) {
@@ -90,7 +48,7 @@ terminal MOD, LT, LTEQ; // %, <, <=
 terminal GT, GTEQ, EQEQ, NOTEQ; // >, >=, ==, !=
 terminal ANDAND, OROR, NOT, READINTEGER; // &&, ||, !, ReadInteger
 terminal READLINE, NEW, NEWARRAY; // readLine, new, NewArray
-terminal ITOD, DTOI, ITON, BTOI; // itod, dtoi, itob, btoi
+terminal ITOD, DTOI, ITOB, BTOI; // itod, dtoi, itob, btoi
 terminal DOT; // .
 terminal INTCONSTANT, DOUBLECONSTANT, BOOLCONSTANT; // intConstant, doubleConstant, boolConstant
 terminal STRINGCONSTANT, NULL; // stringConstant, null
@@ -103,9 +61,11 @@ non terminal Variable;
 non terminal Type;
 non terminal FunctionDecl;
 non terminal Formals;
+non terminal FormalsMore;
 non terminal ClassDecl;
 non terminal ExtendDecl;
 non terminal ImplementDecl;
+non terminal ImplementMore;
 non terminal Field;
 non terminal AccessMode;
 non terminal InterfaceDecl;
@@ -122,10 +82,15 @@ non terminal BreakStmt;
 non terminal ContinueStmt;
 non terminal PrintStmt;
 non terminal Expr;
+non terminal ExprEpsilon;
+non terminal ExprWith;
+non terminal ExprMore;
 non terminal LValue;
 non terminal Call;
 non terminal Actuals;
 non terminal Constant;
+
+precedence 
 
 start with Program;
 
@@ -143,13 +108,17 @@ Type ::= INT | DOUBLE | BOOL | STRING | IDENTIFIER | Type LEFTBRACK RIGHTBRACK
 	;
 FunctionDecl ::= Type IDENTIFIER LEFTPAREN Formals RIGHTPAREN StmtBlock | VOID IDENTIFIER LEFTPAREN Formals RIGHTPAREN StmtBlock
 	;
-Formals ::= Variable COMMA Formals | Variable COMMA 
+Formals ::= Variable FormalsMore
+	;
+FormalsMore ::= COMMA Variable FormalsMore | 
 	;
 ClassDecl ::= CLASS IDENTIFIER ExtendDecl ImplementDecl LEFTBRACK Field RIGHTBRACK
 	;
 ExtendDecl ::= EXTENDS IDENTIFIER |
 	;
-ImplementDecl ::= IMPLEMENTS IDENTIFIER COMMA ImplementDecl |  
+ImplementDecl ::= IMPLEMENTS IDENTIFIER ImplementMore |  
+	;
+ImplementMore ::= COMMA IDENTIFIER ImplementMore | 
 	;
 Field ::= AccessMode VariableDecl Field | AccessMode FunctionDecl Field | 
 	;
@@ -163,7 +132,7 @@ StmtBlock ::= LEFTBRACK VariableUsage RIGHTBRACK
 	;
 VariableUsage ::= VariableDecl Stmt VariableUsage | VariableDecl VariableUsage | Stmt VariableUsage | 
 	;
-Stmt ::= Expr SEMICOLON | SEMICOLON | IfStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock
+Stmt ::= ExprEpsilon SEMICOLON | IfStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock
 	;
 IfStmt ::= IF LEFTPAREN Expr RIGHTPAREN Stmt ElseStmt 
 	;
@@ -171,29 +140,35 @@ ElseStmt ::= ELSE Stmt |
 	;
 WhileStmt ::= while LEFTPAREN Expr RIGHTPAREN Stmt
 	;
-ForStmt ::= for LEFTPAREN < Expr >;Expr;< Expr > RIGHTPAREN Stmt
+ForStmt ::= FOR LEFTPAREN ExprEpsilon SEMICOLON Expr SEMICOLON ExprEpsilon RIGHTPAREN Stmt
 	;
-ReturnStmt ::= return < Expr >;
+ReturnStmt ::= RETURN ExprEpsilon SEMICOLON
 	;
-BreakStmt ::= break;
+BreakStmt ::= BREAK SEMICOLON
 	;
-ContinueStmt ::= continue;
+ContinueStmt ::= CONTINUE SEMICOLON
 	;
-PrintStmt ::= print (Expr+, );
+PrintStmt ::= PRINT LEFTPAREN ExprWith RIGHTPAREN SEMICOLON
 	;
-Expr ::= LValue = Expr | Constant | LValue | this | Call | (Expr) |
-Expr + Expr | Expr − Expr | Expr ∗ Expr | Expr / Expr |
-Expr % Expr | − Expr | Expr < Expr | Expr <= Expr |
-Expr > Expr | Expr >= Expr | Expr == Expr | Expr! = Expr |
-Expr && Expr | Expr || Expr | !Expr | ReadInteger() |
-readLine() | new ident | NewArray(Expr, Type) |
-itod(Expr) | dtoi(Expr) | itob(Expr) | btoi(Expr)
+Expr ::= LValue ASSIGN Expr | Constant | LValue | THIS | Call | LEFTPAREN Expr RIGHTPAREN |
+Expr PLUS Expr | Expr MINUS Expr | Expr MULT Expr | Expr DIV Expr |
+Expr MOD Expr | MINUS Expr | Expr LT Expr | Expr LTEQ Expr |
+Expr GT Expr | Expr GTEQ Expr | Expr EQEQ Expr | Expr NOTEQ Expr |
+Expr ANDAND Expr | Expr OROR Expr | NOT Expr | READINTEGER LEFTPAREN RIGHTPAREN |
+READLINE LEFTPAREN RIGHTPAREN | NEW IDENTIFIER | NEWARRAY LEFTPAREN Expr COMMA Type RIGHTPAREN |
+ITOD LEFTPAREN Expr RIGHTPAREN | DTOI LEFTPAREN Expr RIGHTPAREN | ITOB LEFTPAREN Expr RIGHTPAREN | BTOI LEFTPAREN Expr RIGHTPAREN
 	;
-LValue ::= ident | Expr . ident | Expr[Expr]
+ExprEpsilon ::= Expr | 
 	;
-Call ::= ident (Actuals) | Expr . ident (Actuals)
+ExprWith ::= Expr ExprMore
 	;
-Actuals ::= Expr+, | ϵ
+ExprMore ::= COMMA Expr ExprMore | 
 	;
-Constant ::= intConstant | doubleConstant | boolConstant | stringConstant | null
+LValue ::= IDENTIFIER | Expr DOT IDENTIFIER | Expr LEFTBRACK Expr RIGHTBRACK
+	;
+Call ::= IDENTIFIER LEFTPAREN Actuals RIGHTPAREN | Expr DOT IDENTIFIER LEFTPAREN Actuals RIGHTPAREN
+	;
+Actuals ::= ExprWith | 
+	;
+Constant ::= INTCONSTANT | DOUBLECONSTANT | BOOLCONSTANT | STRINGCONSTANT | NULL
 	;
