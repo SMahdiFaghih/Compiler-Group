@@ -74,7 +74,7 @@ non terminal StmtBlock;
 non terminal VariableUsage;
 non terminal Stmt;
 non terminal IfStmt;
-non terminal ElseStmt;
+non terminal IfElseStmt;
 non terminal WhileStmt;
 non terminal ForStmt;
 non terminal ReturnStmt;
@@ -140,11 +140,11 @@ StmtBlock ::= LEFTBRACK VariableUsage RIGHTBRACK
 	;
 VariableUsage ::= VariableDecl Stmt VariableUsage | VariableDecl VariableUsage | Stmt VariableUsage | 
 	;
-Stmt ::= ExprEpsilon SEMICOLON | IfStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock
+Stmt ::= ExprEpsilon SEMICOLON | IfStmt | IfElseStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock
 	;
-IfStmt ::= IF LEFTPAREN Expr RIGHTPAREN Stmt ElseStmt 
+IfStmt ::= IF LEFTPAREN Expr RIGHTPAREN Stmt
 	;
-ElseStmt ::= ELSE Stmt | 
+IfElseStmt ::= IF LEFTPAREN Expr RIGHTPAREN Stmt ELSE Stmt  
 	;
 WhileStmt ::= WHILE LEFTPAREN Expr RIGHTPAREN Stmt
 	;
