@@ -1,6 +1,15 @@
 import java.io.*;
+import java_cup.runtime.*;
 
 %%
+%class Scanner
+%implements sym
+
+%line
+%column
+
+%cup
+%cupdebug
 
 %class main
 %standalone
@@ -8,85 +17,83 @@ import java.io.*;
 
 %{
 
-  public static Writer writer;
-
-  public void getToken(String value) throws IOException
-  {
-	  writer.write(value + "\n");
-  }
-
-  public void getToken(TokenName token, String value) throws IOException
-  {
-    writer.write(token.toString() + " " + value + "\n");
-  }
+    private Symbol symbol(int type) {
+        return new Symbol(type, yyline, yycolumn);
+    }
+    
+    /* Also creates a new java_cup.runtime.Symbol with information
+       about the current token, but this object has a value. */
+    private Symbol symbol(int type, Object value) {
+        return new Symbol(type, yyline, yycolumn, value);
+    }
 
 %}
 
 %%
 
-"void" { getToken(yytext()); }
-"class" { getToken(yytext()); }
-"interface" { getToken(yytext()); }
-"null" { getToken(yytext()); }
-"this" { getToken(yytext()); }
-"extends" { getToken(yytext()); }
-"implements" { getToken(yytext()); }
-"for" { getToken(yytext()); }
-"while" { getToken(yytext()); }
-"if" { getToken(yytext()); }
-"else" { getToken(yytext()); }
-"return" { getToken(yytext()); }
-"break" { getToken(yytext()); }
+"void" { return new symbol (sym.VOID); }
+"class" { return new symbol(sym.CLASS); }
+"interface" { return new symbol(sym.INTERFACE); }
+"null" { return new symbol(sym.NULL); }
+"this" { return new symbol(sym.THIS) }
+"extends" {return new symbol (sym.EXTENDS); }
+"implements" { return new symbol(sym.IMPLEMENTS); }
+"for" { return new symbol(sym.FOR);}
+"while" { return new symbol(sym.WHILE); }
+"if" { return new symbol (sym.IF);}
+"else" { return new symbol(sym.ELSE) ;}
+"return" { return new symbol(sym.RETURN); }
+"break" { return new symbol(sym.BREAK); }
 "continue" { return new symbol(sym.CONTINUE); }
-"true" { getToken(TokenName.T_BOOLEANLITERAL, yytext()); }
-"false" { getToken(TokenName.T_BOOLEANLITERAL, yytext()); }
-"new" { getToken(yytext()); }
-"NewArray" { getToken(yytext()); }
-"Print" { getToken(yytext()); }
-"ReadInteger" { getToken(yytext()); }
-"ReadLine" { getToken(yytext()); }
-"dtoi" { getToken(yytext()); }
-"itod" { getToken(yytext()); }
-"btoi" { getToken(yytext()); }
-"itob" { getToken(yytext()); }
-"private" { getToken(yytext()); }
-"protected" { getToken(yytext()); }
-"public" { getToken(yytext()); }
-"int" { getToken(yytext()); }
-"double" { getToken(yytext()); }
-"bool" { getToken(yytext()); }
-"string" { getToken(yytext()); }
-"+" { getToken(yytext()); }
-"-" { getToken(yytext()); }
-"*" { getToken(yytext()); }
-"/" { getToken(yytext()); }
-"%" { getToken(yytext()); }
-"<" { getToken(yytext()); }
-"<=" { getToken(yytext()); }
-">" { getToken(yytext()); }
-">=" { getToken(yytext()); }
-"=" { getToken(yytext()); }
-"==" { getToken(yytext()); }
-"!=" { getToken(yytext()); }
-"&&" { getToken(yytext()); }
-"||" { getToken(yytext()); }
-"!" { getToken(yytext()); }
-";" { getToken(yytext()); }
-"," { getToken(yytext()); }
-"." { getToken(yytext()); }
-"[" { getToken(yytext()); }
-"]" { getToken(yytext()); }
-"(" { getToken(yytext()); }
-")" { getToken(yytext()); }
-"{" { getToken(yytext()); }
-"}" { getToken(yytext()); }
+"true" { return new symbol(sym.BOOLEAN, yytext()); }
+"false" { return new symbol(sym.BOOLEAN, yytext()); }
+"new" {return new symbol(sym.NEW); }
+"NewArray" { return new symbol(sym.NEWARRAY); }
+"Print" { return new symbol(sym.PRINT); }
+"ReadInteger" { return new symbol(sym.READINTEGER); }
+"ReadLine" { return new symbol(sym.READLINE); }
+"dtoi" { return new symbol(sym.DTOI); }
+"itod" { return new symbol(sym.ITOD); }
+"btoi" { return new symbol(sym.BTOI); }
+"itob" { return new symbol(sym.ITOB); }
+"private" { return new symbol (sym.PRIVATE); }
+"protected" { return new symbol(sym.PROTECTED); }
+"public" { return new symbol(sym.PUBLIC); }
+"int" { return new symbol(sym.INT); }
+"double" { return new symbol(sym.DOUBLE); }
+"bool" { return new symbol(sym.BOOLEAN); }
+"string" { return new symbol(sym.STRING); }
+"+" { return new symbol(sym.PLUS); }
+"-" { return new symbol(sym.MINUS); }
+"*" { return new symbol(sym.MULT); }
+"/" { return new symbol(sym.DIV); }
+"%" { return new symbol(sym.MOD); }
+"<" { return new symbol(sym.LT); }
+"<=" { return new symbol (sym.LTEQ); }
+">" { return new symbol(sym.GT); }
+">=" { return new symbol(sym.GTEQ); }
+"=" { return new symbol(sym.ASSIGN); }
+"==" { return new symbol(sym.EQEQ); }
+"!=" { return new symbol(sym.NOTEQ); }
+"&&" { return new symbol (sym.ANDAND); }
+"||" { return new symbol (sym.OROR);}
+"!" { return new symbol (sym.NOT); }
+";" { return new symbol(sym.SEMICOLON); }
+"," { return new symbol(sym.COMMA); }
+"." {return new symbol (sym.DOT); }
+"[" { return new symbol (sym.LEFTBRACK); }
+"]" { return new symbol (sym.RIGHTBRACK); }
+"(" { return new symbol (sym.LEFTPAREN); }
+")" { return new symbol (sym.RIGHTPAREN); }
+"{" { }
+"}" { }
 "//"[^\n]* { /* ignore comments*/ }
 "/*"[^]*"*/" { /* ignore comments*/ }
-[a-zA-Z]+[a-zA-Z\_0-9]* { getToken(TokenName.T_ID, yytext()); }
-[0-9]+ { getToken(TokenName.T_INTLITERAL, yytext()); }
-[0][xX][0-9a-fA-F]+ { getToken(TokenName.T_INTLITERAL, yytext()); }
-[0-9]+\.[0-9]* { getToken(TokenName.T_DOUBLELITERAL, yytext()); }
-[0-9]+\.[0-9]*[Ee][-+]?[0-9]+ { getToken(TokenName.T_DOUBLELITERAL, yytext()); }
-[0][xX][0-9a-fA-F]+\.[0-9a-fA-F]* { getToken(TokenName.T_DOUBLELITERAL, yytext()); }
-[\"][^\n\"]+[\"] { getToken(TokenName.T_STRINGLITERAL, yytext()); }
+[a-zA-Z]+[a-zA-Z\_0-9]* { return new symbol(sym.IDENTIFIER, yytext()); }
+[0-9]+ { return new symbol(sym.INT, yytext()); }
+[0][xX][0-9a-fA-F]+ { return new symbol (sym.INT, yytext()); }
+[0-9]+\.[0-9]* { return new symbol (sym.DOUBLE, yytext()); }
+[0-9]+\.[0-9]*[Ee][-+]?[0-9]+ { return new symbol(sym.DOUBLE, yytext()); }
+[0][xX][0-9a-fA-F]+\.[0-9a-fA-F]* { return new symbol (sym.DOUBLE, yytext()); }
+[\"][^\n\"]+[\"] { return new symbol (sym.STRING, yytext()); }
 [\s]  { /* ignore whitespace */ }
