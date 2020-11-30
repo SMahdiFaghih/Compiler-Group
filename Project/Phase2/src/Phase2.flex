@@ -33,7 +33,7 @@ import java_cup.runtime.*;
 "class" { return new symbol(sym.CLASS); }
 "interface" { return new symbol(sym.INTERFACE); }
 "null" { return new symbol(sym.NULL); }
-"this" { return new symbol(sym.THIS) }
+"this" { return new symbol(sym.THIS); }
 "extends" {return new symbol (sym.EXTENDS); }
 "implements" { return new symbol(sym.IMPLEMENTS); }
 "for" { return new symbol(sym.FOR);}
