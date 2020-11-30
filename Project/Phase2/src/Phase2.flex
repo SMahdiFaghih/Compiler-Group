@@ -8,19 +8,6 @@ import java.io.*;
 
 %{
 
-  enum TokenName 
-  {
-    VOID, CLASS, INTERFACE, NULL, THIS, EXTENDS, IMPLEMENTS,
-    FOR, WHILE, IF, ELSE, RETURN, BREAK, CONTINUE,
-    TRUE, FALSE, NEW, NEWARRAY, PRINT, READINTEGER, READLINE,
-    DTOI, ITOD, BTOI, ITOB, PRIVATE, PROTECTED, PUBLIC, 
-    T_INTLITERAL, T_DOUBLELITERAL, T_STRINGLITERAL, T_BOOLEANLITERAL, T_ID,
-    ADD, SUB, MUL, DIV, MOD, LT, LTE, ASSIGN, EQ, NEQ, GT, GTE,
-    NOT, OR, AND, SEMICOLON, COMMA, DOT,
-    OPENBRACE, CLOSEBRACE, OPENPARENTHESES, CLOSEPARENTHESES, OPENCURLYBRACET, CLOSECURLYBRACET,
-    COMMENT, MULTILINECOMMENT 
-  };
-
   public static Writer writer;
 
   public void getToken(String value) throws IOException
@@ -50,7 +37,7 @@ import java.io.*;
 "else" { getToken(yytext()); }
 "return" { getToken(yytext()); }
 "break" { getToken(yytext()); }
-"continue" { getToken(yytext()); }
+"continue" { return new symbol(sym.CONTINUE); }
 "true" { getToken(TokenName.T_BOOLEANLITERAL, yytext()); }
 "false" { getToken(TokenName.T_BOOLEANLITERAL, yytext()); }
 "new" { getToken(yytext()); }
