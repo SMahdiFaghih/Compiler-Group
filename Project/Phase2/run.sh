@@ -22,7 +22,7 @@ do
     else
         echo "Code Compiled Successfully"
 		cd ./src
-        java Main -i $filelist -o $output_filename
+        java main -i $filelist -o $output_filename
 		cd ../
         if [ $? -eq 0 ]; then
             echo "Code Executed Successfuly!"
