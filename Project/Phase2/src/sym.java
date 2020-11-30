@@ -6,65 +6,66 @@
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int GTEQ = 40;
-  public static final int READLINE = 47;
-  public static final int MULT = 33;
-  public static final int LTEQ = 38;
-  public static final int RIGHTPAREN = 30;
+  public static final int GTEQ = 41;
+  public static final int LEFTAKULAD = 14;
+  public static final int READLINE = 48;
+  public static final int MULT = 35;
+  public static final int LTEQ = 39;
+  public static final int RIGHTPAREN = 32;
   public static final int DOUBLE = 4;
-  public static final int PRIVATE = 14;
-  public static final int CONTINUE = 25;
-  public static final int INTERFACE = 17;
+  public static final int PRIVATE = 16;
+  public static final int CONTINUE = 27;
+  public static final int INTERFACE = 19;
   public static final int INT = 3;
-  public static final int FOR = 22;
-  public static final int MINUS = 32;
-  public static final int LEFTPAREN = 29;
-  public static final int OROR = 44;
-  public static final int NOT = 45;
+  public static final int RIGHTAKULAD = 15;
+  public static final int FOR = 24;
+  public static final int MINUS = 34;
+  public static final int LEFTPAREN = 31;
+  public static final int OROR = 45;
+  public static final int NOT = 46;
   public static final int SEMICOLON = 2;
-  public static final int READINTEGER = 46;
-  public static final int LT = 37;
+  public static final int READINTEGER = 47;
+  public static final int LT = 38;
   public static final int COMMA = 10;
-  public static final int DOUBLECONSTANT = 56;
+  public static final int DOUBLECONSTANT = 57;
   public static final int CLASS = 11;
-  public static final int ANDAND = 43;
-  public static final int DIV = 34;
-  public static final int NEWARRAY = 49;
-  public static final int BOOLCONSTANT = 57;
-  public static final int PLUS = 31;
-  public static final int ASSIGN = 27;
-  public static final int IF = 19;
-  public static final int THIS = 28;
-  public static final int DOT = 54;
-  public static final int INTCONSTANT = 55;
+  public static final int ANDAND = 44;
+  public static final int DIV = 36;
+  public static final int NEWARRAY = 50;
+  public static final int BOOLCONSTANT = 58;
+  public static final int PLUS = 33;
+  public static final int ASSIGN = 29;
+  public static final int IF = 21;
+  public static final int THIS = 30;
+  public static final int DOT = 55;
+  public static final int INTCONSTANT = 56;
   public static final int EOF = 0;
   public static final int BOOLEAN = 5;
-  public static final int RETURN = 23;
-  public static final int STRINGCONSTANT = 58;
-  public static final int NEW = 48;
+  public static final int RETURN = 25;
+  public static final int STRINGCONSTANT = 59;
+  public static final int NEW = 49;
   public static final int error = 1;
-  public static final int NULL = 59;
-  public static final int EQEQ = 41;
-  public static final int MOD = 35;
-  public static final int BREAK = 24;
-  public static final int VOID = 18;
+  public static final int NULL = 60;
+  public static final int EQEQ = 42;
+  public static final int MOD = 37;
+  public static final int BREAK = 26;
+  public static final int VOID = 20;
   public static final int RIGHTBRACK = 9;
-  public static final int DTOI = 51;
-  public static final int NEG = 36;
-  public static final int ELSE = 20;
-  public static final int PROTECTED = 15;
+  public static final int DTOI = 52;
+  public static final int ELSE = 22;
+  public static final int PROTECTED = 17;
   public static final int LEFTBRACK = 8;
-  public static final int ITOD = 50;
-  public static final int ITOB = 52;
-  public static final int WHILE = 21;
-  public static final int PUBLIC = 16;
-  public static final int BTOI = 53;
+  public static final int ITOD = 51;
+  public static final int ITOB = 53;
+  public static final int WHILE = 23;
+  public static final int PUBLIC = 18;
+  public static final int BTOI = 54;
   public static final int EXTENDS = 12;
   public static final int STRING = 6;
-  public static final int GT = 39;
+  public static final int GT = 40;
   public static final int IMPLEMENTS = 13;
-  public static final int PRINT = 26;
-  public static final int NOTEQ = 42;
+  public static final int PRINT = 28;
+  public static final int NOTEQ = 43;
   public static final int IDENTIFIER = 7;
   public static final String[] terminalNames = new String[] {
   "EOF",
@@ -81,6 +82,8 @@ public class sym {
   "CLASS",
   "EXTENDS",
   "IMPLEMENTS",
+  "LEFTAKULAD",
+  "RIGHTAKULAD",
   "PRIVATE",
   "PROTECTED",
   "PUBLIC",
@@ -103,7 +106,6 @@ public class sym {
   "MULT",
   "DIV",
   "MOD",
-  "NEG",
   "LT",
   "LTEQ",
   "GT",
