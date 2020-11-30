@@ -146,7 +146,7 @@ IfStmt ::= IF LEFTPAREN Expr RIGHTPAREN Stmt ElseStmt
 	;
 ElseStmt ::= ELSE Stmt | 
 	;
-WhileStmt ::= while LEFTPAREN Expr RIGHTPAREN Stmt
+WhileStmt ::= WHILE LEFTPAREN Expr RIGHTPAREN Stmt
 	;
 ForStmt ::= FOR LEFTPAREN ExprEpsilon SEMICOLON Expr SEMICOLON ExprEpsilon RIGHTPAREN Stmt
 	;
