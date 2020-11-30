@@ -144,7 +144,7 @@ Stmt ::= ExprEpsilon SEMICOLON | IfStmt | IfElseStmt | WhileStmt | ForStmt | Bre
 	;
 IfStmt ::= IF LEFTPAREN Expr RIGHTPAREN Stmt
 	;
-IfElseStmt ::= IF LEFTPAREN Expr RIGHTPAREN Stmt ELSE Stmt  
+IfElseStmt ::= IfStmt ELSE Stmt  
 	;
 WhileStmt ::= WHILE LEFTPAREN Expr RIGHTPAREN Stmt
 	;
