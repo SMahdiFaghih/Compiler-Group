@@ -1,8 +1,7 @@
-import java.io.*;
 import java_cup.runtime.*;
 
 %%
-%class Scanner
+%class main
 %implements sym
 
 %line
@@ -11,21 +10,20 @@ import java_cup.runtime.*;
 %cup
 %cupdebug
 
-%class main
-%standalone
 %unicode
 
 %{
 
-    private Symbol symbol(int type) {
-        return new Symbol(type, yyline, yycolumn);
-    }
+  private Symbol symbol(int type)
+  {
+      return new Symbol(type, yyline, yycolumn);
+  }
     
-    /* Also creates a new java_cup.runtime.Symbol with information
-       about the current token, but this object has a value. */
-    private Symbol symbol(int type, Object value) {
-        return new Symbol(type, yyline, yycolumn, value);
-    }
+  /* Also creates a new java_cup.runtime.Symbol with information about the current token, but this object has a value. */
+  private Symbol symbol(int type, Object value) 
+  {
+      return new Symbol(type, yyline, yycolumn, value);
+  }
 
 %}
 
@@ -85,8 +83,8 @@ import java_cup.runtime.*;
 "]" { return new symbol (sym.RIGHTBRACK); }
 "(" { return new symbol (sym.LEFTPAREN); }
 ")" { return new symbol (sym.RIGHTPAREN); }
-"{" { }
-"}" { }
+"{" { return new symbol (sym.LEFTAKULAD); }
+"}" { return new symbol (sym.RIGHTAKULAD); }
 "//"[^\n]* { /* ignore comments*/ }
 "/*"[^]*"*/" { /* ignore comments*/ }
 [a-zA-Z]+[a-zA-Z\_0-9]* { return new symbol(sym.IDENTIFIER, yytext()); }
