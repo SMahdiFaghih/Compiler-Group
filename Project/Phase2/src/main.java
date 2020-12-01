@@ -1386,9 +1386,11 @@ public class main implements Scanner
             {
                 writer = new OutputStreamWriter(System.out);
             }
-            main myParser = new main(read);
+            Scanner myParser = new main(read);
             parser parser = new parser(myParser);
             parser.parse();
+
+            System.out.println("OK");
             writer.write("OK");
             writer.flush();
             writer.close();
@@ -1407,13 +1409,14 @@ public class main implements Scanner
             }
             if (outputFile != null)
             {
-                writer = new FileWriter("out/" + outputFile);
+                writer = new FileWriter("../out/" + outputFile);
             }
             else
             {
                 writer = new OutputStreamWriter(System.out);
             }
 
+            System.out.println("Syntax Error");
             writer.write("Syntax Error");
             writer.flush();
             writer.close();
