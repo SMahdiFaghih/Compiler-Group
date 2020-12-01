@@ -10,7 +10,6 @@ import java.io.*;
 
 %cup
 %cupdebug
-%standalone
 %unicode
 
 %{
