@@ -16,14 +16,12 @@ do
     output_filename="$filename.out"
     report_filename="$filename.report.txt"
     echo "Running Test $filename -------------------------------------"
-    javac -cp src/java-cup-11b-runtime.jar src/main.java src/sym.java src/parser.java
+    javac -cp ./src/java-cup-11b.jar -cp ./src/java-cup-11b-runtime.jar ./src/main.java
     if [ $? -eq 1 ]; then
         echo "Compile Error"
     else
         echo "Code Compiled Successfully"
-		cd ./src
-        java main -i $filelist -o $output_filename
-		cd ../
+        java -cp ./src/java-cup-11b.jar -cp  ./src/java-cup-11b-runtime.jar ./src/main.java -i $filelist -o $output_filename
         if [ $? -eq 0 ]; then
             echo "Code Executed Successfuly!"
             if command -v python3; then
