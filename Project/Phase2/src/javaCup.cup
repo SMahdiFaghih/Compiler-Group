@@ -117,7 +117,7 @@ Type ::= INT | DOUBLE | BOOLEAN | STRING | IDENTIFIER | Type LEFTBRACK RIGHTBRAC
 	;
 FunctionDecl ::= Type IDENTIFIER LEFTPAREN Formals RIGHTPAREN StmtBlock | VOID IDENTIFIER LEFTPAREN Formals RIGHTPAREN StmtBlock
 	;
-Formals ::= Variable FormalsMore
+Formals ::= Variable FormalsMore | 
 	;
 FormalsMore ::= COMMA Variable FormalsMore | 
 	;

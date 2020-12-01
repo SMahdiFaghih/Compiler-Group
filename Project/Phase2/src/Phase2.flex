@@ -45,8 +45,8 @@ import java.io.*;
 "return" { return symbol(sym.RETURN); }
 "break" { return symbol(sym.BREAK); }
 "continue" { return symbol(sym.CONTINUE); }
-"true" { return symbol(sym.BOOLEAN, yytext()); }
-"false" { return symbol(sym.BOOLEAN, yytext()); }
+"true" { return symbol(sym.BOOLCONSTANT, yytext()); }
+"false" { return symbol(sym.BOOLCONSTANT, yytext()); }
 "new" {return symbol(sym.NEW); }
 "NewArray" { return symbol(sym.NEWARRAY); }
 "Print" { return symbol(sym.PRINT); }
@@ -90,10 +90,10 @@ import java.io.*;
 "//"[^\n]* { /* ignore comments*/ }
 "/*"[^]*"*/" { /* ignore comments*/ }
 [a-zA-Z]+[a-zA-Z\_0-9]* { return symbol(sym.IDENTIFIER, yytext()); }
-[0-9]+ { return symbol(sym.INT, yytext()); }
-[0][xX][0-9a-fA-F]+ { return symbol (sym.INT, yytext()); }
-[0-9]+\.[0-9]* { return symbol (sym.DOUBLE, yytext()); }
-[0-9]+\.[0-9]*[Ee][-+]?[0-9]+ { return symbol(sym.DOUBLE, yytext()); }
-[0][xX][0-9a-fA-F]+\.[0-9a-fA-F]* { return symbol (sym.DOUBLE, yytext()); }
-[\"][^\n\"]+[\"] { return symbol (sym.STRING, yytext()); }
+[0-9]+ { return symbol(sym.INTCONSTANT, yytext()); }
+[0][xX][0-9a-fA-F]+ { return symbol (sym.INTCONSTANT, yytext()); }
+[0-9]+\.[0-9]* { return symbol (sym.DOUBLECONSTANT, yytext()); }
+[0-9]+\.[0-9]*[Ee][-+]?[0-9]+ { return symbol(sym.DOUBLECONSTANT, yytext()); }
+[0][xX][0-9a-fA-F]+\.[0-9a-fA-F]* { return symbol (sym.DOUBLECONSTANT, yytext()); }
+[\"][^\n\"]+[\"] { return symbol (sym.STRINGCONSTANT, yytext()); }
 [\s]  { /* ignore whitespace */ }
