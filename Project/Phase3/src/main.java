@@ -6,6 +6,7 @@ import java_cup.runtime.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Stack;
 
 
 // See https://github.com/jflex-de/jflex/issues/222
@@ -336,7 +337,6 @@ public class main implements Scanner
     /* Also creates a java_cup.runtime.Symbol with information about the current token, but this object has a value. */
     private Symbol symbol(int type, String value)
     {
-        System.out.println(value);
         switch (type)
         {
             case sym.IDENTIFIER:
@@ -1552,6 +1552,8 @@ class parser extends java_cup.runtime.lr_parser
     @SuppressWarnings({"rawtypes", "unchecked", "unused"})
     class CUP$parser$actions
     {
+        public Stack<Node> parseStack = new Stack<>();
+
         private final parser parser;
 
         /**
@@ -1594,6 +1596,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Program", 0, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Program", 1);
+                Node.root = (Node) stack.pop();
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1603,6 +1607,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Structure", 1, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Structure", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1612,6 +1617,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Structure", 1, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Structure", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1621,6 +1627,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Decl", 2, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Decl", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1630,6 +1637,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Decl", 2, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Decl", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1639,6 +1647,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Decl", 2, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Decl", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1648,6 +1657,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Decl", 2, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Decl", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1657,6 +1667,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("VariableDecl", 3, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("SEMICOLON");
+                addSubtreeToAST("VariableDecl", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1666,6 +1678,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Variable", 4, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("IDENTIFIER");
+                addSubtreeToAST("Variable", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1675,6 +1689,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Type", 5, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("INT");
+                addSubtreeToAST("Type", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1684,6 +1700,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Type", 5, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("DOUBLE");
+                addSubtreeToAST("Type", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1693,6 +1711,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Type", 5, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("BOOLEAN");
+                addSubtreeToAST("Type", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1702,6 +1722,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Type", 5, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("STRING");
+                addSubtreeToAST("Type", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1711,6 +1733,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Type", 5, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("IDENTIFIER");
+                addSubtreeToAST("Type", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1720,6 +1744,9 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Type", 5, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("LEFTBRACK");
+                addTerminalToAST("RIGHTBRACK");
+                addSubtreeToAST("Type", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1729,6 +1756,14 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("FunctionDecl", 6, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                Node StmtBlock = (Node) stack.pop();
+                Node Formals = (Node) stack.pop();
+                addTerminalToAST("IDENTIFIER");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(Formals);
+                addTerminalToAST("RIGHTPAREN");
+                stack.push(StmtBlock);
+                addSubtreeToAST("Type", 6);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2566,6 +2601,22 @@ class parser extends java_cup.runtime.lr_parser
             }
         } /* end of method */
 
+        private void addSubtreeToAST(String symbolName, int childLen)
+        {
+            Node node = new Node(symbolName);
+            for (int i=0;i < childLen;i++)
+            {
+                node.addChildNode((Node) stack.pop());
+            }
+            stack.push(node);
+        }
+
+        private void addTerminalToAST(String symbolName)
+        {
+            Node node = new Node(symbolName);
+            stack.push(node);
+        }
+
         /**
          * Method splitting the generated action code into several parts.
          */
@@ -2653,6 +2704,7 @@ class sym
 
 class Node
 {
+    public static Node root;
     private String symbolName;
     private String constantType; //used for Expr and Constants
     private String constantValue; //used for Constants
@@ -2699,7 +2751,7 @@ class Node
 
     public void addChildNode(Node childNode)
     {
-        this.childNodes.add(childNode);
+        this.childNodes.add(0, childNode);
     }
 
     public void addChildNodes(ArrayList<Node> childNodes)
