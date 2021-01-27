@@ -5,6 +5,7 @@
 import java_cup.runtime.*;
 
 import java.io.*;
+import java.util.ArrayList;
 
 
 // See https://github.com/jflex-de/jflex/issues/222
@@ -319,6 +320,12 @@ public class main implements Scanner
 
     /* user code: */
 
+    public static ArrayList<String> identifierConstants = new ArrayList<>();
+    public static ArrayList<String> stringConstants = new ArrayList<>();
+    public static ArrayList<Integer> integerConstants = new ArrayList<>();
+    public static ArrayList<Double> doubleConstants = new ArrayList<>();
+    public static ArrayList<Boolean> booleanConstants = new ArrayList<>();
+
     public static Writer writer;
 
     private Symbol symbol(int type)
@@ -327,8 +334,27 @@ public class main implements Scanner
     }
 
     /* Also creates a java_cup.runtime.Symbol with information about the current token, but this object has a value. */
-    private Symbol symbol(int type, Object value)
+    private Symbol symbol(int type, String value)
     {
+        System.out.println(value);
+        switch (type)
+        {
+            case sym.IDENTIFIER:
+                identifierConstants.add(value);
+                break;
+            case sym.STRINGCONSTANT:
+                stringConstants.add(value);
+                break;
+            case sym.INTCONSTANT:
+                integerConstants.add(Integer.parseInt(value));
+                break;
+            case sym.DOUBLECONSTANT:
+                doubleConstants.add(Double.parseDouble(value));
+                break;
+            case sym.BOOLCONSTANT:
+                booleanConstants.add(Boolean.parseBoolean(value));
+                break;
+        }
         return new Symbol(type, yyline, yycolumn, value);
     }
 
