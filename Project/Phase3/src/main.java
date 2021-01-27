@@ -1756,14 +1756,14 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("FunctionDecl", 6, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                Node StmtBlock = (Node) stack.pop();
-                Node Formals = (Node) stack.pop();
+                Node first = (Node) stack.pop();
+                Node second = (Node) stack.pop();
                 addTerminalToAST("IDENTIFIER");
                 addTerminalToAST("LEFTPAREN");
-                stack.push(Formals);
+                stack.push(second);
                 addTerminalToAST("RIGHTPAREN");
-                stack.push(StmtBlock);
-                addSubtreeToAST("Type", 6);
+                stack.push(first);
+                addSubtreeToAST("FunctionDecl", 6);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1773,6 +1773,15 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("FunctionDecl", 6, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                second = (Node) stack.pop();
+                addTerminalToAST("VOID");
+                addTerminalToAST("IDENTIFIER");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(second);
+                addTerminalToAST("RIGHTPAREN");
+                stack.push(first);
+                addSubtreeToAST("FunctionDecl", 6);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1782,6 +1791,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Formals", 7, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Formals", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1791,6 +1801,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Formals", 7, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Formals", 0);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1800,6 +1811,12 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("FormalsMore", 8, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                second = (Node) stack.pop();
+                addTerminalToAST("COMMA");
+                stack.push(second);
+                stack.push(first);
+                addSubtreeToAST("FormalsMore", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1809,6 +1826,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("FormalsMore", 8, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("FormalsMore", 0);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1818,6 +1836,17 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ClassDecl", 9, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 6)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                second = (Node) stack.pop();
+                Node third = (Node) stack.pop();
+                addTerminalToAST("CLASS");
+                addTerminalToAST("IDENTIFIER");
+                stack.push(third);
+                stack.push(second);
+                addTerminalToAST("LEFTAKULAD");
+                stack.push(first);
+                addTerminalToAST("RIGHTAKULAD");
+                addSubtreeToAST("ClassDecl", 7);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1827,6 +1856,9 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ExtendDecl", 10, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("EXTENDS");
+                addTerminalToAST("IDENTIFIER");
+                addSubtreeToAST("ExtendDecl", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1836,6 +1868,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ExtendDecl", 10, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("ExtendDecl", 0);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1845,6 +1878,11 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ImplementDecl", 11, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("IMPLEMENTS");
+                addTerminalToAST("IDENTIFIER");
+                stack.push(first);
+                addSubtreeToAST("ImplementDecl", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1854,6 +1892,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ImplementDecl", 11, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("ImplementDecl", 0);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1863,6 +1902,11 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ImplementMore", 12, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("COMMA");
+                addTerminalToAST("IDENTIFIER");
+                stack.push(first);
+                addSubtreeToAST("ImplementMore", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1872,6 +1916,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ImplementMore", 12, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("ImplementMore", 0);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1881,6 +1926,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Field", 13, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Field", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1890,6 +1936,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Field", 13, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Field", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1899,6 +1946,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Field", 13, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Field", 0);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1908,6 +1956,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("AccessMode", 14, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("PRIVATE");
+                addSubtreeToAST("AccessMode", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1917,6 +1967,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("AccessMode", 14, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("PRIVATE");
+                addSubtreeToAST("AccessMode", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1926,6 +1978,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("AccessMode", 14, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("PRIVATE");
+                addSubtreeToAST("AccessMode", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1935,6 +1989,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("AccessMode", 14, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("AccessMode", 0);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1944,6 +1999,13 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("InterfaceDecl", 15, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("INTERFACE");
+                addTerminalToAST("IDENTIFIER");
+                addTerminalToAST("LEFTAKULAD");
+                stack.push(first);
+                addTerminalToAST("RIGHTAKULAD");
+                addSubtreeToAST("ClassDecl", 7);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -1953,6 +2015,14 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Prototype", 16, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 6)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                second = (Node) stack.pop();
+                addTerminalToAST("IDENTIFIER");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(second);
+                addTerminalToAST("RIGHTPAREN");
+                stack.push(first);
+                addSubtreeToAST("FunctionDecl", 6);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
