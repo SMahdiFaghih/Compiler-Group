@@ -2003,11 +2003,11 @@ class parser extends java_cup.runtime.lr_parser
                 addTerminalToAST("LEFTAKULAD");
                 stack.push(first);
                 addTerminalToAST("RIGHTAKULAD");
-                addSubtreeToAST("ClassDecl", 7);
+                addSubtreeToAST("InterfaceDecl", 5);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
-                case 37: // Prototype ::= Type IDENTIFIER LEFTPAREN Formals RIGHTBRACK SEMICOLON Prototype
+                case 37: // Prototype ::= Type IDENTIFIER LEFTPAREN Formals RIGHTPAREN SEMICOLON Prototype
                 {
                     Object RESULT = null;
 
@@ -2019,17 +2019,28 @@ class parser extends java_cup.runtime.lr_parser
                 addTerminalToAST("LEFTPAREN");
                 stack.push(second);
                 addTerminalToAST("RIGHTPAREN");
+                addTerminalToAST("SEMICOLON");
                 stack.push(first);
-                addSubtreeToAST("FunctionDecl", 6);
+                addSubtreeToAST("Prototype", 7);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
-                case 38: // Prototype ::= VOID IDENTIFIER LEFTPAREN Formals RIGHTBRACK SEMICOLON Prototype
+                case 38: // Prototype ::= VOID IDENTIFIER LEFTPAREN Formals RIGHTPAREN SEMICOLON Prototype
                 {
                     Object RESULT = null;
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Prototype", 16, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 6)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                second = (Node) stack.pop();
+                addTerminalToAST("VOID");
+                addTerminalToAST("IDENTIFIER");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(second);
+                addTerminalToAST("RIGHTPAREN");
+                addTerminalToAST("SEMICOLON");
+                stack.push(first);
+                addSubtreeToAST("Prototype", 7);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2039,6 +2050,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Prototype", 16, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Prototype", 0);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2048,6 +2060,11 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("StmtBlock", 17, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("LEFTAKULAD");
+                stack.push(first);
+                addTerminalToAST("RIGHTAKULAD");
+                addSubtreeToAST("StmtBlock", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2057,6 +2074,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("VariableUsage", 18, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("VariableUsage", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2066,6 +2084,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("VariableUsage", 18, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("VariableUsage", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2075,6 +2094,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("VariableUsage", 18, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("VariableUsage", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2084,6 +2104,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("VariableUsage", 18, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("VariableUsage", 0);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2093,6 +2114,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt", 19, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("SEMICOLON");
+                addSubtreeToAST("Stmt", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2102,6 +2125,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt", 19, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Stmt", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2111,6 +2135,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt", 19, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Stmt", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2120,6 +2145,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt", 19, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Stmt", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2129,6 +2155,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt", 19, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Stmt", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2138,6 +2165,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt", 19, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Stmt", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2147,6 +2175,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt", 19, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Stmt", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2156,6 +2185,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt", 19, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Stmt", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2165,6 +2195,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt", 19, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Stmt", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2174,6 +2205,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt", 19, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Stmt", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2183,6 +2215,14 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("IfStmt", 20, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                second = (Node) stack.pop();
+                addTerminalToAST("IF");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(second);
+                addTerminalToAST("RIGHTPAREN");
+                stack.push(first);
+                addSubtreeToAST("IfStmt", 5);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2192,6 +2232,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("IfElseStmt", 21, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("ELSE");
+                stack.push(first);
+                addSubtreeToAST("IfElseStmt", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2201,6 +2245,14 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("WhileStmt", 22, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                second = (Node) stack.pop();
+                addTerminalToAST("WHILE");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(second);
+                addTerminalToAST("RIGHTPAREN");
+                stack.push(first);
+                addSubtreeToAST("WhileStmt", 5);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2210,6 +2262,20 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ForStmt", 23, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 8)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                second = (Node) stack.pop();
+                third = (Node) stack.pop();
+                Node forth = (Node) stack.pop();
+                addTerminalToAST("FOR");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(forth);
+                addTerminalToAST("SEMICOLON");
+                stack.push(third);
+                addTerminalToAST("SEMICOLON");
+                stack.push(second);
+                addTerminalToAST("RIGHTPAREN");
+                stack.push(first);
+                addSubtreeToAST("ForStmt", 9);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2219,6 +2285,11 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ReturnStmt", 24, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("RETURN");
+                stack.push(first);
+                addTerminalToAST("SEMICOLON");
+                addSubtreeToAST("ReturnStmt", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2228,6 +2299,9 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("BreakStmt", 25, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("BREAK");
+                addTerminalToAST("SEMICOLON");
+                addSubtreeToAST("BreakStmt", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2237,6 +2311,9 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ContinueStmt", 26, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("CONTINUE");
+                addTerminalToAST("SEMICOLON");
+                addSubtreeToAST("BreakStmt", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2246,6 +2323,13 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("PrintStmt", 27, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("PRINT");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(first);
+                addTerminalToAST("RIGHTPAREN");
+                addTerminalToAST("SEMICOLON");
+                addSubtreeToAST("PrintStmt", 5);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2255,6 +2339,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("ASSIGN");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2264,6 +2352,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Expr", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2273,6 +2362,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Expr", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2282,6 +2372,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("THIS");
+                addSubtreeToAST("Expr", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2291,6 +2383,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Expr", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2300,6 +2393,11 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("LEFTPAREN");
+                stack.push(first);
+                addTerminalToAST("RIGHTPAREN");
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2309,6 +2407,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("PLUS");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2318,6 +2420,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("MINUS");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2327,6 +2433,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("MULT");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2336,6 +2446,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("DIV");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2345,6 +2459,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("MOD");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2354,6 +2472,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("MINUS");
+                stack.push(first);
+                addSubtreeToAST("Expr", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2363,6 +2485,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("LT");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2372,6 +2498,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("LTEQ");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2381,6 +2511,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("GT");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2390,6 +2524,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("GTEQ");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2399,6 +2537,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("EQEQ");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2408,6 +2550,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("NOTEQ");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2417,6 +2563,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("ANDAND");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2426,6 +2576,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("OROR");
+                stack.push(first);
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2435,6 +2589,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("NOT");
+                stack.push(first);
+                addSubtreeToAST("Expr", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2444,6 +2602,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("READINTEGER");
+                addTerminalToAST("LEFTPAREN");
+                addTerminalToAST("RIGHTPAREN");
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2453,6 +2615,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("READLINE");
+                addTerminalToAST("LEFTPAREN");
+                addTerminalToAST("RIGHTPAREN");
+                addSubtreeToAST("Expr", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2462,6 +2628,9 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("NEW");
+                addTerminalToAST("IDENTIFIER");
+                addSubtreeToAST("Expr", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2471,6 +2640,15 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                second = (Node) stack.pop();
+                addTerminalToAST("NEWARRAY");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(second);
+                addTerminalToAST("COMMA");
+                stack.push(first);
+                addTerminalToAST("RIGHTPAREN");
+                addSubtreeToAST("Expr", 6);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2480,6 +2658,12 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("ITOD");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(first);
+                addTerminalToAST("RIGHTPAREN");
+                addSubtreeToAST("Expr", 4);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2489,6 +2673,12 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("DTOI");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(first);
+                addTerminalToAST("RIGHTPAREN");
+                addSubtreeToAST("Expr", 4);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2498,6 +2688,12 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("ITOb");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(first);
+                addTerminalToAST("RIGHTPAREN");
+                addSubtreeToAST("Expr", 4);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2507,6 +2703,12 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("BTOI");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(first);
+                addTerminalToAST("RIGHTPAREN");
+                addSubtreeToAST("Expr", 4);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2516,6 +2718,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ExprEpsilon", 29, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("ExprEpsilon", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2525,6 +2728,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ExprEpsilon", 29, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("ExprEpsilon", 0);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2534,6 +2738,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ExprWith", 30, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("ExprWith", 2);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2543,6 +2748,12 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ExprMore", 31, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                second = (Node) stack.pop();
+                addTerminalToAST("COMMA");
+                stack.push(second);
+                stack.push(first);
+                addSubtreeToAST("ExprMore", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2552,6 +2763,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ExprMore", 31, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("ExprMore", 0);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2561,6 +2773,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("LValue", 32, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("IDENTIFIER");
+                addSubtreeToAST("LValue", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2570,6 +2784,9 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("LValue", 32, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("DOT");
+                addTerminalToAST("IDENTIFIER");
+                addSubtreeToAST("LValue", 3);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2579,6 +2796,11 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("LValue", 32, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("LEFTBRACK");
+                stack.push(first);
+                addTerminalToAST("RIGHTBRACK");
+                addSubtreeToAST("LValue", 4);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2588,6 +2810,12 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Call", 33, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("IDENTIFIER");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(first);
+                addTerminalToAST("RIGHTPAREN");
+                addSubtreeToAST("Call", 5);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2597,6 +2825,13 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Call", 33, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                first = (Node) stack.pop();
+                addTerminalToAST("DOT");
+                addTerminalToAST("IDENTIFIER");
+                addTerminalToAST("LEFTPAREN");
+                stack.push(first);
+                addTerminalToAST("RIGHTPAREN");
+                addSubtreeToAST("Call", 6);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2606,6 +2841,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Actuals", 34, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Actuals", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2615,6 +2851,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Actuals", 34, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addSubtreeToAST("Actuals", 0);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2624,6 +2861,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Constant", 35, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("INTCONSTANT");
+                addSubtreeToAST("Constant", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2633,6 +2872,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Constant", 35, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("DOUBLECONSTANT");
+                addSubtreeToAST("Constant", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2642,6 +2883,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Constant", 35, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("BOOLCONSTANT");
+                addSubtreeToAST("Constant", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2651,6 +2894,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Constant", 35, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("STRINGCONSTANT");
+                addSubtreeToAST("Constant", 1);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
@@ -2660,6 +2905,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Constant", 35, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
+                addTerminalToAST("NULL");
+                addSubtreeToAST("Constant", 1);
                 return CUP$parser$result;
 
                 /* . . . . . .*/
