@@ -1,0 +1,183 @@
+import java_cup.runtime.*;
+
+parser code  {: 
+  public void report_error(String message, Object info) 
+  {
+    StringBuilder stringBuilder = new StringBuilder("Error ");
+
+    if (info instanceof java_cup.runtime.Symbol) 
+      stringBuilder.append( "("+info.toString()+")" );
+     
+    stringBuilder.append(" : "+message);
+   
+    System.out.println(stringBuilder);
+  }
+   
+  public void report_fatal_error(String message, Object info) {
+    report_error(message, info);
+    throw new RuntimeException("Fatal Syntax Error");
+  }
+:};
+
+terminal SEMICOLON; // ;
+terminal INT; // int
+terminal DOUBLE; // double
+terminal BOOLEAN; // bool
+terminal STRING; // string
+terminal IDENTIFIER; // ident
+terminal LEFTBRACK, RIGHTBRACK; // []
+terminal COMMA; // ,
+terminal CLASS; // class
+terminal EXTENDS; // extends
+terminal IMPLEMENTS; // interface
+terminal LEFTAKULAD, RIGHTAKULAD; // {}
+terminal PRIVATE, PROTECTED, PUBLIC; // private, protected, public
+terminal INTERFACE; // interface
+terminal VOID; // void
+terminal IF, ELSE; // if, else
+terminal WHILE; // while
+terminal FOR; // for
+terminal RETURN; // return
+terminal BREAK; // break
+terminal CONTINUE; // continue
+terminal PRINT; // print
+terminal ASSIGN; // =
+terminal THIS; // this
+terminal LEFTPAREN, RIGHTPAREN; // ()
+terminal PLUS, MINUS, MULT, DIV; // +, -, *, /
+terminal MOD, LT, LTEQ; // %, <, <=
+terminal GT, GTEQ, EQEQ, NOTEQ; // >, >=, ==, !=
+terminal ANDAND, OROR, NOT, READINTEGER; // &&, ||, !, ReadInteger
+terminal READLINE, NEW, NEWARRAY; // readLine, new, NewArray
+terminal ITOD, DTOI, ITOB, BTOI; // itod, dtoi, itob, btoi
+terminal DOT; // .
+terminal INTCONSTANT, DOUBLECONSTANT, BOOLCONSTANT; // intConstant, doubleConstant, boolConstant
+terminal STRINGCONSTANT, NULL; // stringConstant, null
+
+non terminal Program;
+non terminal Structure;
+non terminal Decl;
+non terminal VariableDecl;
+non terminal Variable;
+non terminal Type;
+non terminal FunctionDecl;
+non terminal Formals;
+non terminal FormalsMore;
+non terminal ClassDecl;
+non terminal ExtendDecl;
+non terminal ImplementDecl;
+non terminal ImplementMore;
+non terminal Field;
+non terminal AccessMode;
+non terminal InterfaceDecl;
+non terminal Prototype;
+non terminal StmtBlock;
+non terminal VariableUsage;
+non terminal Stmt;
+non terminal IfStmt;
+non terminal IfElseStmt;
+non terminal WhileStmt;
+non terminal ForStmt;
+non terminal ReturnStmt;
+non terminal BreakStmt;
+non terminal ContinueStmt;
+non terminal PrintStmt;
+non terminal Expr;
+non terminal ExprEpsilon;
+non terminal ExprWith;
+non terminal ExprMore;
+non terminal LValue;
+non terminal Call;
+non terminal Actuals;
+non terminal Constant;
+
+precedence right ASSIGN;
+precedence left OROR;
+precedence left ANDAND;
+precedence left EQEQ, NOTEQ;
+precedence left LT, LTEQ, GT, GTEQ;
+precedence left PLUS, MINUS;
+precedence left MULT, DIV, MOD;
+precedence right NOT;
+precedence left DOT, LEFTBRACK;
+
+start with Program;
+
+Program ::= Structure
+	;
+Structure ::= Decl Structure | Decl
+	;
+Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl
+	;
+VariableDecl ::= Variable SEMICOLON
+	;
+Variable ::= Type IDENTIFIER
+	;
+Type ::= INT | DOUBLE | BOOLEAN | STRING | IDENTIFIER | Type LEFTBRACK RIGHTBRACK
+	;
+FunctionDecl ::= Type IDENTIFIER LEFTPAREN Formals RIGHTPAREN StmtBlock | VOID IDENTIFIER LEFTPAREN Formals RIGHTPAREN StmtBlock
+	;
+Formals ::= Variable FormalsMore | 
+	;
+FormalsMore ::= COMMA Variable FormalsMore | 
+	;
+ClassDecl ::= CLASS IDENTIFIER ExtendDecl ImplementDecl LEFTAKULAD Field RIGHTAKULAD
+	;
+ExtendDecl ::= EXTENDS IDENTIFIER |
+	;
+ImplementDecl ::= IMPLEMENTS IDENTIFIER ImplementMore |  
+	;
+ImplementMore ::= COMMA IDENTIFIER ImplementMore | 
+	;
+Field ::= AccessMode VariableDecl Field | AccessMode FunctionDecl Field | 
+	;
+AccessMode ::= PRIVATE | PROTECTED | PUBLIC | 
+	;
+InterfaceDecl ::= INTERFACE IDENTIFIER LEFTAKULAD Prototype RIGHTAKULAD
+	;
+Prototype ::= Type IDENTIFIER LEFTPAREN Formals RIGHTBRACK SEMICOLON Prototype| VOID IDENTIFIER LEFTPAREN Formals RIGHTBRACK SEMICOLON Prototype |
+	;
+StmtBlock ::= LEFTAKULAD VariableUsage RIGHTAKULAD 
+	;
+VariableUsage ::= VariableDecl Stmt VariableUsage | VariableDecl VariableUsage | Stmt VariableUsage | 
+	;
+Stmt ::= ExprEpsilon SEMICOLON | IfStmt | IfElseStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock
+	;
+IfStmt ::= IF LEFTPAREN Expr RIGHTPAREN Stmt
+	;
+IfElseStmt ::= IfStmt ELSE Stmt  
+	;
+WhileStmt ::= WHILE LEFTPAREN Expr RIGHTPAREN Stmt
+	;
+ForStmt ::= FOR LEFTPAREN ExprEpsilon SEMICOLON Expr SEMICOLON ExprEpsilon RIGHTPAREN Stmt
+	;
+ReturnStmt ::= RETURN ExprEpsilon SEMICOLON
+	;
+BreakStmt ::= BREAK SEMICOLON
+	;
+ContinueStmt ::= CONTINUE SEMICOLON
+	;
+PrintStmt ::= PRINT LEFTPAREN ExprWith RIGHTPAREN SEMICOLON
+	;
+Expr ::= LValue ASSIGN Expr | Constant | LValue | THIS | Call | LEFTPAREN Expr RIGHTPAREN |
+Expr PLUS Expr | Expr MINUS Expr | Expr MULT Expr | Expr DIV Expr |
+Expr MOD Expr | MINUS Expr | Expr LT Expr | Expr LTEQ Expr |
+Expr GT Expr | Expr GTEQ Expr | Expr EQEQ Expr | Expr NOTEQ Expr |
+Expr ANDAND Expr | Expr OROR Expr | NOT Expr | READINTEGER LEFTPAREN RIGHTPAREN |
+READLINE LEFTPAREN RIGHTPAREN | NEW IDENTIFIER | NEWARRAY LEFTPAREN Expr COMMA Type RIGHTPAREN |
+ITOD LEFTPAREN Expr RIGHTPAREN | DTOI LEFTPAREN Expr RIGHTPAREN | ITOB LEFTPAREN Expr RIGHTPAREN | BTOI LEFTPAREN Expr RIGHTPAREN
+	;
+ExprEpsilon ::= Expr | 
+	;
+ExprWith ::= Expr ExprMore
+	;
+ExprMore ::= COMMA Expr ExprMore | 
+	;
+LValue ::= IDENTIFIER | Expr DOT IDENTIFIER | Expr LEFTBRACK Expr RIGHTBRACK
+	;
+Call ::= IDENTIFIER LEFTPAREN Actuals RIGHTPAREN | Expr DOT IDENTIFIER LEFTPAREN Actuals RIGHTPAREN
+	;
+Actuals ::= ExprWith | 
+	;
+Constant ::= INTCONSTANT | DOUBLECONSTANT | BOOLCONSTANT | STRINGCONSTANT | NULL
+	;
