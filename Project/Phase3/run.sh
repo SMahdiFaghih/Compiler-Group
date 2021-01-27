@@ -10,7 +10,7 @@ mkdir -p $OUTPUT_DIRECTORY
 mkdir -p $REPORT_DIRECTORY
 cd ./tests
 prefix="t" ;
-dirlist=(`ls ${prefix}*.in`) ;
+dirlist=(`ls ${prefix}*.d`) ;
 NUMBER_OF_PASSED=0
 NUMBER_OF_FAILED=0
 cd ../
