@@ -28,7 +28,7 @@ do
     else
         echo "Code compiled successfuly"
         cd ./src
-        java -cp ./java-cup-11b.jar -cp  ./java-cup-11b-runtime.jar ./main.java -i $filelist -o $output_filename
+        java -cp ./java-cup-11b.jar -cp  ./java-cup-11b-runtime.jar ./main.java -i $filelist -o $output_asm
         cd ../
         if [ $? -eq 0 ]; then
             echo "Code Compiled Successfuly!"
