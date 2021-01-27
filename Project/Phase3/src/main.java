@@ -2650,3 +2650,60 @@ class sym
     public static final int IDENTIFIER = 7;
     public static final String[] terminalNames = new String[]{"EOF", "error", "SEMICOLON", "INT", "DOUBLE", "BOOLEAN", "STRING", "IDENTIFIER", "LEFTBRACK", "RIGHTBRACK", "COMMA", "CLASS", "EXTENDS", "IMPLEMENTS", "LEFTAKULAD", "RIGHTAKULAD", "PRIVATE", "PROTECTED", "PUBLIC", "INTERFACE", "VOID", "IF", "ELSE", "WHILE", "FOR", "RETURN", "BREAK", "CONTINUE", "PRINT", "ASSIGN", "THIS", "LEFTPAREN", "RIGHTPAREN", "PLUS", "MINUS", "MULT", "DIV", "MOD", "LT", "LTEQ", "GT", "GTEQ", "EQEQ", "NOTEQ", "ANDAND", "OROR", "NOT", "READINTEGER", "READLINE", "NEW", "NEWARRAY", "ITOD", "DTOI", "ITOB", "BTOI", "DOT", "INTCONSTANT", "DOUBLECONSTANT", "BOOLCONSTANT", "STRINGCONSTANT", "NULL"};
 }
+
+class Node
+{
+    private String symbolName;
+    private String constantType; //used for Expr and Constants
+    private String constantValue; //used for Constants
+    private ArrayList<Node> childNodes;
+
+    Node(String symbolName)
+    {
+        this.symbolName = symbolName;
+        this.childNodes = new ArrayList<>();
+    }
+
+    Node(String symbolName, String constantType, String constantValue)
+    {
+        this.symbolName = symbolName;
+        this.constantType = constantType;
+        this.constantValue = constantValue;
+        this.childNodes = new ArrayList<>();
+    }
+
+    public String getSymbolName()
+    {
+        return symbolName;
+    }
+
+    public String getConstantType()
+    {
+        return constantType;
+    }
+
+    public void setConstantType(String constantType)
+    {
+        this.constantType = constantType;
+    }
+
+    public String getConstantValue()
+    {
+        return constantValue;
+    }
+
+    public ArrayList<Node> getChildNodes()
+    {
+        return childNodes;
+    }
+
+    public void addChildNode(Node childNode)
+    {
+        this.childNodes.add(childNode);
+    }
+
+    public void addChildNodes(ArrayList<Node> childNodes)
+    {
+        this.childNodes.addAll(childNodes);
+    }
+}
