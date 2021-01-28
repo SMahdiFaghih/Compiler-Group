@@ -320,12 +320,6 @@ public class main implements Scanner
 
     /* user code: */
 
-    public static ArrayList<String> identifierConstants = new ArrayList<>();
-    public static ArrayList<String> stringConstants = new ArrayList<>();
-    public static ArrayList<Integer> integerConstants = new ArrayList<>();
-    public static ArrayList<Double> doubleConstants = new ArrayList<>();
-    public static ArrayList<Boolean> booleanConstants = new ArrayList<>();
-
     public static Writer writer;
 
     private Symbol symbol(int type)
@@ -336,24 +330,6 @@ public class main implements Scanner
     /* Also creates a java_cup.runtime.Symbol with information about the current token, but this object has a value. */
     private Symbol symbol(int type, String value)
     {
-        switch (type)
-        {
-            case sym.IDENTIFIER:
-                identifierConstants.add(value);
-                break;
-            case sym.STRINGCONSTANT:
-                stringConstants.add(value);
-                break;
-            case sym.INTCONSTANT:
-                integerConstants.add(Integer.parseInt(value));
-                break;
-            case sym.DOUBLECONSTANT:
-                doubleConstants.add(Double.parseDouble(value));
-                break;
-            case sym.BOOLCONSTANT:
-                booleanConstants.add(Boolean.parseBoolean(value));
-                break;
-        }
         return new Symbol(type, yyline, yycolumn, value);
     }
 
@@ -1677,7 +1653,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Variable", 4, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                addTerminalToAST("IDENTIFIER");
+                String value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addSubtreeToAST("Variable", 2);
                 return CUP$parser$result;
 
@@ -1732,7 +1709,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Type", 5, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addSubtreeToAST("Type", 1);
                 return CUP$parser$result;
 
@@ -1757,7 +1735,8 @@ class parser extends java_cup.runtime.lr_parser
                 }
                 Node first =  parseStack.pop();
                 Node second =  parseStack.pop();
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(second);
                 addTerminalToAST("RIGHTPAREN");
@@ -1775,7 +1754,8 @@ class parser extends java_cup.runtime.lr_parser
                 first =  parseStack.pop();
                 second =  parseStack.pop();
                 addTerminalToAST("VOID");
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(second);
                 addTerminalToAST("RIGHTPAREN");
@@ -1839,7 +1819,8 @@ class parser extends java_cup.runtime.lr_parser
                 second =  parseStack.pop();
                 Node third =  parseStack.pop();
                 addTerminalToAST("CLASS");
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 parseStack.push(third);
                 parseStack.push(second);
                 addTerminalToAST("LEFTAKULAD");
@@ -1856,7 +1837,8 @@ class parser extends java_cup.runtime.lr_parser
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ExtendDecl", 10, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 addTerminalToAST("EXTENDS");
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addSubtreeToAST("ExtendDecl", 2);
                 return CUP$parser$result;
 
@@ -1879,7 +1861,8 @@ class parser extends java_cup.runtime.lr_parser
                 }
                 first =  parseStack.pop();
                 addTerminalToAST("IMPLEMENTS");
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 parseStack.push(first);
                 addSubtreeToAST("ImplementDecl", 3);
                 return CUP$parser$result;
@@ -1903,7 +1886,8 @@ class parser extends java_cup.runtime.lr_parser
                 }
                 first =  parseStack.pop();
                 addTerminalToAST("COMMA");
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 parseStack.push(first);
                 addSubtreeToAST("ImplementMore", 3);
                 return CUP$parser$result;
@@ -2000,7 +1984,8 @@ class parser extends java_cup.runtime.lr_parser
                 }
                 first =  parseStack.pop();
                 addTerminalToAST("INTERFACE");
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addTerminalToAST("LEFTAKULAD");
                 parseStack.push(first);
                 addTerminalToAST("RIGHTAKULAD");
@@ -2016,7 +2001,8 @@ class parser extends java_cup.runtime.lr_parser
                 }
                 first =  parseStack.pop();
                 second =  parseStack.pop();
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(second);
                 addTerminalToAST("RIGHTPAREN");
@@ -2035,7 +2021,8 @@ class parser extends java_cup.runtime.lr_parser
                 first =  parseStack.pop();
                 second =  parseStack.pop();
                 addTerminalToAST("VOID");
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(second);
                 addTerminalToAST("RIGHTPAREN");
@@ -2630,7 +2617,8 @@ class parser extends java_cup.runtime.lr_parser
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 addTerminalToAST("NEW");
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addSubtreeToAST("Expr", 2);
                 return CUP$parser$result;
 
@@ -2774,7 +2762,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("LValue", 32, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addSubtreeToAST("LValue", 1);
                 return CUP$parser$result;
 
@@ -2786,7 +2775,8 @@ class parser extends java_cup.runtime.lr_parser
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("LValue", 32, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 addTerminalToAST("DOT");
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addSubtreeToAST("LValue", 3);
                 return CUP$parser$result;
 
@@ -2812,7 +2802,8 @@ class parser extends java_cup.runtime.lr_parser
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Call", 33, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 first =  parseStack.pop();
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(first);
                 addTerminalToAST("RIGHTPAREN");
@@ -2828,7 +2819,8 @@ class parser extends java_cup.runtime.lr_parser
                 }
                 first =  parseStack.pop();
                 addTerminalToAST("DOT");
-                addTerminalToAST("IDENTIFIER");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).value.toString();
+                addTerminalToAST("IDENTIFIER", value);
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(first);
                 addTerminalToAST("RIGHTPAREN");
@@ -2862,7 +2854,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Constant", 35, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                addTerminalToAST("INTCONSTANT");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value.toString();
+                addTerminalToAST("INTCONSTANT", "INT", value);
                 addSubtreeToAST("Constant", 1);
                 return CUP$parser$result;
 
@@ -2873,7 +2866,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Constant", 35, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                addTerminalToAST("DOUBLECONSTANT");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value.toString();
+                addTerminalToAST("DOUBLECONSTANT", "DOUBLE", value);
                 addSubtreeToAST("Constant", 1);
                 return CUP$parser$result;
 
@@ -2884,7 +2878,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Constant", 35, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                addTerminalToAST("BOOLCONSTANT");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value.toString();
+                addTerminalToAST("BOOLCONSTANT", "BOOL", value);
                 addSubtreeToAST("Constant", 1);
                 return CUP$parser$result;
 
@@ -2895,7 +2890,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Constant", 35, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                addTerminalToAST("STRINGCONSTANT");
+                value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value.toString();
+                addTerminalToAST("STRINGCONSTANT", "STRING", value);
                 addSubtreeToAST("Constant", 1);
                 return CUP$parser$result;
 
@@ -2930,6 +2926,18 @@ class parser extends java_cup.runtime.lr_parser
         private void addTerminalToAST(String symbolName)
         {
             Node node = new Node(symbolName);
+            parseStack.push(node);
+        }
+
+        private void addTerminalToAST(String symbolName, String identifierName)
+        {
+            Node node = new Node(symbolName, identifierName);
+            parseStack.push(node);
+        }
+
+        private void addTerminalToAST(String symbolName, String constantType, String constantValue)
+        {
+            Node node = new Node(symbolName, constantType, constantValue);
             parseStack.push(node);
         }
 
@@ -3022,7 +3030,8 @@ class Node
 {
     public static Node root;
     private String symbolName;
-    private String constantType; //used for Expr and Constants
+    private String identifierName; //used for IDENTIFIER
+    private String nodeValueType; //used for Expr and Constants
     private String constantValue; //used for Constants
     private ArrayList<Node> childNodes;
 
@@ -3032,10 +3041,17 @@ class Node
         this.childNodes = new ArrayList<>();
     }
 
-    Node(String symbolName, String constantType, String constantValue)
+    Node(String symbolName, String identifierName)
     {
         this.symbolName = symbolName;
-        this.constantType = constantType;
+        this.identifierName = identifierName;
+        this.childNodes = new ArrayList<>();
+    }
+
+    Node(String symbolName, String nodeValueType, String constantValue)
+    {
+        this.symbolName = symbolName;
+        this.nodeValueType = nodeValueType;
         this.constantValue = constantValue;
         this.childNodes = new ArrayList<>();
     }
@@ -3045,14 +3061,19 @@ class Node
         return symbolName;
     }
 
-    public String getConstantType()
+    public String getIdentifierName()
     {
-        return constantType;
+        return identifierName;
     }
 
-    public void setConstantType(String constantType)
+    public String getNodeValueType()
     {
-        this.constantType = constantType;
+        return nodeValueType;
+    }
+
+    public void setNodeValueType(String nodeValueType)
+    {
+        this.nodeValueType = nodeValueType;
     }
 
     public String getConstantValue()
