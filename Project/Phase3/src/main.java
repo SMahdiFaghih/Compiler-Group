@@ -1333,8 +1333,7 @@ public class main implements Scanner
             try
             {
                 SemanticAnalysis.getInstance().startSemanticAnalysis();
-            }
-            catch (SemanticError e)
+            } catch (SemanticError e)
             {
                 System.out.println("Semantic Error");
                 writer.write("Semantic Error");
@@ -1745,8 +1744,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("FunctionDecl", 6, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                Node first =  parseStack.pop();
-                Node second =  parseStack.pop();
+                Node first = parseStack.pop();
+                Node second = parseStack.pop();
                 value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)).value.toString();
                 addTerminalToAST("IDENTIFIER", value);
                 addTerminalToAST("LEFTPAREN");
@@ -1763,8 +1762,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("FunctionDecl", 6, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
-                second =  parseStack.pop();
+                first = parseStack.pop();
+                second = parseStack.pop();
                 addTerminalToAST("VOID");
                 value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)).value.toString();
                 addTerminalToAST("IDENTIFIER", value);
@@ -1802,8 +1801,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("FormalsMore", 8, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
-                second =  parseStack.pop();
+                first = parseStack.pop();
+                second = parseStack.pop();
                 addTerminalToAST("COMMA");
                 parseStack.push(second);
                 parseStack.push(first);
@@ -1827,9 +1826,9 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ClassDecl", 9, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 6)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
-                second =  parseStack.pop();
-                Node third =  parseStack.pop();
+                first = parseStack.pop();
+                second = parseStack.pop();
+                Node third = parseStack.pop();
                 addTerminalToAST("CLASS");
                 value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)).value.toString();
                 addTerminalToAST("IDENTIFIER", value);
@@ -1871,7 +1870,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ImplementDecl", 11, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("IMPLEMENTS");
                 value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).value.toString();
                 addTerminalToAST("IDENTIFIER", value);
@@ -1896,7 +1895,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ImplementMore", 12, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("COMMA");
                 value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)).value.toString();
                 addTerminalToAST("IDENTIFIER", value);
@@ -1994,7 +1993,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("InterfaceDecl", 15, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("INTERFACE");
                 value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).value.toString();
                 addTerminalToAST("IDENTIFIER", value);
@@ -2011,8 +2010,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Prototype", 16, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 6)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
-                second =  parseStack.pop();
+                first = parseStack.pop();
+                second = parseStack.pop();
                 value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)).value.toString();
                 addTerminalToAST("IDENTIFIER", value);
                 addTerminalToAST("LEFTPAREN");
@@ -2030,8 +2029,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Prototype", 16, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 6)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
-                second =  parseStack.pop();
+                first = parseStack.pop();
+                second = parseStack.pop();
                 addTerminalToAST("VOID");
                 value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)).value.toString();
                 addTerminalToAST("IDENTIFIER", value);
@@ -2060,7 +2059,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("StmtBlock", 17, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("LEFTAKULAD");
                 parseStack.push(first);
                 addTerminalToAST("RIGHTAKULAD");
@@ -2215,8 +2214,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("IfStmt", 20, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
-                second =  parseStack.pop();
+                first = parseStack.pop();
+                second = parseStack.pop();
                 addTerminalToAST("IF");
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(second);
@@ -2232,7 +2231,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("IfElseStmt", 21, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("ELSE");
                 parseStack.push(first);
                 addSubtreeToAST("IfElseStmt", 3);
@@ -2245,8 +2244,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("WhileStmt", 22, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
-                second =  parseStack.pop();
+                first = parseStack.pop();
+                second = parseStack.pop();
                 addTerminalToAST("WHILE");
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(second);
@@ -2262,10 +2261,10 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ForStmt", 23, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 8)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
-                second =  parseStack.pop();
-                third =  parseStack.pop();
-                Node forth =  parseStack.pop();
+                first = parseStack.pop();
+                second = parseStack.pop();
+                third = parseStack.pop();
+                Node forth = parseStack.pop();
                 addTerminalToAST("FOR");
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(forth);
@@ -2285,7 +2284,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ReturnStmt", 24, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("RETURN");
                 parseStack.push(first);
                 addTerminalToAST("SEMICOLON");
@@ -2323,7 +2322,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("PrintStmt", 27, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 4)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("PRINT");
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(first);
@@ -2339,7 +2338,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("ASSIGN");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2393,7 +2392,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(first);
                 addTerminalToAST("RIGHTPAREN");
@@ -2407,7 +2406,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("PLUS");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2420,7 +2419,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("MINUS");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2433,7 +2432,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("MULT");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2446,7 +2445,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("DIV");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2459,7 +2458,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("MOD");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2472,7 +2471,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("MINUS");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 2);
@@ -2485,7 +2484,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("LT");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2498,7 +2497,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("LTEQ");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2511,7 +2510,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("GT");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2524,7 +2523,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("GTEQ");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2537,7 +2536,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("EQEQ");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2550,7 +2549,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("NOTEQ");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2563,7 +2562,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("ANDAND");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2576,7 +2575,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("OROR");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 3);
@@ -2589,7 +2588,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 1)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("NOT");
                 parseStack.push(first);
                 addSubtreeToAST("Expr", 2);
@@ -2641,8 +2640,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
-                second =  parseStack.pop();
+                first = parseStack.pop();
+                second = parseStack.pop();
                 addTerminalToAST("NEWARRAY");
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(second);
@@ -2659,7 +2658,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("ITOD");
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(first);
@@ -2674,7 +2673,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("DTOI");
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(first);
@@ -2689,7 +2688,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("ITOb");
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(first);
@@ -2704,7 +2703,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr", 28, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("BTOI");
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(first);
@@ -2749,8 +2748,8 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("ExprMore", 31, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 2)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
-                second =  parseStack.pop();
+                first = parseStack.pop();
+                second = parseStack.pop();
                 addTerminalToAST("COMMA");
                 parseStack.push(second);
                 parseStack.push(first);
@@ -2799,7 +2798,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("LValue", 32, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("LEFTBRACK");
                 parseStack.push(first);
                 addTerminalToAST("RIGHTBRACK");
@@ -2813,7 +2812,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Call", 33, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).value.toString();
                 addTerminalToAST("IDENTIFIER", value);
                 addTerminalToAST("LEFTPAREN");
@@ -2829,7 +2828,7 @@ class parser extends java_cup.runtime.lr_parser
 
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Call", 33, ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 5)), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
-                first =  parseStack.pop();
+                first = parseStack.pop();
                 addTerminalToAST("DOT");
                 value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top - 3)).value.toString();
                 addTerminalToAST("IDENTIFIER", value);
@@ -2930,7 +2929,7 @@ class parser extends java_cup.runtime.lr_parser
             Node node = new Node(symbolName);
             for (int i = 0; i < childLen; i++)
             {
-                node.addChildNode( parseStack.pop());
+                node.addChildNode(parseStack.pop());
             }
             parseStack.push(node);
         }
@@ -3117,6 +3116,8 @@ class SemanticError extends Exception
 class SemanticAnalysis
 {
     private static SemanticAnalysis instance;
+
+    private MyClass rootClass = new MyClass(Node.root);
     private ArrayList<MyClass> classes = new ArrayList<>();
 
     private SemanticAnalysis()
@@ -3141,8 +3142,6 @@ class SemanticAnalysis
     public void generateClassesData()
     {
         ArrayList<Node> queue = new ArrayList<>();
-        MyClass rootClass = new MyClass(Node.root);
-        classes.add(rootClass);
         queue.add(Node.root);
         while (queue.size() != 0)
         {
@@ -3150,13 +3149,14 @@ class SemanticAnalysis
             switch (currentNode.getSymbolName())
             {
                 case "VariableDecl":
-
+                    rootClass.publicVariables.add(currentNode);
                     break;
                 case "FunctionDecl":
-
+                    rootClass.publicFunctions.add(currentNode);
                     break;
                 case "ClassDecl":
-
+                    MyClass myClass = new MyClass(currentNode);
+                    classes.add(myClass);
                     break;
                 case "InterfaceDecl":
                     //Ignored!
@@ -3165,6 +3165,62 @@ class SemanticAnalysis
                     queue.addAll(currentNode.getChildNodes());
                     break;
             }
+        }
+        for (MyClass myclass : classes)
+        {
+            Node fieldNode = myclass.classNode.getChildNodes().get(5); //Field
+            if (fieldNode.getChildNodes().size() != 0)
+            {
+                addFields(myclass, fieldNode);
+            }
+        }
+    }
+
+    public void addFields(MyClass currentClass, Node fieldNode)
+    {
+        Node currentNode = fieldNode.getChildNodes().get(1);
+        switch (currentNode.getSymbolName()) //VariableDecl or FunctionDecl
+        {
+            case "VariableDecl":
+                if (fieldNode.getChildNodes().get(0).getChildNodes().size() == 0)
+                {
+                    currentClass.publicVariables.add(currentNode);
+                }
+                switch (fieldNode.getChildNodes().get(0).getChildNodes().get(0).getSymbolName()) //AccessMode
+                {
+                    case "PRIVATE":
+                        currentClass.privateVariables.add(currentNode);
+                        break;
+                    case "PUBLIC":
+                        currentClass.publicVariables.add(currentNode);
+                        break;
+                    case "PROTECTED":
+                        currentClass.protectedVariables.add(currentNode);
+                        break;
+                }
+                break;
+            case "FunctionDecl":
+                if (fieldNode.getChildNodes().get(0).getChildNodes().size() == 0)
+                {
+                    currentClass.publicFunctions.add(currentNode);
+                }
+                switch (fieldNode.getChildNodes().get(0).getChildNodes().get(0).getSymbolName()) //AccessMode
+                {
+                    case "PRIVATE":
+                        currentClass.privateFunctions.add(currentNode);
+                        break;
+                    case "PUBLIC":
+                        currentClass.publicFunctions.add(currentNode);
+                        break;
+                    case "PROTECTED":
+                        currentClass.protectedFunctions.add(currentNode);
+                        break;
+                }
+                break;
+        }
+        if (fieldNode.getChildNodes().get(2).getChildNodes().size() != 0)
+        {
+            addFields(currentClass, fieldNode.getChildNodes().get(2));
         }
     }
 }
