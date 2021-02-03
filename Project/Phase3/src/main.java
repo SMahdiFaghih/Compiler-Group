@@ -3120,6 +3120,8 @@ class SemanticAnalysis
     private MyClass rootClass = new MyClass(Node.root);
     private ArrayList<MyClass> classes = new ArrayList<>();
 
+    private ArrayList<Scope> scopes = new ArrayList<>();
+
     private SemanticAnalysis()
     {
         //Singleton
@@ -3137,9 +3139,79 @@ class SemanticAnalysis
     public void startSemanticAnalysis() throws SemanticError
     {
         generateClassesData();
+        generateScopes();
     }
 
-    public void generateClassesData()
+    private void generateScopes()
+    {
+        scopes.add(new Scope(rootClass));
+        ArrayList<Node> queue = new ArrayList<>();
+        queue.add(Node.root);
+        while (queue.size() != 0)
+        {
+            Node currentNode = queue.remove(0);
+            switch (currentNode.getSymbolName())
+            {
+                case "FunctionDecl":
+                    addFunctionScope(currentNode);
+                    break;
+                case "ClassDecl":
+                    addClassScope(currentNode);
+                    break;
+                default:
+                    queue.addAll(currentNode.getChildNodes());
+                    break;
+            }
+        }
+    }
+
+    private Scope addFunctionParametersScope(Node functionDeclNode)
+    {
+        Scope scope = new Scope(functionDeclNode);
+        scopes.add(scope);
+
+        //todo
+
+        return scope;
+    }
+
+    private void addFunctionScope(Node functionDeclNode)
+    {
+        Scope parametersScope = addFunctionParametersScope(functionDeclNode);
+
+        Scope scope = new Scope(functionDeclNode);
+        scopes.add(scope);
+
+        //todo
+
+        scopes.remove(scope);
+        scopes.remove(parametersScope);
+    }
+
+    private void addClassScope(Node classDeclNode)
+    {
+        Scope scope = new Scope(MyClass.getMyClass(classes, classDeclNode));
+        scopes.add(scope);
+
+        ArrayList<Node> queue = new ArrayList<>();
+        queue.add(classDeclNode);
+        while (queue.size() != 0)
+        {
+            Node currentNode = queue.remove(0);
+            if ("FunctionDecl".equals(currentNode.getSymbolName()))
+            {
+                addFunctionScope(currentNode);
+            }
+            else
+            {
+                queue.addAll(currentNode.getChildNodes());
+            }
+        }
+
+        scopes.remove(scope);
+    }
+
+    private void generateClassesData()
     {
         ArrayList<Node> queue = new ArrayList<>();
         queue.add(Node.root);
@@ -3176,7 +3248,7 @@ class SemanticAnalysis
         }
     }
 
-    public void addFields(MyClass currentClass, Node fieldNode)
+    private void addFields(MyClass currentClass, Node fieldNode)
     {
         Node currentNode = fieldNode.getChildNodes().get(1);
         switch (currentNode.getSymbolName()) //VariableDecl or FunctionDecl
@@ -3240,6 +3312,18 @@ class MyClass
     public MyClass(Node classNode)
     {
         this.classNode = classNode;
+    }
+
+    public static MyClass getMyClass(ArrayList<MyClass> classes, Node node)
+    {
+        for (MyClass myClass : classes)
+        {
+            if (myClass.classNode.equals(node))
+            {
+                return myClass;
+            }
+        }
+        return null;
     }
 }
 
