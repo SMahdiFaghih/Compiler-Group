@@ -3344,3 +3344,17 @@ class Scope
         this.scopeNode = scopeNode;
     }
 }
+
+
+public class Compiler{
+    private static Compiler compiler = new Compiler();
+    public static Compiler getCompiler() {
+        return compiler;
+    }
+
+    public void compile(String inputFileName, String OutputFileName){
+        // parsing phase call
+
+        // codeGen phase call
+    }
+}
