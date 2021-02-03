@@ -13,7 +13,7 @@ public class Compiler{
         // parsing phase call
         FileReader fileReader = new FileReader(inputFileName);
         MyScanner scanner = new MyScanner(fileReader);
-        
+
         // codeGen phase call
     }
 }
