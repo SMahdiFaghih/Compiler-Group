@@ -1330,6 +1330,18 @@ public class main implements Scanner
             parser parser = new parser(myParser);
             parser.parse();
 
+            try
+            {
+                SemanticAnalysis.getInstance().startSemanticAnalysis();
+            }
+            catch (SemanticError e)
+            {
+                System.out.println("Semantic Error");
+                writer.write("Semantic Error");
+                writer.flush();
+                writer.close();
+            }
+
             System.out.println("OK");
             writer.write("OK");
             writer.flush();
@@ -3094,5 +3106,101 @@ class Node
     public void addChildNodes(ArrayList<Node> childNodes)
     {
         this.childNodes.addAll(childNodes);
+    }
+}
+
+class SemanticError extends Exception
+{
+
+}
+
+class SemanticAnalysis
+{
+    private static SemanticAnalysis instance;
+    private ArrayList<MyClass> classes = new ArrayList<>();
+
+    private SemanticAnalysis()
+    {
+        //Singleton
+    }
+
+    public static SemanticAnalysis getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new SemanticAnalysis();
+        }
+        return instance;
+    }
+
+    public void startSemanticAnalysis() throws SemanticError
+    {
+        generateClassesData();
+    }
+
+    public void generateClassesData()
+    {
+        ArrayList<Node> queue = new ArrayList<>();
+        MyClass rootClass = new MyClass(Node.root);
+        classes.add(rootClass);
+        queue.add(Node.root);
+        while (queue.size() != 0)
+        {
+            Node currentNode = queue.remove(0);
+            switch (currentNode.getSymbolName())
+            {
+                case "VariableDecl":
+
+                    break;
+                case "FunctionDecl":
+
+                    break;
+                case "ClassDecl":
+
+                    break;
+                case "InterfaceDecl":
+                    //Ignored!
+                    break;
+                default:
+                    queue.addAll(currentNode.getChildNodes());
+                    break;
+            }
+        }
+    }
+}
+
+class MyClass
+{
+    public Node classNode;
+
+    public ArrayList<Node> publicVariables = new ArrayList<>();
+    public ArrayList<Node> privateVariables = new ArrayList<>();
+    public ArrayList<Node> protectedVariables = new ArrayList<>();
+
+    public ArrayList<Node> publicFunctions = new ArrayList<>();
+    public ArrayList<Node> privateFunctions = new ArrayList<>();
+    public ArrayList<Node> protectedFunctions = new ArrayList<>();
+
+    public MyClass(Node classNode)
+    {
+        this.classNode = classNode;
+    }
+}
+
+class Scope
+{
+    public MyClass classNode;
+    public Node scopeNode;
+
+    public ArrayList<Node> variables = new ArrayList<>();
+
+    public Scope(MyClass classNode)
+    {
+        this.classNode = classNode;
+    }
+
+    public Scope(Node scopeNode)
+    {
+        this.scopeNode = scopeNode;
     }
 }
