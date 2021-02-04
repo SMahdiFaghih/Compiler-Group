@@ -321,8 +321,6 @@ public class main implements Scanner
 
     /* user code: */
 
-    public static Writer writer;
-
     private Symbol symbol(int type)
     {
         return new Symbol(type, yyline, yycolumn);
@@ -1290,12 +1288,8 @@ public class main implements Scanner
 
     //endregion
 
-    /**
-     * Runs the scanner on input files.
-     *
-     * @param args the command line, contains the filenames to run
-     *             the scanner on.
-     */
+    private static Writer writer;
+
     public static void main(String[] args) throws IOException
     {
         try
@@ -1316,53 +1310,25 @@ public class main implements Scanner
                     }
                 }
             }
-            Reader read = null;
-            if (inputFileName != null)
-            {
-                read = new FileReader("../tests/" + inputFileName);
-            }
-            if (outputFileName != null)
-            {
-                writer = new FileWriter("../out/" + outputFileName);
-            }
-            else
-            {
-                writer = new OutputStreamWriter(System.out);
-            }
-            Scanner myParser = new main(read);
-            parser parser = new parser(myParser);
+            Reader reader = new FileReader("../tests/" + inputFileName);
+            writer = new FileWriter("../out/" + outputFileName);
+
+            Scanner myScanner = new main(reader);
+            parser parser = new parser(myScanner);
             parser.parse();
 
             try
             {
                 SemanticAnalysis.getInstance().startSemanticAnalysis();
                 writeInFile("OK");
-            } catch (SemanticError e)
+            }
+            catch (SemanticError e)
             {
                 writeInFile("Semantic Error");
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
-            String outputFile = null;
-            if (args != null)
-            {
-                for (int i = 0; i < args.length; i++)
-                {
-                    if (args[i].equals("-o"))
-                    {
-                        outputFile = args[i + 1];
-                    }
-                }
-            }
-            if (outputFile != null)
-            {
-                writer = new FileWriter("../out/" + outputFile);
-            }
-            else
-            {
-                writer = new OutputStreamWriter(System.out);
-            }
-
             writeInFile("Syntax Error");
         }
     }
