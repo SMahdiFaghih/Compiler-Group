@@ -3151,15 +3151,62 @@ class SemanticAnalysis
     private void addFunctionScope(Node functionDeclNode)
     {
         Scope parametersScope = addFunctionParametersScope(functionDeclNode);
+        addStmtBlockScope(functionDeclNode.getChildNodes().get(5));
+        scopes.remove(parametersScope);
+    }
 
-        Scope scope = new Scope(functionDeclNode);
+    private void addStmtBlockScope(Node stmtBlock)
+    {
+        Scope scope = new Scope(stmtBlock);
         scopes.add(scope);
 
-        Node variableUsage = functionDeclNode.getChildNodes().get(5).getChildNodes().get(1);
-        //todo
+        Node variableUsage = stmtBlock.getChildNodes().get(1);
+        while (variableUsage.getChildNodes().size() != 0)
+        {
+            Node currentNode = variableUsage.getChildNodes().get(0);
+            switch (currentNode.getSymbolName())
+            {
+                case "VariableDecl":
+                    scope.variables.add(currentNode.getChildNodes().get(0)); //Variable
+                    break;
+                case "Stmt":
+                    addStmtScope(currentNode, scope);
+                    break;
+            }
+            variableUsage = variableUsage.getChildNodes().get(1);
+        }
 
         scopes.remove(scope);
-        scopes.remove(parametersScope);
+    }
+
+    private void addStmtScope(Node stmtNode, Scope currentScope)
+    {
+        Node stmtChildNode = stmtNode.getChildNodes().get(0);
+        switch (stmtChildNode.getSymbolName())
+        {
+            case "IfStmt":
+                //todo check condition is bool
+                addStmtScope(stmtChildNode.getChildNodes().get(4), currentScope); //Stmt in IfStmt
+                break;
+            case "IfElseStmt":
+                addStmtScope(stmtChildNode, currentScope);
+                addStmtScope(stmtChildNode.getChildNodes().get(2), currentScope); //Stmt in IfElseStmt
+                break;
+            case "WhileStmt":
+                //todo check condition is bool
+                addStmtScope(stmtChildNode.getChildNodes().get(4), currentScope); //Stmt in WhileStmt
+                break;
+            case "ForStmt":
+                //todo add variables in ( ) to currentScope
+                addStmtScope(stmtChildNode.getChildNodes().get(8), currentScope); //Stmt in ForStmt
+                break;
+            case "StmtBlock":
+                addStmtBlockScope(stmtChildNode);
+                break;
+            case "ExprEpsilon":
+                //todo add variables to currentScope
+                break;
+        }
     }
 
     private void addClassScope(Node classDeclNode)
@@ -3195,7 +3242,7 @@ class SemanticAnalysis
             switch (currentNode.getSymbolName())
             {
                 case "VariableDecl":
-                    rootClass.publicVariables.add(currentNode);
+                    rootClass.publicVariables.add(currentNode.getChildNodes().get(0));
                     break;
                 case "FunctionDecl":
                     rootClass.publicFunctions.add(currentNode);
@@ -3230,18 +3277,18 @@ class SemanticAnalysis
             case "VariableDecl":
                 if (fieldNode.getChildNodes().get(0).getChildNodes().size() == 0)
                 {
-                    currentClass.publicVariables.add(currentNode);
+                    currentClass.publicVariables.add(currentNode.getChildNodes().get(0));
                 }
                 switch (fieldNode.getChildNodes().get(0).getChildNodes().get(0).getSymbolName()) //AccessMode
                 {
                     case "PRIVATE":
-                        currentClass.privateVariables.add(currentNode);
+                        currentClass.privateVariables.add(currentNode.getChildNodes().get(0));
                         break;
                     case "PUBLIC":
-                        currentClass.publicVariables.add(currentNode);
+                        currentClass.publicVariables.add(currentNode.getChildNodes().get(0));
                         break;
                     case "PROTECTED":
-                        currentClass.protectedVariables.add(currentNode);
+                        currentClass.protectedVariables.add(currentNode.getChildNodes().get(0));
                         break;
                 }
                 break;
