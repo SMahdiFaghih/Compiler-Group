@@ -3128,6 +3128,29 @@ class SemanticAnalysis
         }
     }
 
+    private void addClassScope(Node classDeclNode)
+    {
+        Scope scope = new Scope(MyClass.getMyClass(classes, classDeclNode));
+        scopes.add(scope);
+
+        ArrayList<Node> queue = new ArrayList<>();
+        queue.add(classDeclNode);
+        while (queue.size() != 0)
+        {
+            Node currentNode = queue.remove(0);
+            if ("FunctionDecl".equals(currentNode.getSymbolName()))
+            {
+                addFunctionScope(currentNode);
+            }
+            else
+            {
+                queue.addAll(currentNode.getChildNodes());
+            }
+        }
+
+        scopes.remove(scope);
+    }
+
     private Scope addFunctionParametersScope(Node functionDeclNode)
     {
         Scope scope = new Scope(functionDeclNode);
@@ -3170,7 +3193,7 @@ class SemanticAnalysis
                     scope.variables.add(currentNode.getChildNodes().get(0)); //Variable
                     break;
                 case "Stmt":
-                    addStmtScope(currentNode, scope);
+                    addStmtScope(currentNode);
                     break;
             }
             variableUsage = variableUsage.getChildNodes().get(1);
@@ -3179,57 +3202,50 @@ class SemanticAnalysis
         scopes.remove(scope);
     }
 
-    private void addStmtScope(Node stmtNode, Scope currentScope)
+    private void addStmtScope(Node stmtNode)
     {
         Node stmtChildNode = stmtNode.getChildNodes().get(0);
         switch (stmtChildNode.getSymbolName())
         {
             case "IfStmt":
                 //todo check condition is bool
-                addStmtScope(stmtChildNode.getChildNodes().get(4), currentScope); //Stmt in IfStmt
+                addStmtScope(stmtChildNode.getChildNodes().get(4)); //Stmt in IfStmt
                 break;
             case "IfElseStmt":
-                addStmtScope(stmtChildNode, currentScope);
-                addStmtScope(stmtChildNode.getChildNodes().get(2), currentScope); //Stmt in IfElseStmt
+                addStmtScope(stmtChildNode);
+                addStmtScope(stmtChildNode.getChildNodes().get(2)); //Stmt in IfElseStmt
                 break;
             case "WhileStmt":
                 //todo check condition is bool
-                addStmtScope(stmtChildNode.getChildNodes().get(4), currentScope); //Stmt in WhileStmt
+                addStmtScope(stmtChildNode.getChildNodes().get(4)); //Stmt in WhileStmt
                 break;
             case "ForStmt":
-                //todo add variables in ( ) to currentScope
-                addStmtScope(stmtChildNode.getChildNodes().get(8), currentScope); //Stmt in ForStmt
+                if (stmtChildNode.getChildNodes().get(2).getChildNodes().size() != 0)
+                {
+                    analysisExprNode(stmtChildNode.getChildNodes().get(2).getChildNodes().get(0));
+                }
+                analysisExprNode(stmtChildNode.getChildNodes().get(4));
+                if (stmtChildNode.getChildNodes().get(6).getChildNodes().size() != 0)
+                {
+                    analysisExprNode(stmtChildNode.getChildNodes().get(6).getChildNodes().get(0));
+                }
+                addStmtScope(stmtChildNode.getChildNodes().get(8)); //Stmt in ForStmt
                 break;
             case "StmtBlock":
                 addStmtBlockScope(stmtChildNode);
                 break;
             case "ExprEpsilon":
-                //todo add variables to currentScope
+                if (stmtChildNode.getChildNodes().size() != 0)
+                {
+                    analysisExprNode(stmtChildNode.getChildNodes().get(0));
+                }
                 break;
         }
     }
 
-    private void addClassScope(Node classDeclNode)
+    private void analysisExprNode(Node exprNode)
     {
-        Scope scope = new Scope(MyClass.getMyClass(classes, classDeclNode));
-        scopes.add(scope);
-
-        ArrayList<Node> queue = new ArrayList<>();
-        queue.add(classDeclNode);
-        while (queue.size() != 0)
-        {
-            Node currentNode = queue.remove(0);
-            if ("FunctionDecl".equals(currentNode.getSymbolName()))
-            {
-                addFunctionScope(currentNode);
-            }
-            else
-            {
-                queue.addAll(currentNode.getChildNodes());
-            }
-        }
-
-        scopes.remove(scope);
+        //todo
     }
 
     private void generateClassesData()
