@@ -3346,13 +3346,17 @@ class Scope
 }
 
 
-public class Compiler{
+class Compiler
+{
     private static Compiler compiler = new Compiler();
-    public static Compiler getCompiler() {
+
+    public static Compiler getCompiler()
+    {
         return compiler;
     }
 
-    public void compile(String inputFileName, String OutputFileName){
+    public void compile(String inputFileName, String OutputFileName)
+    {
         // parsing phase call
 
         // codeGen phase call
