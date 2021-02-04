@@ -139,7 +139,7 @@ Prototype ::= Type IDENTIFIER LEFTPAREN Formals RIGHTPAREN SEMICOLON Prototype| 
 	;
 StmtBlock ::= LEFTAKULAD VariableUsage RIGHTAKULAD 
 	;
-VariableUsage ::= VariableDecl Stmt VariableUsage | VariableDecl VariableUsage | Stmt VariableUsage | 
+VariableUsage ::= VariableDecl VariableUsage | Stmt VariableUsage |
 	;
 Stmt ::= ExprEpsilon SEMICOLON | IfStmt | IfElseStmt | WhileStmt | ForStmt | BreakStmt | ContinueStmt | ReturnStmt | PrintStmt | StmtBlock
 	;
