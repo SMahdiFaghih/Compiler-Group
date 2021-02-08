@@ -3383,6 +3383,16 @@ class Scope
 }
 
 
+class CodeGen{
+    private static CodeGen codeGen = new CodeGen();
+
+    public static CodeGen getInstance(){
+        return codeGen;
+    }
+}
+
+
+
 class Compiler
 {
     private static Compiler compiler = new Compiler();
