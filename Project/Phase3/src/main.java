@@ -3389,6 +3389,16 @@ class CodeGen{
     public static CodeGen getInstance(){
         return codeGen;
     }
+
+    public void compile(Node root) throws Exception {
+        cgen(root);
+    }
+
+    public void cgen(Node node) throws Exception{
+        switch (node.getNodeValueType()){
+
+        }
+    }
 }
 
 
