@@ -3441,15 +3441,9 @@ class CodeGen {
 }
 
 class Description{
-    public static Description description = new Description();
     private String name;
     private String type;
     private boolean isInArray;
-
-
-    public static Description getDescription() {
-        return description;
-    }
 
     public Description(String name, String type){
         this.name = name;
