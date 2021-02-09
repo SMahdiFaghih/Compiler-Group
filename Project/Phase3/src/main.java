@@ -3725,14 +3725,15 @@ class CodeGen
 
     private void cgenReadInteger(Node node)
     {
-        // make a description
+        String variableName = IDGenerator.generateID();
+        Description description = new Description(variableName, "INT");
         // add description to symbolTable
         String mipsType = getMipsType(node.getNodeValueType());
-        // add integer varibale to data
+        addToData(variableName, mipsType, 0);
         addToText("# Reading an integer");
         addToText("li $v0, 5");
         addToText("syscall");
-        // save integer in data variable in mips --> load address into $s0
+        addToText("la $s0, " + variableName);
         addToText("sw $v0, 0($s0)");
         addEmptyLine();
         // push description to semantic stack
@@ -3904,7 +3905,7 @@ class IDGenerator
     public static String generateID()
     {
         int temp = number;
-        String res = "";
+        String res = "_";
         while (temp > 0)
         {
             int mod = temp % 27;
