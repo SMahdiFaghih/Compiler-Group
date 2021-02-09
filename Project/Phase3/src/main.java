@@ -3311,15 +3311,40 @@ class SemanticAnalysis
         {
             Node functionDeclNode = getFunctionNode(callNode.getChildNodes().get(0));
             //todo check Formals and Actuals
-            //todo return function's return type
+            return functionDeclNode.getChildNodes().get(0);
         }
         else //Expr DOT IDENTIFIER LEFTPAREN Actuals RIGHTPAREN
         {
             String className = getClassName(callNode.getChildNodes().get(0));
-            //todo find function in that class
+            Node functionDeclNode = getClassFunctionNode(callNode.getChildNodes().get(2), className);
             //todo check Formals and Actuals
-            //todo return function's return type
+            return functionDeclNode.getChildNodes().get(0);
         }
+    }
+
+    private Node getClassFunctionNode(Node identifierNode, String className) throws SemanticError
+    {
+        for (MyClass myClass : classes)
+        {
+            if (myClass.classNode.getChildNodes().get(1).getIdentifierName().equals(className))
+            {
+                for (Node function : myClass.publicFunctions)
+                {
+                    if (function.getChildNodes().get(1).getIdentifierName().equals(identifierNode.getIdentifierName()))
+                    {
+                        return function;
+                    }
+                }
+                for (Node function : myClass.protectedFunctions)
+                {
+                    if (function.getChildNodes().get(1).getIdentifierName().equals(identifierNode.getIdentifierName()))
+                    {
+                        return function;
+                    }
+                }
+            }
+        }
+        throw new SemanticError();
     }
 
     private Node getFunctionNode(Node identifierNode) throws SemanticError
@@ -3363,7 +3388,7 @@ class SemanticAnalysis
         else if (lValueNode.getChildNodes().size() == 3) //Expr DOT IDENTIFIER
         {
             String className = getClassName(lValueNode.getChildNodes().get(0));
-            return getClassVariableType(className, lValueNode.getChildNodes().get(2));
+            return getClassVariableType(lValueNode.getChildNodes().get(2), className);
         }
         else //Expr LEFTBRACK Expr RIGHTBRACK
         {
@@ -3406,7 +3431,7 @@ class SemanticAnalysis
         throw new SemanticError();
     }
 
-    private Node getClassVariableType(String className, Node identifierNode) throws SemanticError
+    private Node getClassVariableType(Node identifierNode, String className) throws SemanticError
     {
         for (MyClass myClass : classes)
         {
@@ -3767,55 +3792,66 @@ class CodeGen
 
 }
 
-class Description{
+class Description
+{
     public static Description description = new Description();
     private String name;
     private String type;
     private boolean isInArray;
 
 
-    public static Description getDescription() {
+    public static Description getDescription()
+    {
         return description;
     }
 
-    public Description(String name, String type){
+    public Description(String name, String type)
+    {
         this.name = name;
         this.type = type;
     }
 
-    public Description(String name, String type, boolean isInArray){
+    public Description(String name, String type, boolean isInArray)
+    {
         this.name = name;
         this.type = type;
         this.isInArray = isInArray;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public String getType() {
+    public String getType()
+    {
         return type;
     }
 
-    public boolean isInArray() {
+    public boolean isInArray()
+    {
         return isInArray;
     }
 
-    public void setInArray(boolean inArray) {
+    public void setInArray(boolean inArray)
+    {
         isInArray = inArray;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public void setType(String type) {
+    public void setType(String type)
+    {
         this.type = type;
     }
 }
 
 
-class IDGenerator {
+class IDGenerator
+{
     private static int number = 28;
 
     public static String generateID()
