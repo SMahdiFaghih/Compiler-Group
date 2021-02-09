@@ -3170,6 +3170,10 @@ class CodeGen {
     }
 
     private void cgenReadInteger(Node node) {
+        // make a description
+        // add description to symbolTable
+        String mipsType = getMipsType(node.getNodeValueType());
+
     }
 
     private void cgenPrint(Node node) {
@@ -3212,6 +3216,18 @@ class CodeGen {
     private void addToData(String name, String type, int value) {
         String str = Integer.toString(value);
         addToData(name + ": " + type + " " + str);
+    }
+
+    private static String getMipsType(String type){
+        String mipsType = ".";
+        switch (type){
+            case "BOOL":
+            case "INT":
+            case "DOUBLE":
+            case "STRING":
+                mipsType += "word";
+        }
+        return mipsType;
     }
 
 }
