@@ -3384,6 +3384,8 @@ class Scope
 
 
 class CodeGen{
+    public static String data = ".data\n";
+    public static String text = ".text\n";
     private static CodeGen codeGen = new CodeGen();
 
     public static CodeGen getInstance(){
@@ -3395,9 +3397,39 @@ class CodeGen{
     }
 
     public void cgen(Node node) throws Exception{
-        switch (node.getNodeValueType()){
-
+        switch (node.getSymbolName()){
+            case "Program":
+                cgenStart(node);
+                break;
+            case "Structure":
+                cgenStrcuture(node);
+                break;
+            case "READINTEGER":
+                cgenReadInteger(node);
+                break;
+            case "READLINE":
+                cgenReadLine(node);
+                break;
+            case "PrintStmt":
+                cgenPrint(node);
+                break;
         }
+    }
+
+    private void cgenReadLine(Node node) {
+    }
+
+    private void cgenReadInteger(Node node) {
+    }
+
+    private void cgenPrint(Node node) {
+
+    }
+
+    private void cgenStrcuture(Node node) {
+    }
+
+    private void cgenStart(Node node) {
     }
 }
 
