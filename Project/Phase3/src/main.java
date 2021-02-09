@@ -3173,6 +3173,15 @@ class CodeGen {
         // make a description
         // add description to symbolTable
         String mipsType = getMipsType(node.getNodeValueType());
+        // add integer varibale to data
+        addToText("# Reading an integer");
+        addToText("li $v0, 5");
+        addToText("syscall");
+        // save integer in data variable in mips --> load address into $s0
+        addToText("sw $v0, 0($s0)");
+        addEmptyLine();
+        // push description to semantic stack
+
 
     }
 
