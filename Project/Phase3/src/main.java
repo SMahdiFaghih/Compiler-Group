@@ -3310,16 +3310,48 @@ class SemanticAnalysis
         if (callNode.getChildNodes().size() == 4) //IDENTIFIER LEFTPAREN Actuals RIGHTPAREN
         {
             Node functionDeclNode = getFunctionNode(callNode.getChildNodes().get(0));
-            //todo check Formals and Actuals
+            checkFunctionParameters(functionDeclNode.getChildNodes().get(3), callNode.getChildNodes().get(2));
             return functionDeclNode.getChildNodes().get(0);
         }
         else //Expr DOT IDENTIFIER LEFTPAREN Actuals RIGHTPAREN
         {
             String className = getClassName(callNode.getChildNodes().get(0));
             Node functionDeclNode = getClassFunctionNode(callNode.getChildNodes().get(2), className);
-            //todo check Formals and Actuals
+            checkFunctionParameters(functionDeclNode.getChildNodes().get(3), callNode.getChildNodes().get(4));
             return functionDeclNode.getChildNodes().get(0);
         }
+    }
+
+    private void checkFunctionParameters(Node formalsNode, Node actualsNode) throws SemanticError
+    {
+        ArrayList<Node> formalsTypes = new ArrayList<>();
+        if (formalsNode.getChildNodes().size() != 0)
+        {
+            formalsTypes.add(formalsNode.getChildNodes().get(0).getChildNodes().get(0));
+            Node formalsMore = formalsNode.getChildNodes().get(1);
+            while (formalsMore.getChildNodes().size() != 0)
+            {
+                formalsTypes.add(formalsMore.getChildNodes().get(1).getChildNodes().get(0));
+                formalsMore = formalsMore.getChildNodes().get(2);
+            }
+        }
+
+        ArrayList<Node> actualsExprs = new ArrayList<>();
+        if (actualsNode.getChildNodes().size() != 0)
+        {
+            Node exprWith = actualsNode.getChildNodes().get(0);
+            analysisExprNode(exprWith.getChildNodes().get(0));
+            actualsExprs.add(exprWith.getChildNodes().get(0));
+            Node exprMore = formalsNode.getChildNodes().get(1);
+            while (exprMore.getChildNodes().size() != 0)
+            {
+                analysisExprNode(exprMore.getChildNodes().get(1));
+                actualsExprs.add(exprMore.getChildNodes().get(1));
+                exprMore = exprMore.getChildNodes().get(2);
+            }
+        }
+
+        //todo use these two arrayList
     }
 
     private Node getClassFunctionNode(Node identifierNode, String className) throws SemanticError
@@ -3792,12 +3824,14 @@ class CodeGen
 
 }
 
-class Description{
+class Description
+{
     private String name;
     private String type;
     private boolean isInArray;
 
-    public Description(String name, String type){
+    public Description(String name, String type)
+    {
         this.name = name;
         this.type = type;
     }
