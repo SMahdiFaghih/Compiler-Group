@@ -3384,8 +3384,8 @@ class Scope
 
 
 class CodeGen{
-    public static String data = ".data\n";
-    public static String text = ".text\n";
+    public static String dataPart = ".data\n";
+    public static String textPart = ".text\n";
     private static CodeGen codeGen = new CodeGen();
 
     public static CodeGen getInstance(){
@@ -3431,6 +3431,39 @@ class CodeGen{
 
     private void cgenStart(Node node) {
     }
+
+    private void pushRegistersA(){
+
+    }
+
+    private void addToText(String input){
+        addToText(input, false);
+    }
+
+    private void addToText(String input, Boolean isLabel){
+        if(!isLabel){
+            textPart += "\t";
+        }
+        textPart += input + "\n";
+    }
+
+    private void addEmptyLine(){
+        addToText("");
+    }
+
+    private void addToData(String name){
+        dataPart += "\t" + name + "\n";
+    }
+
+    private void addToData(String name, String type, String value){
+        addToData(name + ": " + type + " " + value);
+    }
+
+    private void addToData(String name, String type, int value){
+        String str = Integer.toString(value);
+        addToData(name + ": " + type + " " + str);
+    }
+
 }
 
 
