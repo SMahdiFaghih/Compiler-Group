@@ -3006,6 +3006,7 @@ class Node
     private String symbolName;
     private String identifierName; //used for IDENTIFIER
     private String nodeValueType; //used for Expr and Constants
+    private Node arrayNodeValueType;
     private String constantValue; //used for Constants
     private ArrayList<Node> childNodes;
 
@@ -3048,6 +3049,16 @@ class Node
     public void setNodeValueType(String nodeValueType)
     {
         this.nodeValueType = nodeValueType;
+    }
+
+    public Node getArrayNodeValueType()
+    {
+        return arrayNodeValueType;
+    }
+
+    public void setArrayNodeValueType(Node arrayNodeValueType)
+    {
+        this.arrayNodeValueType = arrayNodeValueType;
     }
 
     public String getConstantValue()
@@ -3105,7 +3116,7 @@ class SemanticAnalysis
         generateScopes();
     }
 
-    private void generateScopes()
+    private void generateScopes() throws SemanticError
     {
         scopes.add(new Scope(rootClass));
         ArrayList<Node> queue = new ArrayList<>();
@@ -3128,7 +3139,7 @@ class SemanticAnalysis
         }
     }
 
-    private void addClassScope(Node classDeclNode)
+    private void addClassScope(Node classDeclNode) throws SemanticError
     {
         Scope scope = new Scope(MyClass.getMyClass(classes, classDeclNode));
         scopes.add(scope);
@@ -3171,14 +3182,14 @@ class SemanticAnalysis
         return scope;
     }
 
-    private void addFunctionScope(Node functionDeclNode)
+    private void addFunctionScope(Node functionDeclNode) throws SemanticError
     {
         Scope parametersScope = addFunctionParametersScope(functionDeclNode);
         addStmtBlockScope(functionDeclNode.getChildNodes().get(5));
         scopes.remove(parametersScope);
     }
 
-    private void addStmtBlockScope(Node stmtBlock)
+    private void addStmtBlockScope(Node stmtBlock) throws SemanticError
     {
         Scope scope = new Scope(stmtBlock);
         scopes.add(scope);
@@ -3202,7 +3213,7 @@ class SemanticAnalysis
         scopes.remove(scope);
     }
 
-    private void addStmtScope(Node stmtNode)
+    private void addStmtScope(Node stmtNode) throws SemanticError
     {
         Node stmtChildNode = stmtNode.getChildNodes().get(0);
         switch (stmtChildNode.getSymbolName())
@@ -3243,9 +3254,151 @@ class SemanticAnalysis
         }
     }
 
-    private void analysisExprNode(Node exprNode)
+    private void analysisExprNode(Node exprNode) throws SemanticError
     {
-        //todo
+        for (Node childNode : exprNode.getChildNodes())
+        {
+            if (childNode.getSymbolName().equals("Expr"))
+            {
+                analysisExprNode(childNode);
+            }
+        }
+
+        if (exprNode.getChildNodes().size() == 1)
+        {
+            analysisExprNodeOneChild(exprNode);
+        }
+    }
+
+    private void analysisExprNodeOneChild(Node exprNode) throws SemanticError
+    {
+        Node childNode = exprNode.getChildNodes().get(0);
+        switch (childNode.getSymbolName())
+        {
+            case "Constant":
+                exprNode.setNodeValueType(childNode.getChildNodes().get(0).getNodeValueType());
+                break;
+            case "LValue":
+                Node nodeType = analysisLValue(childNode);
+                if (nodeType.getChildNodes().size() == 1)
+                {
+                    exprNode.setNodeValueType(nodeType.getChildNodes().get(0).getNodeValueType());
+                }
+                else //Array
+                {
+                    exprNode.setNodeValueType("Array");
+                    exprNode.setArrayNodeValueType(nodeType);
+                }
+                break;
+            case "Call":
+                break;
+        }
+    }
+
+    private Node analysisLValue(Node lValueNode) throws SemanticError
+    {
+        if (lValueNode.getChildNodes().size() == 1) //IDENTIFIER
+        {
+            return getVariableType(lValueNode.getChildNodes().get(0));
+        }
+        else if (lValueNode.getChildNodes().size() == 3) //Expr DOT IDENTIFIER
+        {
+            String className = getClassName(lValueNode.getChildNodes().get(0));
+            return getClassVariableType(className, lValueNode.getChildNodes().get(2));
+        }
+        else
+        {
+            analysisExprNode(lValueNode.getChildNodes().get(0));
+            analysisExprNode(lValueNode.getChildNodes().get(2));
+            if (!lValueNode.getChildNodes().get(2).getNodeValueType().equals("INT"))
+            {
+                throw new SemanticError();
+            }
+            if (!lValueNode.getChildNodes().get(0).getNodeValueType().equals("Array"))
+            {
+                throw new SemanticError();
+            }
+            return lValueNode.getChildNodes().get(0).getArrayNodeValueType().getChildNodes().get(0);
+        }
+    }
+
+    private String getClassName(Node exprNode) throws SemanticError
+    {
+        if (exprNode.getChildNodes().size() == 1 && exprNode.getChildNodes().get(0).getSymbolName().equals("IDENTIFIER"))
+        {
+            for (MyClass myClass : classes)
+            {
+                if (myClass.classNode.getChildNodes().get(1).getIdentifierName().equals(exprNode.getChildNodes().get(0).getSymbolName()))
+                {
+                    return myClass.classNode.getChildNodes().get(1).getIdentifierName();
+                }
+            }
+        }
+        throw new SemanticError();
+    }
+
+    private Node getClassVariableType(String className, Node identifierNode) throws SemanticError
+    {
+        for (MyClass myClass : classes)
+        {
+            if (myClass.classNode.getChildNodes().get(1).getIdentifierName().equals(className))
+            {
+                for (Node variable : myClass.publicVariables)
+                {
+                    if (variable.getChildNodes().get(1).getIdentifierName().equals(identifierNode.getIdentifierName()))
+                    {
+                        return variable.getChildNodes().get(0);
+                    }
+                }
+                for (Node variable : myClass.protectedVariables)
+                {
+                    if (variable.getChildNodes().get(1).getIdentifierName().equals(identifierNode.getIdentifierName()))
+                    {
+                        return variable.getChildNodes().get(0);
+                    }
+                }
+            }
+        }
+        throw new SemanticError();
+    }
+
+    private Node getVariableType(Node identifierNode) throws SemanticError
+    {
+        for (int i = scopes.size() - 1; i >= 0; i--)
+        {
+            for (Node variable : scopes.get(i).variables)
+            {
+                if (variable.getChildNodes().get(1).getIdentifierName().equals(identifierNode.getIdentifierName()))
+                {
+                    return variable.getChildNodes().get(0);
+                }
+            }
+            if (scopes.get(i).classNode != null)
+            {
+                for (Node variable : scopes.get(i).classNode.publicVariables)
+                {
+                    if (variable.getChildNodes().get(1).getIdentifierName().equals(identifierNode.getIdentifierName()))
+                    {
+                        return variable.getChildNodes().get(0);
+                    }
+                }
+                for (Node variable : scopes.get(i).classNode.privateVariables)
+                {
+                    if (variable.getChildNodes().get(1).getIdentifierName().equals(identifierNode.getIdentifierName()))
+                    {
+                        return variable.getChildNodes().get(0);
+                    }
+                }
+                for (Node variable : scopes.get(i).classNode.protectedVariables)
+                {
+                    if (variable.getChildNodes().get(1).getIdentifierName().equals(identifierNode.getIdentifierName()))
+                    {
+                        return variable.getChildNodes().get(0);
+                    }
+                }
+            }
+        }
+        throw new SemanticError();
     }
 
     private void generateClassesData()
@@ -3383,21 +3536,26 @@ class Scope
 }
 
 
-class CodeGen{
+class CodeGen
+{
     public static String dataPart = ".data\n";
     public static String textPart = ".text\n";
     private static CodeGen codeGen = new CodeGen();
 
-    public static CodeGen getInstance(){
+    public static CodeGen getInstance()
+    {
         return codeGen;
     }
 
-    public void compile(Node root) throws Exception {
+    public void compile(Node root) throws Exception
+    {
         cgen(root);
     }
 
-    public void cgen(Node node) throws Exception{
-        switch (node.getSymbolName()){
+    public void cgen(Node node) throws Exception
+    {
+        switch (node.getSymbolName())
+        {
             case "Program":
                 cgenStart(node);
                 break;
@@ -3416,56 +3574,68 @@ class CodeGen{
         }
     }
 
-    private void cgenReadLine(Node node) {
+    private void cgenReadLine(Node node)
+    {
     }
 
-    private void cgenReadInteger(Node node) {
+    private void cgenReadInteger(Node node)
+    {
     }
 
-    private void cgenPrint(Node node) {
-
-    }
-
-    private void cgenStrcuture(Node node) {
-    }
-
-    private void cgenStart(Node node) {
-    }
-
-    private void pushRegistersA(){
+    private void cgenPrint(Node node)
+    {
 
     }
 
-    private void addToText(String input){
+    private void cgenStrcuture(Node node)
+    {
+    }
+
+    private void cgenStart(Node node)
+    {
+    }
+
+    private void pushRegistersA()
+    {
+
+    }
+
+    private void addToText(String input)
+    {
         addToText(input, false);
     }
 
-    private void addToText(String input, Boolean isLabel){
-        if(!isLabel){
+    private void addToText(String input, Boolean isLabel)
+    {
+        if (!isLabel)
+        {
             textPart += "\t";
         }
         textPart += input + "\n";
     }
 
-    private void addEmptyLine(){
+    private void addEmptyLine()
+    {
         addToText("");
     }
 
-    private void addToData(String name){
+    private void addToData(String name)
+    {
         dataPart += "\t" + name + "\n";
     }
 
-    private void addToData(String name, String type, String value){
+    private void addToData(String name, String type, String value)
+    {
         addToData(name + ": " + type + " " + value);
     }
 
-    private void addToData(String name, String type, int value){
+    private void addToData(String name, String type, int value)
+    {
         String str = Integer.toString(value);
         addToData(name + ": " + type + " " + str);
     }
 
 }
-
 
 
 class Compiler
