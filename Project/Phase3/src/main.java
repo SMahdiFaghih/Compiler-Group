@@ -3166,8 +3166,7 @@ class CodeGen {
         }
     }
 
-    private void cgenReadLine(Node node) {
-    }
+
 
     private void cgenReadInteger(Node node) {
         // make a description
@@ -3181,9 +3180,19 @@ class CodeGen {
         addToText("sw $v0, 0($s0)");
         addEmptyLine();
         // push description to semantic stack
+    }
 
+    private void cgenReadLine(Node node) {   // to get string
+        // make a description for string
+        // add to symbol table
+        // add to data with addToData(String name, String type, int value)
+        addToText("# Read String from input");
+        // todo continue generating readString Code
 
     }
+
+
+
 
     private void cgenPrint(Node node) {
 
@@ -3233,8 +3242,9 @@ class CodeGen {
             case "BOOL":
             case "INT":
             case "DOUBLE":
-            case "STRING":
                 mipsType += "word";
+            case "STRING":
+                mipsType += "space";
         }
         return mipsType;
     }
