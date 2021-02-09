@@ -3282,7 +3282,7 @@ class SemanticAnalysis
                 Node nodeType = analysisLValue(childNode);
                 if (nodeType.getChildNodes().size() == 1)
                 {
-                    exprNode.setNodeValueType(nodeType.getChildNodes().get(0).getNodeValueType());
+                    exprNode.setNodeValueType(nodeType.getChildNodes().get(0).getSymbolName().toUpperCase());
                 }
                 else //Array
                 {
@@ -3294,7 +3294,7 @@ class SemanticAnalysis
                 Node functionReturnType = analysisCall(childNode);
                 if (functionReturnType.getChildNodes().size() == 1)
                 {
-                    exprNode.setNodeValueType(functionReturnType.getChildNodes().get(0).getNodeValueType());
+                    exprNode.setNodeValueType(functionReturnType.getChildNodes().get(0).getSymbolName().toUpperCase());
                 }
                 else //Array
                 {
@@ -3351,7 +3351,29 @@ class SemanticAnalysis
             }
         }
 
-        //todo use these two arrayList
+        if (formalsTypes.size() != actualsExprs.size())
+        {
+            throw new SemanticError();
+        }
+        for (int i = 0; i < formalsTypes.size(); i++)
+        {
+            Node currentFormalsType = formalsTypes.get(i);
+            Node currentActualsExpr = actualsExprs.get(i);
+            if (!currentFormalsType.getChildNodes().get(0).getSymbolName().toUpperCase().equals(currentActualsExpr.getNodeValueType()))
+            {
+                if (currentFormalsType.getChildNodes().get(0).getSymbolName().toUpperCase().equals("TYPE") && currentActualsExpr.getNodeValueType().equals("Array"))
+                {
+                    if (!currentFormalsType.getChildNodes().get(0).equals(currentActualsExpr.getArrayNodeValueType())) //todo probably has bogs
+                    {
+                        throw new SemanticError();
+                    }
+                }
+                else
+                {
+                    throw new SemanticError();
+                }
+            }
+        }
     }
 
     private Node getClassFunctionNode(Node identifierNode, String className) throws SemanticError
