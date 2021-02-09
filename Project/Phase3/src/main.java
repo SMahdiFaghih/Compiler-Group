@@ -3440,6 +3440,54 @@ class CodeGen {
 
 }
 
+class Description{
+    public static Description description = new Description();
+    private String name;
+    private String type;
+    private boolean isInArray;
+
+
+    public static Description getDescription() {
+        return description;
+    }
+
+    public Description(String name, String type){
+        this.name = name;
+        this.type = type;
+    }
+
+    public Description(String name, String type, boolean isInArray){
+        this.name = name;
+        this.type = type;
+        this.isInArray = isInArray;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public boolean isInArray() {
+        return isInArray;
+    }
+
+    public void setInArray(boolean inArray) {
+        isInArray = inArray;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+}
+
+
 class IDGenerator {
     private static int number = 28;
 
