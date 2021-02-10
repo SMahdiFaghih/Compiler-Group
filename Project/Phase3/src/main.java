@@ -3747,9 +3747,25 @@ class CodeGen
     }
 
     private void cgenPlus(Node node) {
+        if (node.getNodeValueType().equals("STRING")){
+            cgenStringConcatination(node);
+            return;
+        }
+        else if(node.getNodeValueType().equals("Array")){
+            cgenArrayConcatination(node);
+            return;
+        }
+
         Description desc1 = SemanticStack.getSemanticStack().pop();
         Description desc2 = SemanticStack.getSemanticStack().pop();
 
+
+    }
+
+    private void cgenArrayConcatination(Node node) {
+    }
+
+    private void cgenStringConcatination(Node node) {
     }
 
 
