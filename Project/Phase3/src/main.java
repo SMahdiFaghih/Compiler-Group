@@ -3,7 +3,6 @@
 // source: Phase2.flex
 
 import java_cup.runtime.*;
-import sun.security.krb5.internal.crypto.Des;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -3740,7 +3739,31 @@ class CodeGen
             case "ASSIGN":
                 cgenAssign(node);
                 break;
+            case "AND":
+                cgenAnd(node);
+                break;
         }
+    }
+
+    private void cgenAnd(Node node) {
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add v3 to symbol table
+
+        addToData(v3.getName(), getMipsType(v3.getType()), 0);
+
+        addToText("# & " + v1.getName() + " and " + v2.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array
+        addToText("lw $a1, " + v2.getName());
+        // is in array
+        addToText("and $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
+
     }
 
     private void cgenAssign(Node node) {
@@ -3753,13 +3776,13 @@ class CodeGen
         }
         else if(exprDesc.getType().equals("INT") || exprDesc.getType().equals("BOOL")){
             addToText("lw $a0, " + exprDesc.getName());
-            // if expr array
+            // if expr is in array
             addToText("la $a1, " + lValueDesc.getName());
             addToText("sw $a0, 0($a1)");
         }
         else if(exprDesc.getType().equals("DOUBLE")){
             addToText("lw $a0, " + exprDesc.getName());
-            // if expr array
+            // if expr is in array
             addToText("mtc1 $a0, $f0");
             addToText("la $a1, " + lValueDesc.getName());
             addToText("swc1 $f0, 0($a1)");
