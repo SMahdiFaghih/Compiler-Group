@@ -3690,6 +3690,8 @@ class CodeGen
     public static String dataPart = ".data\n";
     public static String textPart = ".text\n";
     private static CodeGen codeGen = new CodeGen();
+    private final static int INPUT_STRING_SIZE = 64;
+
 
     public static CodeGen getInstance()
     {
@@ -3743,12 +3745,17 @@ class CodeGen
 
     private void cgenReadLine(Node node)
     {
-        // to get string
-        // make a description for string
+        String stringName = IDGenerator.generateID();
+        Description description = new Description(stringName, "STRING");
+        String mipsType = getMipsType("STRING");
+        addToData(stringName, mipsType, INPUT_STRING_SIZE);   // 64 is default use input stirng size
         // add to symbol table
-        // add to data with addToData(String name, String type, int value)
         addToText("# Read String from input");
-        // todo continue generating readString Code
+        addToText("li $v8, 8");
+        addToText("la $a0, " + stringName);
+        addToText("li $a1, " + INPUT_STRING_SIZE);
+        addToText("syscall");
+        SemanticStack.getSemanticStack().push(description);
     }
 
 
@@ -3856,7 +3863,7 @@ class Description
 {
     private String name;
     private String type;
-    private boolean isInArray;
+    private boolean isInArray = false;
 
     public Description(String name, String type)
     {
