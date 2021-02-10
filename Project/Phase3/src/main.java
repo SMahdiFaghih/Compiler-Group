@@ -3,6 +3,7 @@
 // source: Phase2.flex
 
 import java_cup.runtime.*;
+import sun.security.krb5.internal.crypto.Des;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -3737,29 +3738,31 @@ class CodeGen
         addToText("la $s0, " + variableName);
         addToText("sw $v0, 0($s0)");
         addEmptyLine();
-        // push description to semantic stack
+        SemanticStack.getSemanticStack().push(description);
     }
 
     private void cgenReadLine(Node node)
-    {   // to get string
+    {
+        // to get string
         // make a description for string
         // add to symbol table
         // add to data with addToData(String name, String type, int value)
         addToText("# Read String from input");
         // todo continue generating readString Code
-
     }
 
 
     private void cgenPrint(Node node)
     {
-        // get node's description
-        addToText("# Print something");
+        Description description = SemanticStack.getSemanticStack().pop();
+        addToText("# Print " + description.getName());
         if (node.getNodeValueType().equals("INT"))
         {
             addToText("li $v0, 1");
-            // get variable name and use addToText("lw $a0, 'variable name'")
-            // check if variable is array, then use addToText("lw $a0, 0($a0)")
+            addToText("lw $a0, " + description.getName());
+            if (description.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("syscall");
         }
 
@@ -3768,8 +3771,10 @@ class CodeGen
         else if (node.getNodeValueType().equals("DOUBLE"))
         {
             addToText("li $v0, 2");
-            // get variable name and use addToText("lw $a0, 'variable name'")
-            // check if variable is array, then use addToText("lw $a0, 0($a0)")
+            addToText("lw $a0, " + description.getName());
+            if(description.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("mtc1 $a0, $f12");  // http://ww2.cs.fsu.edu/~dennis/teaching/2013_summer_cda3100/week5/week5-day2.pdf
             addToText("syscall");
         }
@@ -3777,10 +3782,9 @@ class CodeGen
         else if (node.getNodeValueType().equals("STRING"))
         {
             addToText("li $v0, 4");
-            //addToText("la $a0, 'Varibale Name'");
+            addToText("la $a0, " + description.getName());
             addToText("syscall");
         }
-
     }
 
     private void cgenStrcuture(Node node)
