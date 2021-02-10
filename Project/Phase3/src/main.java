@@ -3759,6 +3759,27 @@ class CodeGen
         Description desc1 = SemanticStack.getSemanticStack().pop();
         Description desc2 = SemanticStack.getSemanticStack().pop();
 
+        addToText("# adding " + desc1.getName() + " and " + desc2.getName());
+
+        if (desc1.getType().equals("INT")){
+            String resultName = IDGenerator.generateID();
+            String mipsType = getMipsType("INT");
+            Description description = new Description(resultName, "INT");
+            // add to SymbolTable
+            addToData(resultName, mipsType, 0);
+
+            addToText("lw $a0, " + desc1.getName());
+            // if desc1 comes from array
+            addToText("lw $a1, " + desc2.getName());
+            // if desc2 comes from array
+
+            addToText("add $t0, $a0, $a1");
+            addToText("la $a2, " + description.getName());
+            addToText("sw $t0, 0($a2)");
+            addEmptyLine();
+            SemanticStack.getSemanticStack().push(description);
+
+        }
 
     }
 
