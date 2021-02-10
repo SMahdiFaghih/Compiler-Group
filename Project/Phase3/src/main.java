@@ -3735,16 +3735,48 @@ class CodeGen
                 cgenDiv(node);
                 break;
             case "MOD":
-                cgenMod();
+                cgenMod(node);
+                break;
+            case "ASSIGN":
+                cgenAssign(node);
                 break;
         }
     }
 
-    private void cgenMod() {
+    private void cgenAssign(Node node) {
+        Description lValueDesc = SemanticStack.getSemanticStack().pop();
+        Description exprDesc = SemanticStack.getSemanticStack().pop();
+
+        addToText("# Assigning " + exprDesc.getName() + " to " + lValueDesc.getName());
+        if(exprDesc.getType().equals("ARRAY")){   // also Object
+            // todo assign address to lValue's mips variabel
+        }
+        else if(exprDesc.getType().equals("INT") || exprDesc.getType().equals("BOOL")){
+            addToText("lw $a0, " + exprDesc.getName());
+            // if expr array
+            addToText("la $a1, " + lValueDesc.getName());
+            addToText("sw $a0, 0($a1)");
+        }
+        else if(exprDesc.getType().equals("DOUBLE")){
+            addToText("lw $a0, " + exprDesc.getName());
+            // if expr array
+            addToText("mtc1 $a0, $f0");
+            addToText("la $a1, " + lValueDesc.getName());
+            addToText("swc1 $f0, 0($a1)");
+        }
+        else if(exprDesc.getType().equals("STRING")){
+            addToText("lw $a0, " + exprDesc.getName());
+            addToText("la $a1, " + lValueDesc.getName());
+            addToText("sw $a0, 0($a1)");
+        }
+
+    }
+
+    private void cgenMod(Node node) {
         Description desc1 = SemanticStack.getSemanticStack().pop();
         Description desc2 = SemanticStack.getSemanticStack().pop();
 
-        addToText("# subtracting " + desc1.getName() + " and " + desc2.getName());
+        addToText("# Mod " + desc1.getName() + " on " + desc2.getName());
 
         if (desc1.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
@@ -3777,7 +3809,7 @@ class CodeGen
         Description desc1 = SemanticStack.getSemanticStack().pop();
         Description desc2 = SemanticStack.getSemanticStack().pop();
 
-        addToText("# subtracting " + desc1.getName() + " and " + desc2.getName());
+        addToText("# Dividing " + desc1.getName() + " and " + desc2.getName());
 
         if (desc1.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
