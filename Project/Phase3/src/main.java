@@ -3,6 +3,7 @@
 // source: Phase2.flex
 
 import java_cup.runtime.*;
+import sun.security.krb5.internal.crypto.Des;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -3771,21 +3772,123 @@ class CodeGen
     }
 
     private void csgenGTEQ(Node node) {
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+
+        addToData(v3.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + v2.getName() + " >= " + v1.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array?
+        addToText("lw $a1, " + v2.getName());
+        // is in array?
+        addToText("sge $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
+
     }
 
     private void csgnEQEQ(Node node) {
+        // todo maybe it's uncomplete.
+
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+
+        addToData(v3.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + v2.getName() + " == " + v1.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array?
+        addToText("lw $a1, " + v2.getName());
+        // is in array?
+        addToText("seq $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
     }
 
     private void csgnGT(Node node) {
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+
+        addToData(v3.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + v2.getName() + " > " + v1.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array?
+        addToText("lw $a1, " + v2.getName());
+        // is in array?
+        addToText("sgt $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
+
     }
 
     private void csgnNOTEQ(Node node) {
+        // todo maybe it's uncomplete.
+
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+
+        addToData(v3.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + v2.getName() + " != " + v1.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array?
+        addToText("lw $a1, " + v2.getName());
+        // is in array?
+        addToText("sne $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
     }
 
     private void csgnLTEQ(Node node) {
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+
+        addToData(v3.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + v2.getName() + " <= " + v1.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array?
+        addToText("lw $a1, " + v2.getName());
+        // is in array?
+        addToText("sle $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
     }
 
     private void cgenLT(Node node) {
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+
+        addToData(v3.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + v2.getName() + " < " + v1.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array?
+        addToText("lw $a1, " + v2.getName());
+        // is in array?
+        addToText("slt $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
     }
 
     private void cgenNot(Node node) {
