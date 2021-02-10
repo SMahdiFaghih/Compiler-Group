@@ -3739,13 +3739,74 @@ class CodeGen
             case "ASSIGN":
                 cgenAssign(node);
                 break;
-            case "AND":
-                cgenAnd(node);
+            case "ANDAND":
+                cgenAndAnd(node);
                 break;
+            case "OROR":
+                cgenOrOr(node);
+                break;
+            case "NOT":
+                cgenNot(node);
+                break;
+            case "LT":
+                cgenLT(node);
+                break;
+            case "LTEQ":
+                csgnLTEQ(node);
+                break;
+            case "GT":
+                csgnGT(node);
+                break;
+            case "GTEQ":
+                csgenGTEQ(node);
+                break;
+            case "EQEQ":
+                csgnEQEQ(node);
+                break;
+            case "NOTEQ":
+                csgnNOTEQ(node);
+                break;
+            
         }
     }
 
-    private void cgenAnd(Node node) {
+    private void csgenGTEQ(Node node) {
+    }
+
+    private void csgnEQEQ(Node node) {
+    }
+
+    private void csgnGT(Node node) {
+    }
+
+    private void csgnNOTEQ(Node node) {
+    }
+
+    private void csgnLTEQ(Node node) {
+    }
+
+    private void cgenLT(Node node) {
+    }
+
+    private void cgenNot(Node node) {
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add v3 to symbol table
+
+        addToData(v3.getName(), getMipsType(v3.getType()), 0);
+
+        addToText("# not " + v1.getName() );
+        addToText("lw $a0, " + v1.getName());
+        // is in array
+        addToText("not $t0, $a0");
+        addToText("la $a1, " + v3.getName());
+        addToText("sw $t0, 0($a1)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
+
+    }
+
+    private void cgenOrOr(Node node) {
         Description v1 = SemanticStack.getSemanticStack().pop();
         Description v2 = SemanticStack.getSemanticStack().pop();
         Description v3 = new Description(IDGenerator.generateID(), "BOOL");
@@ -3753,7 +3814,28 @@ class CodeGen
 
         addToData(v3.getName(), getMipsType(v3.getType()), 0);
 
-        addToText("# & " + v1.getName() + " and " + v2.getName());
+        addToText("# || " + v1.getName() + " and " + v2.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array
+        addToText("lw $a1, " + v2.getName());
+        // is in array
+        addToText("or $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
+
+    }
+
+    private void cgenAndAnd(Node node) {
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add v3 to symbol table
+
+        addToData(v3.getName(), getMipsType(v3.getType()), 0);
+
+        addToText("# && " + v1.getName() + " and " + v2.getName());
         addToText("lw $a0, " + v1.getName());
         // is in array
         addToText("lw $a1, " + v2.getName());
