@@ -3719,6 +3719,7 @@ class CodeGen
             case "PrintStmt":
                 cgenPrint(node);
                 break;
+            case "":
         }
     }
 
@@ -3895,6 +3896,32 @@ class Description
     {
         this.type = type;
     }
+}
+
+class SemanticStack{
+    private static SemanticStack semanticStack = new SemanticStack();
+    private Stack<Object> mainStack;
+
+    private SemanticStack(){
+        mainStack = new Stack<>();
+    }
+
+    public static SemanticStack getSemanticStack(){
+        return semanticStack;
+    }
+
+    public Description pop(){
+        return (Description) mainStack.pop();
+    }
+
+    public Description top(){
+        return (Description) mainStack.peek();
+    }
+
+    public void push(Description description){
+        mainStack.push(description);
+    }
+
 }
 
 
