@@ -3722,8 +3722,34 @@ class CodeGen
             case "PrintStmt":
                 cgenPrint(node);
                 break;
-            case "":
+            case "PLUS":
+                cgenPlus(node);
+                break;
+            case "MINUS":
+                cgenMinus(node);
+                break;
+            case "MULT":
+                cgenMult(node);
+                break;
+            case "DIV":
+                cgenDiv(node);
+                break;
         }
+    }
+
+    private void cgenDiv(Node node) {
+    }
+
+    private void cgenMult(Node node) {
+    }
+
+    private void cgenMinus(Node node) {
+    }
+
+    private void cgenPlus(Node node) {
+        Description desc1 = SemanticStack.getSemanticStack().pop();
+        Description desc2 = SemanticStack.getSemanticStack().pop();
+
     }
 
 
