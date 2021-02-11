@@ -3700,7 +3700,13 @@ class CodeGen
 
     public void compile(Node root) throws Exception
     {
+        initial();
         cgen(root);
+    }
+
+    private void initial() {
+        addToData("_string_true", ".asciiz", "true");
+        addToData("_string_false", ".asciiz", "false");
     }
 
     public void cgen(Node node) throws Exception
@@ -4206,7 +4212,32 @@ class CodeGen
             addToText("syscall");
         }
 
-        //else if(node.getNodeValueType().equals("BOOL")){}
+        else if(node.getNodeValueType().equals("BOOL"))
+        {
+            String trueLabel = "_print_true_label_" + description.getName();
+            String falseLabel = "_print_false_label_" + description.getName();
+            String endLabel = "_end_print_boolean_label_" + description.getName();
+
+            addToText("lw $s0, " + description.getName());
+            if (description.isInArray()){
+                addToText("lw $s0, 0($s0)");
+            }
+            addToText("beq $s0, $zero, " + falseLabel);
+            addToText("j " + trueLabel);
+
+            addToText(falseLabel + ":", true);
+            addToText("li $v0, 4");
+            addToText("la $a0, _string_false");
+            addToText("syscall");
+            addToText("j " + endLabel);
+
+            addToText(trueLabel + ":", true);
+            addToText("li $v0, 4");
+            addToText("la $a0, _string_true");
+            addToText("syscall");
+
+            addToText(endLabel + ":", true);
+        }
 
         else if (node.getNodeValueType().equals("DOUBLE"))
         {
@@ -4225,6 +4256,17 @@ class CodeGen
             addToText("la $a0, " + description.getName());
             addToText("syscall");
         }
+
+        cgenPrintNewLine(node);
+    }
+
+    private void cgenPrintNewLine(Node node)
+    {
+        addToText("# Printing a new line in mips' output");
+        addToText("li $a0, 0xA");
+        addToText("li $v0, 0xB");
+        addToText("syscall");
+        addEmptyLine();
     }
 
     private void cgenStrcuture(Node node)
