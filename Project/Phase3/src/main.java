@@ -3759,25 +3759,61 @@ class CodeGen
                 cgenLT(node);
                 break;
             case "LTEQ":
-                csgnLTEQ(node);
+                cgenLTEQ(node);
                 break;
             case "GT":
-                csgnGT(node);
+                cgenGT(node);
                 break;
             case "GTEQ":
-                csgenGTEQ(node);
+                cgenGTEQ(node);
                 break;
             case "EQEQ":
-                csgnEQEQ(node);
+                cgenEQEQ(node);
                 break;
             case "NOTEQ":
-                csgnNOTEQ(node);
+                cgenNOTEQ(node);
+                break;
+            case "ITOB":
+                cgenITOB(node);
                 break;
             
         }
     }
 
-    private void csgenGTEQ(Node node) {
+    private void cgenITOB(Node node)
+    {
+        Description dOld = SemanticStack.getSemanticStack().pop();
+        // todo check dOld type is INT
+        Description dNew = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+        addToData(dNew.getName(), getMipsType("BOOL"), 0);
+
+        String falseLabel = "_false_generation_label_for_" + dOld.getName();
+        String endItobLabel = "_end_label_itob_for_" + dOld.getName();
+
+        addToText("# Apply itob on " + dOld.getName());
+        addToText("lw $a0, " + dOld.getName());
+        if(dOld.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+        addToText("la $a1, " + dNew.getName());
+        addToText("beqz $a0, " + falseLabel);
+
+        addToText("li $t0, 1");                     // we assume true as 1 and false as 0
+        addToText("sw $t0, 0($a1)");
+        addToText("j " + endItobLabel);
+
+        addToText(falseLabel + ":", true);
+        addToText("li $t0, 0");                     // we assume true as 1 and false as 0
+        addToText("sw $t0, 0($a1)");
+
+        addToText(endItobLabel + ":", true);
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(dNew);
+
+    }
+
+    private void cgenGTEQ(Node node) {
         Description v2 = SemanticStack.getSemanticStack().pop();
         Description v1 = SemanticStack.getSemanticStack().pop();
         Description v3 = new Description(IDGenerator.generateID(), "BOOL");
@@ -3797,7 +3833,7 @@ class CodeGen
 
     }
 
-    private void csgnEQEQ(Node node) {
+    private void cgenEQEQ(Node node) {
         // todo maybe it's uncomplete.
 
         Description v2 = SemanticStack.getSemanticStack().pop();
@@ -3818,7 +3854,7 @@ class CodeGen
         SemanticStack.getSemanticStack().push(v3);
     }
 
-    private void csgnGT(Node node) {
+    private void cgenGT(Node node) {
         Description v2 = SemanticStack.getSemanticStack().pop();
         Description v1 = SemanticStack.getSemanticStack().pop();
         Description v3 = new Description(IDGenerator.generateID(), "BOOL");
@@ -3838,7 +3874,7 @@ class CodeGen
 
     }
 
-    private void csgnNOTEQ(Node node) {
+    private void cgenNOTEQ(Node node) {
         // todo maybe it's uncomplete.
 
         Description v2 = SemanticStack.getSemanticStack().pop();
@@ -3859,7 +3895,7 @@ class CodeGen
         SemanticStack.getSemanticStack().push(v3);
     }
 
-    private void csgnLTEQ(Node node) {
+    private void cgenLTEQ(Node node) {
         Description v2 = SemanticStack.getSemanticStack().pop();
         Description v1 = SemanticStack.getSemanticStack().pop();
         Description v3 = new Description(IDGenerator.generateID(), "BOOL");
