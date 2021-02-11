@@ -3,7 +3,6 @@
 // source: Phase2.flex
 
 import java_cup.runtime.*;
-import sun.security.krb5.internal.crypto.Des;
 
 import java.io.*;
 import java.util.ArrayList;
