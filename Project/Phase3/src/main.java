@@ -3697,7 +3697,7 @@ class CodeGen
         return codeGen;
     }
 
-    public void compile(Node root) throws Exception
+    public void startCgen(Node root) throws Exception
     {
         initial();
         cgen(root);
@@ -3785,6 +3785,13 @@ class CodeGen
                 cgenBTOI(node);
                 break;
             
+        }
+    }
+
+    private void cgenStart(Node node) throws Exception {
+        ArrayList<Node> childs = node.getChildNodes();
+        for (Node child : childs) {
+            cgen(child);
         }
     }
 
@@ -4380,9 +4387,7 @@ class CodeGen
     {
     }
 
-    private void cgenStart(Node node)
-    {
-    }
+
 
     private void pushRegistersA()
     {
