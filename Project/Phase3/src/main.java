@@ -3773,11 +3773,33 @@ class CodeGen
             case "NOTEQ":
                 cgenNOTEQ(node);
                 break;
+            case "ITOD":
+                cgenITOD(node);
+                break;
             case "ITOB":
                 cgenITOB(node);
                 break;
             
         }
+    }
+
+    private void cgenITOD(Node node) {
+        Description dOld = SemanticStack.getSemanticStack().pop();
+        // todo check dOld type is INT
+        Description dNew = new Description(IDGenerator.generateID(), "DOUBLE");
+        // add to symbol table
+        addToData(dNew.getName(), getMipsType("DOUBLE"), 0);
+
+        addToText("sw $s0, " + dOld.getName());
+        if(dOld.isInArray()){
+            addToText("lw $s0, 0($s0)");
+        }
+        addToText("mtc1 $s0, $f0");
+        addToText("cvt.s.w $f0, $f0");
+        addToText("la $s1, " + dNew.getName());
+        addToText("swc1 $f0, 0($s1)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(dNew);
     }
 
     private void cgenITOB(Node node)
