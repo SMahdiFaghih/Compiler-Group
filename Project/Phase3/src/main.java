@@ -3773,14 +3773,45 @@ class CodeGen
             case "NOTEQ":
                 cgenNOTEQ(node);
                 break;
+            case "DTOI":
+                cgenDTOI(node);
+                break;
             case "ITOD":
                 cgenITOD(node);
                 break;
             case "ITOB":
                 cgenITOB(node);
                 break;
+            case "BTOI":
+                cgenBTOI(node);
+                break;
             
         }
+    }
+
+    private void cgenDTOI(Node node) {    // I have doubt about this method
+        Description dOld = SemanticStack.getSemanticStack().pop();
+        // todo check dOld type is INT
+        Description dNew = new Description(IDGenerator.generateID(), "INT");
+        // add to symbol table
+        addToData(dNew.getName(), getMipsType("DOUBLE"), 0);
+
+        addToText("sw $a0, " + dOld.getName());
+        if(dOld.isInArray()){
+            addToText("lw $a0, 0($s0)");
+        }
+        addToText("mtc1 $a0, $f0");
+        addToText("round.w.s $f0, $f0\n");
+        addToText("mfc1 $a0, $f0");
+        addToText("la $a1, " + dNew.getName());
+        addToText("sw $a0, 0(a1)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(dNew);
+    }
+
+    private void cgenBTOI(Node node)
+    {
+        // Do We need this?
     }
 
     private void cgenITOD(Node node) {
