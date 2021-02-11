@@ -3811,7 +3811,22 @@ class CodeGen
 
     private void cgenBTOI(Node node)
     {
-        // Do We need this?
+        Description dOld = SemanticStack.getSemanticStack().pop();
+        // todo check dOld type is BOOL
+        Description dNew = new Description(IDGenerator.generateID(), "INT");
+        // add to symbol table
+        addToData(dNew.getName(), getMipsType("INT"), 0);
+
+        addToText("# Apply btoi on " + dOld.getName());
+        addToText("lw $a0, " + dOld.getName());
+        if(dOld.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+        addToText("la $a1, " + dNew.getName());
+        addToText("sw $a0, 0($a1)");
+
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(dNew);
     }
 
     private void cgenITOD(Node node) {
@@ -3820,6 +3835,8 @@ class CodeGen
         Description dNew = new Description(IDGenerator.generateID(), "DOUBLE");
         // add to symbol table
         addToData(dNew.getName(), getMipsType("DOUBLE"), 0);
+
+        addToText("# Applying itod on " + dOld.getName());
 
         addToText("sw $s0, " + dOld.getName());
         if(dOld.isInArray()){
@@ -3840,6 +3857,8 @@ class CodeGen
         Description dNew = new Description(IDGenerator.generateID(), "BOOL");
         // add to symbol table
         addToData(dNew.getName(), getMipsType("BOOL"), 0);
+
+        addToText("# Applying itob on " + dOld.getName());
 
         String falseLabel = "_false_generation_label_for_" + dOld.getName();
         String endItobLabel = "_end_label_itob_for_" + dOld.getName();
