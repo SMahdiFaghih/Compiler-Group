@@ -3817,8 +3817,37 @@ class CodeGen
             case "BTOI":
                 cgenBTOI(node);
                 break;
+            case "IfStmt" :
+                cgenIf(node);
+                break;
 
         }
+    }
+
+    int label = 0;
+    private void cgenIf(Node node)
+    {
+        //cgenExpr   to get t0 , t1
+        // t0 همان بولین
+        //beq
+
+        addToText("#if" + "(");
+        //تابعی را صدا میزنیم که ب ازای شرط داخل ایف کدی را بسازد
+        //خروجی را مننننننننن میگیرم که خروجی به من یه ثبات میده که اون ثباته برای بی ای کیو استفاده میشه
+
+
+
+        String asb =  getLabel();
+        addToText("beq" + "sabate" + "ya 0 ya 1" + asb);
+        //صدا زدن تابع برای داخل ایف
+        addToText(asb + ":");
+
+    }
+    private String getLabel ()
+    {
+        String s = "L" + label;
+        label ++;
+        return s;
     }
 
     private void cgenExpr(Node node) throws Exception
