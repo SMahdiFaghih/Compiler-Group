@@ -4011,6 +4011,37 @@ class CodeGen
             cgen(right);
             cgenANDAND(node);
         }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("OROR") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 20 of expr ---> Expr ::= Expr || Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenOROR(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("NOT") &&
+                childs.get(1).getSymbolName().equals("Expr")){  // case 20 of expr ---> Expr ::= !Expr
+            Node expr = childs.get(1);
+            cgen(expr);
+            cgenNOT(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("READINTEGER")){  // case 21 of expr ---> Expr ::= READINTEGER
+            cgenREADINTEGER(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("READLINE")){  // case 22 of expr ---> Expr ::= READLINE
+            cgenREADLINE(node);
+        }
+
+//        ArrayList<Node> childs = node.getChildNodes();
+//        Node exprLeft = childs.get(0);
+//        Node exprRight = childs.get(2);
+//
+//        Description leftDescription = exprLeft.getDescription();
+//        Description rightDescription = exprRight.getDescription();
+//        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+
+
 
 
 
@@ -4335,41 +4366,45 @@ class CodeGen
     }
 
     private void cgenNOT(Node node) {
-        Description v1 = SemanticStack.getSemanticStack().pop();
-        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
-        // add v3 to symbol table
+        ArrayList<Node> childs = node.getChildNodes();
+        Node expr = childs.get(1);
 
-        addToData(v3.getName(), getMipsType(v3.getType()), 0);
+        Description exprDescription = expr.getDescription();
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
 
-        addToText("# not " + v1.getName() );
-        addToText("lw $a0, " + v1.getName());
+        addToData(newDescription.getName(), getMipsType(newDescription.getType()), 0);
+
+        addToText("# not " + exprDescription.getName() );
+        addToText("lw $a0, " + exprDescription.getName());
         // is in array
         addToText("not $t0, $a0");
-        addToText("la $a1, " + v3.getName());
+        addToText("la $a1, " + newDescription.getName());
         addToText("sw $t0, 0($a1)");
         addEmptyLine();
-        SemanticStack.getSemanticStack().push(v3);
-
+        node.setDescription(newDescription);
     }
 
     private void cgenOROR(Node node) {
-        Description v1 = SemanticStack.getSemanticStack().pop();
-        Description v2 = SemanticStack.getSemanticStack().pop();
-        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
-        // add v3 to symbol table
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
 
-        addToData(v3.getName(), getMipsType(v3.getType()), 0);
+        Description leftDescription = exprLeft.getDescription();
+        Description rightDescription = exprRight.getDescription();
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
 
-        addToText("# || " + v1.getName() + " and " + v2.getName());
-        addToText("lw $a0, " + v1.getName());
+        addToData(newDescription.getName(), getMipsType(newDescription.getType()), 0);
+
+        addToText("# || " + leftDescription.getName() + " and " + rightDescription.getName());
+        addToText("lw $a0, " + leftDescription.getName());
         // is in array
-        addToText("lw $a1, " + v2.getName());
+        addToText("lw $a1, " + rightDescription.getName());
         // is in array
         addToText("or $t0, $a0, $a1");
-        addToText("la $a2, " + v3.getName());
+        addToText("la $a2, " + newDescription.getName());
         addToText("sw $t0, 0($a2)");
         addEmptyLine();
-        SemanticStack.getSemanticStack().push(v3);
+        node.setDescription(newDescription);
 
     }
 
@@ -4669,7 +4704,7 @@ class CodeGen
         addToText("la $s0, " + variableName);
         addToText("sw $v0, 0($s0)");
         addEmptyLine();
-        SemanticStack.getSemanticStack().push(description);
+        node.setDescription(description);
     }
 
     private void cgenREADLINE(Node node)
@@ -4684,7 +4719,7 @@ class CodeGen
         addToText("la $a0, " + stringName);
         addToText("li $a1, " + INPUT_STRING_SIZE);
         addToText("syscall");
-        SemanticStack.getSemanticStack().push(description);
+        node.setDescription(description);
     }
 
 
