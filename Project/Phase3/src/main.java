@@ -3742,6 +3742,9 @@ class CodeGen
             case "IDENTIFIER":
                 cgenIDENTIFIER(node);
                 break;
+            case "Formals":
+                cgenFormals(node);
+                break;
             case "Structure":
                 cgenStrcuture(node);
                 break;
@@ -3830,7 +3833,9 @@ class CodeGen
         cgen(variableNode);
     }
 
-    private void cgenFunctionDecl(Node node) {
+    private void cgenFunctionDecl(Node node)
+    {
+        // todo mamadreza
     }
 
     private void cgenClassDecl(Node node) {
@@ -3872,6 +3877,14 @@ class CodeGen
 
         // todo for array and class types
         return "";
+    }
+
+    private void cgenFormals(Node node) throws Exception
+    {
+        ArrayList<Node> childs = node.getChildNodes();
+        for (Node child : childs) {
+            cgen(child);
+        }
     }
 
     private void cgenIDENTIFIER(Node node)
