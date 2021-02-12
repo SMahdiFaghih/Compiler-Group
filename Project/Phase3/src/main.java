@@ -3827,32 +3827,69 @@ class CodeGen
 
         if (childs.get(0).getSymbolName().equals("LValue") &&
                 childs.get(1).getSymbolName().equals("ASSIGN") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 1 of expr ---> EXPR ::= LValue = Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 1 of expr ---> Expr ::= LValue = Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
             cgen(right);
             cgenASSIGN(node);
         }
-        else if(childs.get(0).getSymbolName().equals("Constant")){  // case 2 of expr ---> EXPR ::= Constant
+        else if(childs.get(0).getSymbolName().equals("Constant")){  // case 2 of expr ---> Expr ::= Constant
             // todo
         }
-        else if(childs.get(0).getSymbolName().equals("LValue")){  // case 3 of expr ---> EXPR ::= LValue
+        else if(childs.get(0).getSymbolName().equals("LValue")){  // case 3 of expr ---> Expr ::= LValue
             cgen(childs.get(0));
         }
-        else if(childs.get(0).getSymbolName().equals("THIS")){  // case 4 of expr ---> EXPR ::= this
+        else if(childs.get(0).getSymbolName().equals("THIS")){  // case 4 of expr ---> Expr ::= this
             // todo related to classes
         }
-        else if(childs.get(0).getSymbolName().equals("Call")){  // case 5 of expr ---> EXPR ::= Call
+        else if(childs.get(0).getSymbolName().equals("Call")){  // case 5 of expr ---> Expr ::= Call
             // todo related to classes
         }
-        if (childs.get(0).getSymbolName().equals("LEFTPAREN") &&
+        else if (childs.get(0).getSymbolName().equals("LEFTPAREN") &&
                 childs.get(1).getSymbolName().equals("Expr") &&
-                childs.get(2).getSymbolName().equals("RIGHTPAREN")){  // case 1 of expr ---> EXPR ::= LValue = Expr
+                childs.get(2).getSymbolName().equals("RIGHTPAREN")){  // case 6 of expr ---> Expr ::= (Expr)
             Node expr = childs.get(1);
             cgen(expr);
         }
-        
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("PLUS") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 7 of expr ---> Expr ::= Expr + Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenPLUS(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("MINUS") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 8 of expr ---> Expr ::= Expr - Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenMINUS(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("MULT") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 9 of expr ---> Expr ::= Expr * Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenMULT(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("DIV") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 10 of expr ---> Expr ::= Expr / Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenDIV(node);
+        }
+
+
     }
 
 
@@ -4272,139 +4309,152 @@ class CodeGen
     }
 
     private void cgenDIV(Node node) {
-        Description desc1 = SemanticStack.getSemanticStack().pop();
-        Description desc2 = SemanticStack.getSemanticStack().pop();
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
 
-        addToText("# Dividing " + desc1.getName() + " and " + desc2.getName());
+        Description leftDescription = exprLeft.getDescription();
+        Description rightDescription = exprRight.getDescription();
 
-        if (desc1.getType().equals("INT")){
+        addToText("# Dividing " + leftDescription.getName() + " and " + rightDescription.getName());
+
+        if (leftDescription.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
-            Description description = new Description(resultName, "INT");
+            Description newDescription = new Description(resultName, "INT");
             // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
-            addToText("lw $a0, " + desc1.getName());
+            addToText("lw $a0, " + leftDescription.getName());
             // if desc1 comes from array
-            addToText("lw $a1, " + desc2.getName());
+            addToText("lw $a1, " + rightDescription.getName());
             // if desc2 comes from array
 
             addToText("div $a0, $a1");
-            addToText("la $a2, " + description.getName());
+            addToText("la $a2, " + newDescription.getName());
             addToText("mflo $t0");         // move quotient to $t0
             addToText("sw $t0, 0($a2)");
             addEmptyLine();
-            SemanticStack.getSemanticStack().push(description);
-
+            node.setDescription(newDescription);
         }
 
-        else if(desc1.getType().equals("DOUBLE")){
+        else if(leftDescription.getType().equals("DOUBLE")){
             // todo complete this part
         }
 
     }
 
     private void cgenMULT(Node node) {
-        Description desc1 = SemanticStack.getSemanticStack().pop();
-        Description desc2 = SemanticStack.getSemanticStack().pop();
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
 
-        addToText("# Multiplying " + desc1.getName() + " and " + desc2.getName());
+        Description leftDescription = exprLeft.getDescription();
+        Description rightDescription = exprRight.getDescription();
 
-        if (desc1.getType().equals("INT")){
+        addToText("# Multiplying " + leftDescription.getName() + " and " + rightDescription.getName());
+
+        if (leftDescription.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
-            Description description = new Description(resultName, "INT");
+            Description newDescription = new Description(resultName, "INT");
             // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
-            addToText("lw $a0, " + desc1.getName());
+            addToText("lw $a0, " + leftDescription.getName());
             // if desc1 comes from array
-            addToText("lw $a1, " + desc2.getName());
+            addToText("lw $a1, " + rightDescription.getName());
             // if desc2 comes from array
 
             addToText("mult $a0, $a1");
-            addToText("la $a2, " + description.getName());
+            addToText("la $a2, " + newDescription.getName());
             addToText("mflo $t0");   // move from low to $t0 -- we use LSB bits for multiplication
             addToText("sw $t0, 0($a2)");
             addEmptyLine();
-            SemanticStack.getSemanticStack().push(description);
-
+            node.setDescription(newDescription);
         }
 
-        else if(desc1.getType().equals("DOUBLE")){
+        else if(leftDescription.getType().equals("DOUBLE")){
             // todo complete this part
         }
 
     }
 
     private void cgenMINUS(Node node) {
-        Description desc1 = SemanticStack.getSemanticStack().pop();
-        Description desc2 = SemanticStack.getSemanticStack().pop();
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
 
-        addToText("# Subtracting " + desc1.getName() + " and " + desc2.getName());
+        Description leftDescription = exprLeft.getDescription();
+        Description rightDescription = exprRight.getDescription();
 
-        if (desc1.getType().equals("INT")){
+        addToText("# Subtracting " + leftDescription.getName() + " and " + rightDescription.getName());
+
+        if (leftDescription.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
-            Description description = new Description(resultName, "INT");
+            Description newDescription = new Description(resultName, "INT");
             // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
-            addToText("lw $a0, " + desc1.getName());
+            addToText("lw $a0, " + leftDescription.getName());
             // if desc1 comes from array
-            addToText("lw $a1, " + desc2.getName());
+            addToText("lw $a1, " + rightDescription.getName());
             // if desc2 comes from array
 
             addToText("sub $t0, $a0, $a1");
-            addToText("la $a2, " + description.getName());
+            addToText("la $a2, " + newDescription.getName());
             addToText("sw $t0, 0($a2)");
             addEmptyLine();
-            SemanticStack.getSemanticStack().push(description);
-
+            node.setDescription(newDescription);
         }
 
-        else if(desc1.getType().equals("DOUBLE")){
+        else if(leftDescription.getType().equals("DOUBLE")){
             // todo complete this part
         }
 
     }
 
     private void cgenPLUS(Node node) {
-        if (node.getNodeValueType().equals("STRING")){
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
+
+        if (exprLeft.getNodeValueType().equals("STRING")){
             cgenStringConcatination(node);
             return;
         }
-        else if(node.getNodeValueType().equals("Array")){
+        else if(exprLeft.getNodeValueType().equals("Array")){
             cgenArrayConcatination(node);
             return;
         }
 
-        Description desc1 = SemanticStack.getSemanticStack().pop();
-        Description desc2 = SemanticStack.getSemanticStack().pop();
+        Description descLeft = exprLeft.getDescription();
+        Description descRight = exprRight.getDescription();
 
-        addToText("# adding " + desc1.getName() + " and " + desc2.getName());
+        addToText("# adding " + descLeft.getName() + " and " + descRight.getName());
 
-        if (desc1.getType().equals("INT")){
+        if (descLeft.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
-            Description description = new Description(resultName, "INT");
+            Description newDescription = new Description(resultName, "INT");
             // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
-            addToText("lw $a0, " + desc1.getName());
+            addToText("lw $a0, " + descLeft.getName());
             // if desc1 comes from array
-            addToText("lw $a1, " + desc2.getName());
+            addToText("lw $a1, " + descRight.getName());
             // if desc2 comes from array
 
             addToText("add $t0, $a0, $a1");
-            addToText("la $a2, " + description.getName());
+            addToText("la $a2, " + newDescription.getName());
             addToText("sw $t0, 0($a2)");
             addEmptyLine();
-            SemanticStack.getSemanticStack().push(description);
+            node.setDescription(newDescription);
 
         }
 
-        else if(desc1.getType().equals("DOUBLE")){
+        else if(descLeft.getType().equals("DOUBLE")){
             // todo complete this part
         }
 
@@ -4412,9 +4462,11 @@ class CodeGen
     }
 
     private void cgenArrayConcatination(Node node) {
+        // todo mamadreza  ---> first get node's childs
     }
 
     private void cgenStringConcatination(Node node) {
+        // todo mamadreza  ---> first get node's childs
     }
 
 
