@@ -3820,6 +3820,9 @@ class CodeGen
             case "IfStmt" :
                 cgenIf(node);
                 break;
+            case "WhileStmt":
+                cgenWhile(node);
+                break;
 
         }
     }
@@ -3837,10 +3840,10 @@ class CodeGen
 
 
 
-        String asb =  getLabel();
-        addToText("beq" + "sabate" + "ya 0 ya 1" + asb);
+        String label =  getLabel();
+        addToText("beq" + "sabate" + "ya 0 ya 1" + label);
         //صدا زدن تابع برای داخل ایف
-        addToText(asb + ":");
+        addToText(label + ":");
 
     }
     private String getLabel ()
@@ -3848,6 +3851,19 @@ class CodeGen
         String s = "L" + label;
         label ++;
         return s;
+    }
+    private void cgenWhile(Node node)
+    {
+        addToText("#while" + "(");
+        // گرفتن بولین عبارت داخل شرط برای ورود به وایل
+        String loop = getLabel();
+        String exit = getLabel();
+
+        addToText("beq" + "sabat" + "0" + exit);
+        // داخل وایل
+        addToText("j" + loop);
+        addToText(exit + ":");
+
     }
 
     private void cgenExpr(Node node) throws Exception
