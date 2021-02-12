@@ -3009,6 +3009,7 @@ class Node
     private Node arrayNodeValueType;
     private String constantValue; //used for Constants
     private ArrayList<Node> childNodes;
+    private Description description;
 
     Node(String symbolName)
     {
@@ -3079,6 +3080,14 @@ class Node
     public void addChildNodes(ArrayList<Node> childNodes)
     {
         this.childNodes.addAll(childNodes);
+    }
+
+    public Description getDescription() {
+        return description;
+    }
+
+    public void setDescription(Description description) {
+        this.description = description;
     }
 }
 
@@ -3715,44 +3724,62 @@ class CodeGen
             case "Program":
                 cgenStart(node);
                 break;
+            case "VariableDecl":
+                cgenVariableDecl(node);
+                break;
+            case "FunctionDecl":
+                cgenFunctionDecl(node);
+                break;
+            case "ClassDecl":
+                cgenClassDecl(node);
+                break;
+            case "InterfaceDecl":
+                cgenInterfaceDecl(node);
+                break;
+            case "Variable":
+                cgenVariable(node);
+                break;
+            case "IDENTIFIER":
+                cgenIDENTIFIER(node);
+                break;
             case "Structure":
                 cgenStrcuture(node);
                 break;
             case "READINTEGER":
-                cgenReadInteger(node);
+                cgenREADINTEGER(node);
                 break;
             case "READLINE":
-                cgenReadLine(node);
+                cgenREADLINE(node);
                 break;
             case "PrintStmt":
                 cgenPrint(node);
                 break;
             case "PLUS":
-                cgenPlus(node);
+                cgenPLUS(node);
                 break;
             case "MINUS":
-                cgenMinus(node);
+                cgenMINUS(node);
                 break;
             case "MULT":
-                cgenMult(node);
+                cgenMULT(node);
                 break;
             case "DIV":
-                cgenDiv(node);
+                cgenDIV(node);
                 break;
             case "MOD":
-                cgenMod(node);
+                cgenMOD(node);
                 break;
             case "ASSIGN":
-                cgenAssign(node);
+                cgenASSIGN(node);
                 break;
             case "ANDAND":
-                cgenAndAnd(node);
+                cgenANDAND(node);
                 break;
             case "OROR":
-                cgenOrOr(node);
+                cgenOROR(node);
                 break;
             case "NOT":
-                cgenNot(node);
+                cgenNOT(node);
                 break;
             case "LT":
                 cgenLT(node);
@@ -3784,9 +3811,12 @@ class CodeGen
             case "BTOI":
                 cgenBTOI(node);
                 break;
-            
+
         }
     }
+
+
+
 
     private void cgenStart(Node node) throws Exception {
         ArrayList<Node> childs = node.getChildNodes();
@@ -3794,6 +3824,34 @@ class CodeGen
             cgen(child);
         }
     }
+
+    private void cgenVariableDecl(Node node) throws Exception{
+        Node variableNode = node.getChildNodes().get(0);
+        cgen(variableNode);
+    }
+
+    private void cgenFunctionDecl(Node node) {
+    }
+
+    private void cgenClassDecl(Node node) {
+    }
+
+    private void cgenInterfaceDecl(Node node) {
+    }
+
+    private void cgenVariable(Node node)
+    {
+        Node type = node.getChildNodes().get(0);
+        Node ientifier = node.getChildNodes().get(1);
+
+
+    }
+
+    private void cgenIDENTIFIER(Node node)
+    {
+
+    }
+
 
     private void cgenDTOI(Node node) {    // I have doubt about this method
         Description dOld = SemanticStack.getSemanticStack().pop();
@@ -4011,7 +4069,7 @@ class CodeGen
         SemanticStack.getSemanticStack().push(v3);
     }
 
-    private void cgenNot(Node node) {
+    private void cgenNOT(Node node) {
         Description v1 = SemanticStack.getSemanticStack().pop();
         Description v3 = new Description(IDGenerator.generateID(), "BOOL");
         // add v3 to symbol table
@@ -4029,7 +4087,7 @@ class CodeGen
 
     }
 
-    private void cgenOrOr(Node node) {
+    private void cgenOROR(Node node) {
         Description v1 = SemanticStack.getSemanticStack().pop();
         Description v2 = SemanticStack.getSemanticStack().pop();
         Description v3 = new Description(IDGenerator.generateID(), "BOOL");
@@ -4050,7 +4108,7 @@ class CodeGen
 
     }
 
-    private void cgenAndAnd(Node node) {
+    private void cgenANDAND(Node node) {
         Description v1 = SemanticStack.getSemanticStack().pop();
         Description v2 = SemanticStack.getSemanticStack().pop();
         Description v3 = new Description(IDGenerator.generateID(), "BOOL");
@@ -4071,7 +4129,7 @@ class CodeGen
 
     }
 
-    private void cgenAssign(Node node) {
+    private void cgenASSIGN(Node node) {
         Description lValueDesc = SemanticStack.getSemanticStack().pop();
         Description exprDesc = SemanticStack.getSemanticStack().pop();
 
@@ -4100,7 +4158,7 @@ class CodeGen
 
     }
 
-    private void cgenMod(Node node) {
+    private void cgenMOD(Node node) {
         Description desc1 = SemanticStack.getSemanticStack().pop();
         Description desc2 = SemanticStack.getSemanticStack().pop();
 
@@ -4133,7 +4191,7 @@ class CodeGen
 
     }
 
-    private void cgenDiv(Node node) {
+    private void cgenDIV(Node node) {
         Description desc1 = SemanticStack.getSemanticStack().pop();
         Description desc2 = SemanticStack.getSemanticStack().pop();
 
@@ -4166,7 +4224,7 @@ class CodeGen
 
     }
 
-    private void cgenMult(Node node) {
+    private void cgenMULT(Node node) {
         Description desc1 = SemanticStack.getSemanticStack().pop();
         Description desc2 = SemanticStack.getSemanticStack().pop();
 
@@ -4199,7 +4257,7 @@ class CodeGen
 
     }
 
-    private void cgenMinus(Node node) {
+    private void cgenMINUS(Node node) {
         Description desc1 = SemanticStack.getSemanticStack().pop();
         Description desc2 = SemanticStack.getSemanticStack().pop();
 
@@ -4231,7 +4289,7 @@ class CodeGen
 
     }
 
-    private void cgenPlus(Node node) {
+    private void cgenPLUS(Node node) {
         if (node.getNodeValueType().equals("STRING")){
             cgenStringConcatination(node);
             return;
@@ -4280,7 +4338,7 @@ class CodeGen
     }
 
 
-    private void cgenReadInteger(Node node)
+    private void cgenREADINTEGER(Node node)
     {
         String variableName = IDGenerator.generateID();
         Description description = new Description(variableName, "INT");
@@ -4296,7 +4354,7 @@ class CodeGen
         SemanticStack.getSemanticStack().push(description);
     }
 
-    private void cgenReadLine(Node node)
+    private void cgenREADLINE(Node node)
     {
         String stringName = IDGenerator.generateID();
         Description description = new Description(stringName, "STRING");
