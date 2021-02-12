@@ -3751,6 +3751,9 @@ class CodeGen
             case "PrintStmt":
                 cgenPrint(node);
                 break;
+            case "EXPR":
+                cgenExpr(node);
+                break;
             case "READINTEGER":
                 cgenREADINTEGER(node);
                 break;
@@ -3818,7 +3821,20 @@ class CodeGen
         }
     }
 
+    private void cgenExpr(Node node) throws Exception
+    {
+        ArrayList<Node> childs = node.getChildNodes();
 
+        if (childs.get(0).getSymbolName().equals("LValue") &&
+                childs.get(1).getSymbolName().equals("ASSIGN") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 1 of expr ---> EXPR ::= LValue = Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenASSIGN(node);
+        }
+    }
 
 
     private void cgenStart(Node node) throws Exception {
@@ -4172,8 +4188,11 @@ class CodeGen
     }
 
     private void cgenASSIGN(Node node) {
-        Description lValueDesc = SemanticStack.getSemanticStack().pop();
-        Description exprDesc = SemanticStack.getSemanticStack().pop();
+        ArrayList<Node> childs = node.getChildNodes();
+        Node lValue = childs.get(0);
+        Node expr = childs.get(2);
+        Description lValueDesc = lValue.getDescription();
+        Description exprDesc = expr.getDescription();
 
         addToText("# Assigning " + exprDesc.getName() + " to " + lValueDesc.getName());
         if(exprDesc.getType().equals("ARRAY")){   // also Object
