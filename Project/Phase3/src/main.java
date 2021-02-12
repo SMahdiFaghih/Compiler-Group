@@ -3834,6 +3834,25 @@ class CodeGen
             cgen(right);
             cgenASSIGN(node);
         }
+        else if(childs.get(0).getSymbolName().equals("Constant")){  // case 2 of expr ---> EXPR ::= Constant
+            // todo
+        }
+        else if(childs.get(0).getSymbolName().equals("LValue")){  // case 3 of expr ---> EXPR ::= LValue
+            cgen(childs.get(0));
+        }
+        else if(childs.get(0).getSymbolName().equals("THIS")){  // case 4 of expr ---> EXPR ::= this
+            // todo related to classes
+        }
+        else if(childs.get(0).getSymbolName().equals("Call")){  // case 5 of expr ---> EXPR ::= Call
+            // todo related to classes
+        }
+        if (childs.get(0).getSymbolName().equals("LEFTPAREN") &&
+                childs.get(1).getSymbolName().equals("Expr") &&
+                childs.get(2).getSymbolName().equals("RIGHTPAREN")){  // case 1 of expr ---> EXPR ::= LValue = Expr
+            Node expr = childs.get(1);
+            cgen(expr);
+        }
+        
     }
 
 
