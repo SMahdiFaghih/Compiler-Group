@@ -12,7 +12,7 @@ import java.util.Stack;
 public class main implements Scanner
 {
 
-    //region Scanner partssun.security.krb5.internal.crypto.Des;
+    //region Scanner parts
 
     /**
      * This character denotes the end of file.
@@ -3009,6 +3009,7 @@ class Node
     private Node arrayNodeValueType;
     private String constantValue; //used for Constants
     private ArrayList<Node> childNodes;
+    private Description description;
 
     Node(String symbolName)
     {
@@ -3079,6 +3080,14 @@ class Node
     public void addChildNodes(ArrayList<Node> childNodes)
     {
         this.childNodes.addAll(childNodes);
+    }
+
+    public Description getDescription() {
+        return description;
+    }
+
+    public void setDescription(Description description) {
+        this.description = description;
     }
 }
 
@@ -3697,9 +3706,15 @@ class CodeGen
         return codeGen;
     }
 
-    public void compile(Node root) throws Exception
+    public void startCgen(Node root) throws Exception
     {
+        initial();
         cgen(root);
+    }
+
+    private void initial() {
+        addToData("_string_true", ".asciiz", "true");
+        addToData("_string_false", ".asciiz", "false");
     }
 
     public void cgen(Node node) throws Exception
@@ -3709,231 +3724,829 @@ class CodeGen
             case "Program":
                 cgenStart(node);
                 break;
+            case "VariableDecl":
+                cgenVariableDecl(node);
+                break;
+            case "FunctionDecl":
+                cgenFunctionDecl(node);
+                break;
+            case "ClassDecl":
+                cgenClassDecl(node);
+                break;
+            case "InterfaceDecl":
+                cgenInterfaceDecl(node);
+                break;
+            case "Variable":
+                cgenVariable(node);
+                break;
+            case "IDENTIFIER":
+                cgenIDENTIFIER(node);
+                break;
+            case "Formals":
+                cgenFormals(node);
+                break;
             case "Structure":
                 cgenStrcuture(node);
-                break;
-            case "READINTEGER":
-                cgenReadInteger(node);
-                break;
-            case "READLINE":
-                cgenReadLine(node);
                 break;
             case "PrintStmt":
                 cgenPrint(node);
                 break;
+            case "EXPR":
+                cgenExpr(node);
+                break;
+            case "READINTEGER":
+                cgenREADINTEGER(node);
+                break;
+            case "READLINE":
+                cgenREADLINE(node);
+                break;
             case "PLUS":
-                cgenPlus(node);
+                cgenPLUS(node);
                 break;
             case "MINUS":
-                cgenMinus(node);
+                cgenMINUS(node);
                 break;
             case "MULT":
-                cgenMult(node);
+                cgenMULT(node);
                 break;
             case "DIV":
-                cgenDiv(node);
+                cgenDIV(node);
                 break;
             case "MOD":
-                cgenMod();
+                cgenMOD(node);
                 break;
-            case "IfStmt":
-                cgenIf(node);
+            case "ASSIGN":
+                cgenASSIGN(node);
+                break;
+            case "ANDAND":
+                cgenANDAND(node);
+                break;
+            case "OROR":
+                cgenOROR(node);
+                break;
+            case "NOT":
+                cgenNOT(node);
+                break;
+            case "LT":
+                cgenLT(node);
+                break;
+            case "LTEQ":
+                cgenLTEQ(node);
+                break;
+            case "GT":
+                cgenGT(node);
+                break;
+            case "GTEQ":
+                cgenGTEQ(node);
+                break;
+            case "EQEQ":
+                cgenEQEQ(node);
+                break;
+            case "NOTEQ":
+                cgenNOTEQ(node);
+                break;
+            case "DTOI":
+                cgenDTOI(node);
+                break;
+            case "ITOD":
+                cgenITOD(node);
+                break;
+            case "ITOB":
+                cgenITOB(node);
+                break;
+            case "BTOI":
+                cgenBTOI(node);
                 break;
 
         }
     }
-    int label = 0;
-    private void cgenIf(Node node)
+
+    private void cgenExpr(Node node) throws Exception
     {
-        //cgenExpr   to get t0 , t1
-        // t0 همان بولین
-        //beq
+        ArrayList<Node> childs = node.getChildNodes();
 
-//        Description description = SemanticStack.getSemanticStack().pop();
-        addToText("#if" + "(");
-        //تابعی را صدا میزنیم که ب ازای شرط داخل ایف کدی را بسازد
-        //خروجی را مننننننننن میگیرم که خروجی به من یه ثبات میده که اون ثباته برای بی ای کیو استفاده میشه
+        if (childs.get(0).getSymbolName().equals("LValue") &&
+                childs.get(1).getSymbolName().equals("ASSIGN") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 1 of expr ---> Expr ::= LValue = Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenASSIGN(node);
+        }
+        else if(childs.get(0).getSymbolName().equals("Constant")){  // case 2 of expr ---> Expr ::= Constant
+            // todo
+        }
+        else if(childs.get(0).getSymbolName().equals("LValue")){  // case 3 of expr ---> Expr ::= LValue
+            cgen(childs.get(0));
+        }
+        else if(childs.get(0).getSymbolName().equals("THIS")){  // case 4 of expr ---> Expr ::= this
+            // todo related to classes
+        }
+        else if(childs.get(0).getSymbolName().equals("Call")){  // case 5 of expr ---> Expr ::= Call
+            // todo related to classes
+        }
+        else if (childs.get(0).getSymbolName().equals("LEFTPAREN") &&
+                childs.get(1).getSymbolName().equals("Expr") &&
+                childs.get(2).getSymbolName().equals("RIGHTPAREN")){  // case 6 of expr ---> Expr ::= (Expr)
+            Node expr = childs.get(1);
+            cgen(expr);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("PLUS") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 7 of expr ---> Expr ::= Expr + Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenPLUS(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("MINUS") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 8 of expr ---> Expr ::= Expr - Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenMINUS(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("MULT") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 9 of expr ---> Expr ::= Expr * Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenMULT(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("DIV") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 10 of expr ---> Expr ::= Expr / Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenDIV(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("MOD") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 11 of expr ---> Expr ::= Expr % Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenMOD(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("MINUS") &&
+                childs.get(1).getSymbolName().equals("Expr")){  // case 12 of expr ---> Expr ::= -Expr
+            Node expr = childs.get(1);
+            cgen(expr);
+            cgenNegativate(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("LT") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 13 of expr ---> Expr ::= Expr < Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenLT(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("LTEQ") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 14 of expr ---> Expr ::= Expr <= Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenLTEQ(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("GT") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 15 of expr ---> Expr ::= Expr > Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenGT(node);
+        }
 
 
-        String asb =  getLabel();
-        addToText("beq" + "sabate" + "ya 0 ya 1" + asb);
-        //صدا زدن تابع برای داخل ایف
-        addToText(asb + ":");
+
 
     }
-    private String getLabel ()
-    {
-        String s = "L" + label;
-        label ++;
-        return s;
+
+
+
+
+    private void cgenStart(Node node) throws Exception {
+        ArrayList<Node> childs = node.getChildNodes();
+        for (Node child : childs) {
+            cgen(child);
+        }
     }
-    private void cgenMod() {
-        Description desc1 = SemanticStack.getSemanticStack().pop();
-        Description desc2 = SemanticStack.getSemanticStack().pop();
 
-        addToText("# subtracting " + desc1.getName() + " and " + desc2.getName());
+    private void cgenVariableDecl(Node node) throws Exception{
+        Node variableNode = node.getChildNodes().get(0);
+        cgen(variableNode);
+    }
 
-        if (desc1.getType().equals("INT")){
+    private void cgenFunctionDecl(Node node)
+    {
+        // todo mamadreza
+    }
+
+    private void cgenClassDecl(Node node) {
+    }
+
+    private void cgenInterfaceDecl(Node node) {
+    }
+
+    private void cgenVariable(Node node)
+    {
+        Node typeNode = node.getChildNodes().get(0);
+        Node identifier = node.getChildNodes().get(1);
+        String identifierType = getNodeType(typeNode);
+
+        String identifierMipsName = IDGenerator.generateID();
+        Description description = new Description(identifierMipsName, identifierType);
+        addToData(identifierMipsName, getMipsType(identifierType), 0);
+        identifier.setDescription(description);
+    }
+
+    private String getNodeType(Node typeNode)
+    {
+        ArrayList<Node> childs = typeNode.getChildNodes();
+        Node typeNodeChild = childs.get(0);
+        boolean isArray = childs.size() > 1;
+
+        if(!isArray){
+            switch (typeNodeChild.getSymbolName()){
+                case "INT":
+                    return "INT";
+                case "DOUBLE":
+                    return "DOUBLE";
+                case "BOOLEAN":
+                    return "BOOLEAN";
+                case "STRING":
+                    return "STRING";
+            }
+        }
+
+        // todo for array and class types
+        return "";
+    }
+
+    private void cgenFormals(Node node) throws Exception
+    {
+        ArrayList<Node> childs = node.getChildNodes();
+        for (Node child : childs) {
+            if (child.getSymbolName().equals("Variable")){
+                cgen(child);
+            }
+        }
+    }
+
+    private void cgenIDENTIFIER(Node node)
+    {
+
+    }
+
+
+    private void cgenDTOI(Node node) {    // I have doubt about this method
+        Description dOld = SemanticStack.getSemanticStack().pop();
+        // todo check dOld type is INT
+        Description dNew = new Description(IDGenerator.generateID(), "INT");
+        // add to symbol table
+        addToData(dNew.getName(), getMipsType("DOUBLE"), 0);
+
+        addToText("sw $a0, " + dOld.getName());
+        if(dOld.isInArray()){
+            addToText("lw $a0, 0($s0)");
+        }
+        addToText("mtc1 $a0, $f0");
+        addToText("round.w.s $f0, $f0\n");
+        addToText("mfc1 $a0, $f0");
+        addToText("la $a1, " + dNew.getName());
+        addToText("sw $a0, 0(a1)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(dNew);
+    }
+
+    private void cgenBTOI(Node node)
+    {
+        Description dOld = SemanticStack.getSemanticStack().pop();
+        // todo check dOld type is BOOL
+        Description dNew = new Description(IDGenerator.generateID(), "INT");
+        // add to symbol table
+        addToData(dNew.getName(), getMipsType("INT"), 0);
+
+        addToText("# Apply btoi on " + dOld.getName());
+        addToText("lw $a0, " + dOld.getName());
+        if(dOld.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+        addToText("la $a1, " + dNew.getName());
+        addToText("sw $a0, 0($a1)");
+
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(dNew);
+    }
+
+    private void cgenITOD(Node node) {
+        Description dOld = SemanticStack.getSemanticStack().pop();
+        // todo check dOld type is INT
+        Description dNew = new Description(IDGenerator.generateID(), "DOUBLE");
+        // add to symbol table
+        addToData(dNew.getName(), getMipsType("DOUBLE"), 0);
+
+        addToText("# Applying itod on " + dOld.getName());
+
+        addToText("sw $s0, " + dOld.getName());
+        if(dOld.isInArray()){
+            addToText("lw $s0, 0($s0)");
+        }
+        addToText("mtc1 $s0, $f0");
+        addToText("cvt.s.w $f0, $f0");
+        addToText("la $s1, " + dNew.getName());
+        addToText("swc1 $f0, 0($s1)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(dNew);
+    }
+
+    private void cgenITOB(Node node)
+    {
+        Description dOld = SemanticStack.getSemanticStack().pop();
+        // todo check dOld type is INT
+        Description dNew = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+        addToData(dNew.getName(), getMipsType("BOOL"), 0);
+
+        addToText("# Applying itob on " + dOld.getName());
+
+        String falseLabel = "_false_generation_label_for_" + dOld.getName();
+        String endItobLabel = "_end_label_itob_for_" + dOld.getName();
+
+        addToText("# Apply itob on " + dOld.getName());
+        addToText("lw $a0, " + dOld.getName());
+        if(dOld.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+        addToText("la $a1, " + dNew.getName());
+        addToText("beqz $a0, " + falseLabel);
+
+        addToText("li $t0, 1");                     // we assume true as 1 and false as 0
+        addToText("sw $t0, 0($a1)");
+        addToText("j " + endItobLabel);
+
+        addToText(falseLabel + ":", true);
+        addToText("li $t0, 0");                     // we assume true as 1 and false as 0
+        addToText("sw $t0, 0($a1)");
+
+        addToText(endItobLabel + ":", true);
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(dNew);
+
+    }
+
+    private void cgenGTEQ(Node node) {
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+
+        addToData(v3.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + v2.getName() + " >= " + v1.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array?
+        addToText("lw $a1, " + v2.getName());
+        // is in array?
+        addToText("sge $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
+
+    }
+
+    private void cgenEQEQ(Node node) {
+        // todo maybe it's uncomplete.
+
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+
+        addToData(v3.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + v2.getName() + " == " + v1.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array?
+        addToText("lw $a1, " + v2.getName());
+        // is in array?
+        addToText("seq $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
+    }
+
+    private void cgenGT(Node node) {
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
+
+        Description rightDescription = exprLeft.getDescription();
+        Description leftDescription = exprRight.getDescription();
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+
+        // add to symbol table
+
+        addToData(newDescription.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + leftDescription.getName() + " > " + rightDescription.getName());
+        addToText("lw $a0, " + leftDescription.getName());
+        // is in array?
+        addToText("lw $a1, " + rightDescription.getName());
+        // is in array?
+        addToText("sgt $t0, $a0, $a1");
+        addToText("la $a2, " + newDescription.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        node.setDescription(newDescription);
+
+    }
+
+    private void cgenNOTEQ(Node node) {
+        // todo maybe it's uncomplete.
+
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+
+        addToData(v3.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + v2.getName() + " != " + v1.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array?
+        addToText("lw $a1, " + v2.getName());
+        // is in array?
+        addToText("sne $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
+    }
+
+    private void cgenLTEQ(Node node) {
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
+
+        Description rightDescription = exprLeft.getDescription();
+        Description leftDescription = exprRight.getDescription();
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+
+        addToData(newDescription.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + leftDescription.getName() + " <= " + rightDescription.getName());
+        addToText("lw $a0, " + leftDescription.getName());
+        // is in array?
+        addToText("lw $a1, " + rightDescription.getName());
+        // is in array?
+        addToText("sle $t0, $a0, $a1");
+        addToText("la $a2, " + newDescription.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        node.setDescription(newDescription);
+    }
+
+    private void cgenLT(Node node)
+    {
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
+
+        Description rightDescription = exprRight.getDescription();
+        Description leftDescription = exprLeft.getDescription();
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+        // add to symbol table
+
+        addToData(newDescription.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + leftDescription.getName() + " < " + rightDescription.getName());
+        addToText("lw $a0, " + leftDescription.getName());
+        // is in array?
+        addToText("lw $a1, " + rightDescription.getName());
+        // is in array?
+        addToText("slt $t0, $a0, $a1");
+        addToText("la $a2, " + newDescription.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        node.setDescription(newDescription);
+    }
+
+    private void cgenNOT(Node node) {
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add v3 to symbol table
+
+        addToData(v3.getName(), getMipsType(v3.getType()), 0);
+
+        addToText("# not " + v1.getName() );
+        addToText("lw $a0, " + v1.getName());
+        // is in array
+        addToText("not $t0, $a0");
+        addToText("la $a1, " + v3.getName());
+        addToText("sw $t0, 0($a1)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
+
+    }
+
+    private void cgenOROR(Node node) {
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add v3 to symbol table
+
+        addToData(v3.getName(), getMipsType(v3.getType()), 0);
+
+        addToText("# || " + v1.getName() + " and " + v2.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array
+        addToText("lw $a1, " + v2.getName());
+        // is in array
+        addToText("or $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
+
+    }
+
+    private void cgenANDAND(Node node) {
+        Description v1 = SemanticStack.getSemanticStack().pop();
+        Description v2 = SemanticStack.getSemanticStack().pop();
+        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        // add v3 to symbol table
+
+        addToData(v3.getName(), getMipsType(v3.getType()), 0);
+
+        addToText("# && " + v1.getName() + " and " + v2.getName());
+        addToText("lw $a0, " + v1.getName());
+        // is in array
+        addToText("lw $a1, " + v2.getName());
+        // is in array
+        addToText("and $t0, $a0, $a1");
+        addToText("la $a2, " + v3.getName());
+        addToText("sw $t0, 0($a2)");
+        addEmptyLine();
+        SemanticStack.getSemanticStack().push(v3);
+
+    }
+
+    private void cgenASSIGN(Node node) {
+        ArrayList<Node> childs = node.getChildNodes();
+        Node lValue = childs.get(0);
+        Node expr = childs.get(2);
+        Description lValueDesc = lValue.getDescription();
+        Description exprDesc = expr.getDescription();
+
+        addToText("# Assigning " + exprDesc.getName() + " to " + lValueDesc.getName());
+        if(exprDesc.getType().equals("ARRAY")){   // also Object
+            // todo assign address to lValue's mips variabel
+        }
+        else if(exprDesc.getType().equals("INT") || exprDesc.getType().equals("BOOL")){
+            addToText("lw $a0, " + exprDesc.getName());
+            // if expr is in array
+            addToText("la $a1, " + lValueDesc.getName());
+            addToText("sw $a0, 0($a1)");
+        }
+        else if(exprDesc.getType().equals("DOUBLE")){
+            addToText("lw $a0, " + exprDesc.getName());
+            // if expr is in array
+            addToText("mtc1 $a0, $f0");
+            addToText("la $a1, " + lValueDesc.getName());
+            addToText("swc1 $f0, 0($a1)");
+        }
+        else if(exprDesc.getType().equals("STRING")){
+            addToText("lw $a0, " + exprDesc.getName());
+            addToText("la $a1, " + lValueDesc.getName());
+            addToText("sw $a0, 0($a1)");
+        }
+
+    }
+
+    private void cgenMOD(Node node) {
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
+
+        Description leftDescription = exprLeft.getDescription();
+        Description rightDescription = exprRight.getDescription();
+
+        addToText("# Mod " + leftDescription.getName() + " on " + rightDescription.getName());
+        if (leftDescription.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
-            Description description = new Description(resultName, "INT");
+            Description newDescription = new Description(resultName, "INT");
             // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
-            addToText("lw $a0, " + desc1.getName());
+            addToText("lw $a0, " + leftDescription.getName());
             // if desc1 comes from array
-            addToText("lw $a1, " + desc2.getName());
+            addToText("lw $a1, " + rightDescription.getName());
             // if desc2 comes from array
 
             addToText("div $a0, $a1");
-            addToText("la $a2, " + description.getName());
+            addToText("la $a2, " + newDescription.getName());
             addToText("mfhi $t0");      // move remaining to $t0
             addToText("sw $t0, 0($a2)");
             addEmptyLine();
-            SemanticStack.getSemanticStack().push(description);
-
+            node.setDescription(newDescription);
         }
 
-        else if(desc1.getType().equals("DOUBLE")){
+        else if(leftDescription.getType().equals("DOUBLE")){
             // todo complete this part
         }
 
     }
 
-    private void cgenDiv(Node node) {
-        Description desc1 = SemanticStack.getSemanticStack().pop();
-        Description desc2 = SemanticStack.getSemanticStack().pop();
+    private void cgenDIV(Node node) {
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
 
-        addToText("# subtracting " + desc1.getName() + " and " + desc2.getName());
+        Description leftDescription = exprLeft.getDescription();
+        Description rightDescription = exprRight.getDescription();
 
-        if (desc1.getType().equals("INT")){
+        addToText("# Dividing " + leftDescription.getName() + " and " + rightDescription.getName());
+
+        if (leftDescription.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
-            Description description = new Description(resultName, "INT");
+            Description newDescription = new Description(resultName, "INT");
             // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
-            addToText("lw $a0, " + desc1.getName());
+            addToText("lw $a0, " + leftDescription.getName());
             // if desc1 comes from array
-            addToText("lw $a1, " + desc2.getName());
+            addToText("lw $a1, " + rightDescription.getName());
             // if desc2 comes from array
 
             addToText("div $a0, $a1");
-            addToText("la $a2, " + description.getName());
+            addToText("la $a2, " + newDescription.getName());
             addToText("mflo $t0");         // move quotient to $t0
             addToText("sw $t0, 0($a2)");
             addEmptyLine();
-            SemanticStack.getSemanticStack().push(description);
-
+            node.setDescription(newDescription);
         }
 
-        else if(desc1.getType().equals("DOUBLE")){
+        else if(leftDescription.getType().equals("DOUBLE")){
             // todo complete this part
         }
 
     }
 
-    private void cgenMult(Node node) {
-        Description desc1 = SemanticStack.getSemanticStack().pop();
-        Description desc2 = SemanticStack.getSemanticStack().pop();
+    private void cgenMULT(Node node) {
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
 
-        addToText("# Multiplying " + desc1.getName() + " and " + desc2.getName());
+        Description leftDescription = exprLeft.getDescription();
+        Description rightDescription = exprRight.getDescription();
 
-        if (desc1.getType().equals("INT")){
+        addToText("# Multiplying " + leftDescription.getName() + " and " + rightDescription.getName());
+
+        if (leftDescription.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
-            Description description = new Description(resultName, "INT");
+            Description newDescription = new Description(resultName, "INT");
             // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
-            addToText("lw $a0, " + desc1.getName());
+            addToText("lw $a0, " + leftDescription.getName());
             // if desc1 comes from array
-            addToText("lw $a1, " + desc2.getName());
+            addToText("lw $a1, " + rightDescription.getName());
             // if desc2 comes from array
 
             addToText("mult $a0, $a1");
-            addToText("la $a2, " + description.getName());
+            addToText("la $a2, " + newDescription.getName());
             addToText("mflo $t0");   // move from low to $t0 -- we use LSB bits for multiplication
             addToText("sw $t0, 0($a2)");
             addEmptyLine();
-            SemanticStack.getSemanticStack().push(description);
-
+            node.setDescription(newDescription);
         }
 
-        else if(desc1.getType().equals("DOUBLE")){
+        else if(leftDescription.getType().equals("DOUBLE")){
             // todo complete this part
         }
 
     }
 
-    private void cgenMinus(Node node) {
-        Description desc1 = SemanticStack.getSemanticStack().pop();
-        Description desc2 = SemanticStack.getSemanticStack().pop();
+    private void cgenMINUS(Node node) {
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
 
-        addToText("# Subtracting " + desc1.getName() + " and " + desc2.getName());
+        Description leftDescription = exprLeft.getDescription();
+        Description rightDescription = exprRight.getDescription();
 
-        if (desc1.getType().equals("INT")){
+        addToText("# Subtracting " + leftDescription.getName() + " and " + rightDescription.getName());
+
+        if (leftDescription.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
-            Description description = new Description(resultName, "INT");
+            Description newDescription = new Description(resultName, "INT");
             // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
-            addToText("lw $a0, " + desc1.getName());
+            addToText("lw $a0, " + leftDescription.getName());
             // if desc1 comes from array
-            addToText("lw $a1, " + desc2.getName());
+            addToText("lw $a1, " + rightDescription.getName());
             // if desc2 comes from array
 
             addToText("sub $t0, $a0, $a1");
-            addToText("la $a2, " + description.getName());
+            addToText("la $a2, " + newDescription.getName());
             addToText("sw $t0, 0($a2)");
             addEmptyLine();
-            SemanticStack.getSemanticStack().push(description);
-
+            node.setDescription(newDescription);
         }
 
-        else if(desc1.getType().equals("DOUBLE")){
+        else if(leftDescription.getType().equals("DOUBLE")){
             // todo complete this part
         }
 
     }
 
-    private void cgenPlus(Node node) {
-        if (node.getNodeValueType().equals("STRING")){
+    private void cgenNegativate(Node node)
+    {
+        ArrayList<Node> childs = node.getChildNodes();
+        Node expr = childs.get(1);
+        Description exprDescription = expr.getDescription();
+
+        addToText("# Negitivating " + exprDescription.getName());
+        if (exprDescription.getType().equals("INT")){
+            String resultName = IDGenerator.generateID();
+            String mipsType = getMipsType("INT");
+            Description newDescription = new Description(resultName, "INT");
+            // add to SymbolTable
+            addToData(resultName, mipsType, 0);
+
+            addToText("lw $a1, " + exprDescription.getName());
+            // if desc2 comes from array
+
+            addToText("sub $t0, $zero, $a1");
+            addToText("la $a2, " + newDescription.getName());
+            addToText("sw $t0, 0($a2)");
+            addEmptyLine();
+            node.setDescription(newDescription);
+        }
+
+        else if(exprDescription.getType().equals("DOUBLE")){
+            // todo complete this part
+        }
+
+    }
+
+    private void cgenPLUS(Node node) {
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
+
+        if (exprLeft.getNodeValueType().equals("STRING")){
             cgenStringConcatination(node);
             return;
         }
-        else if(node.getNodeValueType().equals("Array")){
+        else if(exprLeft.getNodeValueType().equals("Array")){
             cgenArrayConcatination(node);
             return;
         }
 
-        Description desc1 = SemanticStack.getSemanticStack().pop();
-        Description desc2 = SemanticStack.getSemanticStack().pop();
+        Description descLeft = exprLeft.getDescription();
+        Description descRight = exprRight.getDescription();
 
-        addToText("# adding " + desc1.getName() + " and " + desc2.getName());
+        addToText("# adding " + descLeft.getName() + " and " + descRight.getName());
 
-        if (desc1.getType().equals("INT")){
+        if (descLeft.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
-            Description description = new Description(resultName, "INT");
+            Description newDescription = new Description(resultName, "INT");
             // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
-            addToText("lw $a0, " + desc1.getName());
+            addToText("lw $a0, " + descLeft.getName());
             // if desc1 comes from array
-            addToText("lw $a1, " + desc2.getName());
+            addToText("lw $a1, " + descRight.getName());
             // if desc2 comes from array
 
             addToText("add $t0, $a0, $a1");
-            addToText("la $a2, " + description.getName());
+            addToText("la $a2, " + newDescription.getName());
             addToText("sw $t0, 0($a2)");
             addEmptyLine();
-            SemanticStack.getSemanticStack().push(description);
+            node.setDescription(newDescription);
 
         }
 
-        else if(desc1.getType().equals("DOUBLE")){
+        else if(descLeft.getType().equals("DOUBLE")){
             // todo complete this part
         }
 
@@ -3941,13 +4554,15 @@ class CodeGen
     }
 
     private void cgenArrayConcatination(Node node) {
+        // todo mamadreza  ---> first get node's childs
     }
 
     private void cgenStringConcatination(Node node) {
+        // todo mamadreza  ---> first get node's childs
     }
 
 
-    private void cgenReadInteger(Node node)
+    private void cgenREADINTEGER(Node node)
     {
         String variableName = IDGenerator.generateID();
         Description description = new Description(variableName, "INT");
@@ -3963,7 +4578,7 @@ class CodeGen
         SemanticStack.getSemanticStack().push(description);
     }
 
-    private void cgenReadLine(Node node)
+    private void cgenREADLINE(Node node)
     {
         String stringName = IDGenerator.generateID();
         Description description = new Description(stringName, "STRING");
@@ -3979,48 +4594,151 @@ class CodeGen
     }
 
 
-    private void cgenPrint(Node node)
+    private void cgenPrint(Node node) throws Exception
     {
-        Description description = SemanticStack.getSemanticStack().pop();
-        addToText("# Print " + description.getName());
-        if (node.getNodeValueType().equals("INT"))
-        {
-            addToText("li $v0, 1");
-            addToText("lw $a0, " + description.getName());
-            if (description.isInArray()){
-                addToText("lw $a0, 0($a0)");
+        ArrayList<Node> childs = node.getChildNodes();
+
+        for(Node child : childs){
+            if (child.getSymbolName().equals("Expr")){
+                cgen(child);
+
+                Description description = child.getDescription();
+
+                addToText("# Print " + description.getName());
+                if (child.getNodeValueType().equals("INT"))
+                {
+                    addToText("li $v0, 1");
+                    addToText("lw $a0, " + description.getName());
+                    if (description.isInArray()){
+                        addToText("lw $a0, 0($a0)");
+                    }
+                    addToText("syscall");
+                }
+
+                else if(child.getNodeValueType().equals("BOOL"))
+                {
+                    String trueLabel = "_print_true_label_" + description.getName();
+                    String falseLabel = "_print_false_label_" + description.getName();
+                    String endLabel = "_end_print_boolean_label_" + description.getName();
+
+                    addToText("lw $s0, " + description.getName());
+                    if (description.isInArray()){
+                        addToText("lw $s0, 0($s0)");
+                    }
+                    addToText("beq $s0, $zero, " + falseLabel);
+                    addToText("j " + trueLabel);
+
+                    addToText(falseLabel + ":", true);
+                    addToText("li $v0, 4");
+                    addToText("la $a0, _string_false");
+                    addToText("syscall");
+                    addToText("j " + endLabel);
+
+                    addToText(trueLabel + ":", true);
+                    addToText("li $v0, 4");
+                    addToText("la $a0, _string_true");
+                    addToText("syscall");
+
+                    addToText(endLabel + ":", true);
+                }
+
+                else if (child.getNodeValueType().equals("DOUBLE"))
+                {
+                    addToText("li $v0, 2");
+                    addToText("lw $a0, " + description.getName());
+                    if(description.isInArray()){
+                        addToText("lw $a0, 0($a0)");
+                    }
+                    addToText("mtc1 $a0, $f12");  // http://ww2.cs.fsu.edu/~dennis/teaching/2013_summer_cda3100/week5/week5-day2.pdf
+                    addToText("syscall");
+                }
+
+                else if (child.getNodeValueType().equals("STRING"))
+                {
+                    addToText("li $v0, 4");
+                    addToText("la $a0, " + description.getName());
+                    addToText("syscall");
+                }
+
+
             }
-            addToText("syscall");
         }
+        cgenPrintNewLine(node);
 
-        //else if(node.getNodeValueType().equals("BOOL")){}
+//        Description description = SemanticStack.getSemanticStack().pop();
+//        addToText("# Print " + description.getName());
+//        if (node.getNodeValueType().equals("INT"))
+//        {
+//            addToText("li $v0, 1");
+//            addToText("lw $a0, " + description.getName());
+//            if (description.isInArray()){
+//                addToText("lw $a0, 0($a0)");
+//            }
+//            addToText("syscall");
+//        }
+//
+//        else if(node.getNodeValueType().equals("BOOL"))
+//        {
+//            String trueLabel = "_print_true_label_" + description.getName();
+//            String falseLabel = "_print_false_label_" + description.getName();
+//            String endLabel = "_end_print_boolean_label_" + description.getName();
+//
+//            addToText("lw $s0, " + description.getName());
+//            if (description.isInArray()){
+//                addToText("lw $s0, 0($s0)");
+//            }
+//            addToText("beq $s0, $zero, " + falseLabel);
+//            addToText("j " + trueLabel);
+//
+//            addToText(falseLabel + ":", true);
+//            addToText("li $v0, 4");
+//            addToText("la $a0, _string_false");
+//            addToText("syscall");
+//            addToText("j " + endLabel);
+//
+//            addToText(trueLabel + ":", true);
+//            addToText("li $v0, 4");
+//            addToText("la $a0, _string_true");
+//            addToText("syscall");
+//
+//            addToText(endLabel + ":", true);
+//        }
+//
+//        else if (node.getNodeValueType().equals("DOUBLE"))
+//        {
+//            addToText("li $v0, 2");
+//            addToText("lw $a0, " + description.getName());
+//            if(description.isInArray()){
+//                addToText("lw $a0, 0($a0)");
+//            }
+//            addToText("mtc1 $a0, $f12");  // http://ww2.cs.fsu.edu/~dennis/teaching/2013_summer_cda3100/week5/week5-day2.pdf
+//            addToText("syscall");
+//        }
+//
+//        else if (node.getNodeValueType().equals("STRING"))
+//        {
+//            addToText("li $v0, 4");
+//            addToText("la $a0, " + description.getName());
+//            addToText("syscall");
+//        }
+//
+//        cgenPrintNewLine(node);
+    }
 
-        else if (node.getNodeValueType().equals("DOUBLE"))
-        {
-            addToText("li $v0, 2");
-            addToText("lw $a0, " + description.getName());
-            if(description.isInArray()){
-                addToText("lw $a0, 0($a0)");
-            }
-            addToText("mtc1 $a0, $f12");  // http://ww2.cs.fsu.edu/~dennis/teaching/2013_summer_cda3100/week5/week5-day2.pdf
-            addToText("syscall");
-        }
-
-        else if (node.getNodeValueType().equals("STRING"))
-        {
-            addToText("li $v0, 4");
-            addToText("la $a0, " + description.getName());
-            addToText("syscall");
-        }
+    private void cgenPrintNewLine(Node node)
+    {
+        addToText("# Printing a new line in mips' output");
+        addToText("li $a0, 0xA");
+        addToText("li $v0, 0xB");
+        addToText("syscall");
+        addEmptyLine();
     }
 
     private void cgenStrcuture(Node node)
     {
     }
 
-    private void cgenStart(Node node)
-    {
-    }
+
 
     private void pushRegistersA()
     {
