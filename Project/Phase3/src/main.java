@@ -3,7 +3,6 @@
 // source: Phase2.flex
 
 import java_cup.runtime.*;
-import sun.security.krb5.internal.crypto.Des;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.Stack;
 public class main implements Scanner
 {
 
-    //region Scanner parts
+    //region Scanner partssun.security.krb5.internal.crypto.Des;
 
     /**
      * This character denotes the end of file.
@@ -3737,9 +3736,37 @@ class CodeGen
             case "MOD":
                 cgenMod();
                 break;
+            case "IfStmt":
+                cgenIf(node);
+                break;
+
         }
     }
+    int label = 0;
+    private void cgenIf(Node node)
+    {
+        //cgenExpr   to get t0 , t1
+        // t0 همان بولین
+        //beq
 
+//        Description description = SemanticStack.getSemanticStack().pop();
+        addToText("#if" + "(");
+        //تابعی را صدا میزنیم که ب ازای شرط داخل ایف کدی را بسازد
+        //خروجی را مننننننننن میگیرم که خروجی به من یه ثبات میده که اون ثباته برای بی ای کیو استفاده میشه
+
+
+        String asb =  getLabel();
+        addToText("beq" + "sabate" + "ya 0 ya 1" + asb);
+        //صدا زدن تابع برای داخل ایف
+        addToText(asb + ":");
+
+    }
+    private String getLabel ()
+    {
+        String s = "L" + label;
+        label ++;
+        return s;
+    }
     private void cgenMod() {
         Description desc1 = SemanticStack.getSemanticStack().pop();
         Description desc2 = SemanticStack.getSemanticStack().pop();
