@@ -3903,6 +3903,35 @@ class CodeGen
             cgen(expr);
             cgenNegativate(node);
         }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("LT") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 13 of expr ---> Expr ::= Expr < Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenLT(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("LTEQ") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 14 of expr ---> Expr ::= Expr <= Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenLTEQ(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("GT") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 15 of expr ---> Expr ::= Expr > Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenGT(node);
+        }
+
+
 
 
     }
@@ -4122,22 +4151,27 @@ class CodeGen
     }
 
     private void cgenGT(Node node) {
-        Description v2 = SemanticStack.getSemanticStack().pop();
-        Description v1 = SemanticStack.getSemanticStack().pop();
-        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
+
+        Description rightDescription = exprLeft.getDescription();
+        Description leftDescription = exprRight.getDescription();
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+
         // add to symbol table
 
-        addToData(v3.getName(), getMipsType("BOOL"), 0);
-        addToText("# Is " + v2.getName() + " > " + v1.getName());
-        addToText("lw $a0, " + v1.getName());
+        addToData(newDescription.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + leftDescription.getName() + " > " + rightDescription.getName());
+        addToText("lw $a0, " + leftDescription.getName());
         // is in array?
-        addToText("lw $a1, " + v2.getName());
+        addToText("lw $a1, " + rightDescription.getName());
         // is in array?
         addToText("sgt $t0, $a0, $a1");
-        addToText("la $a2, " + v3.getName());
+        addToText("la $a2, " + newDescription.getName());
         addToText("sw $t0, 0($a2)");
         addEmptyLine();
-        SemanticStack.getSemanticStack().push(v3);
+        node.setDescription(newDescription);
 
     }
 
@@ -4163,41 +4197,50 @@ class CodeGen
     }
 
     private void cgenLTEQ(Node node) {
-        Description v2 = SemanticStack.getSemanticStack().pop();
-        Description v1 = SemanticStack.getSemanticStack().pop();
-        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
+
+        Description rightDescription = exprLeft.getDescription();
+        Description leftDescription = exprRight.getDescription();
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
         // add to symbol table
 
-        addToData(v3.getName(), getMipsType("BOOL"), 0);
-        addToText("# Is " + v2.getName() + " <= " + v1.getName());
-        addToText("lw $a0, " + v1.getName());
+        addToData(newDescription.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + leftDescription.getName() + " <= " + rightDescription.getName());
+        addToText("lw $a0, " + leftDescription.getName());
         // is in array?
-        addToText("lw $a1, " + v2.getName());
+        addToText("lw $a1, " + rightDescription.getName());
         // is in array?
         addToText("sle $t0, $a0, $a1");
-        addToText("la $a2, " + v3.getName());
+        addToText("la $a2, " + newDescription.getName());
         addToText("sw $t0, 0($a2)");
         addEmptyLine();
-        SemanticStack.getSemanticStack().push(v3);
+        node.setDescription(newDescription);
     }
 
-    private void cgenLT(Node node) {
-        Description v2 = SemanticStack.getSemanticStack().pop();
-        Description v1 = SemanticStack.getSemanticStack().pop();
-        Description v3 = new Description(IDGenerator.generateID(), "BOOL");
+    private void cgenLT(Node node)
+    {
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
+
+        Description rightDescription = exprRight.getDescription();
+        Description leftDescription = exprLeft.getDescription();
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
         // add to symbol table
 
-        addToData(v3.getName(), getMipsType("BOOL"), 0);
-        addToText("# Is " + v2.getName() + " < " + v1.getName());
-        addToText("lw $a0, " + v1.getName());
+        addToData(newDescription.getName(), getMipsType("BOOL"), 0);
+        addToText("# Is " + leftDescription.getName() + " < " + rightDescription.getName());
+        addToText("lw $a0, " + leftDescription.getName());
         // is in array?
-        addToText("lw $a1, " + v2.getName());
+        addToText("lw $a1, " + rightDescription.getName());
         // is in array?
         addToText("slt $t0, $a0, $a1");
-        addToText("la $a2, " + v3.getName());
+        addToText("la $a2, " + newDescription.getName());
         addToText("sw $t0, 0($a2)");
         addEmptyLine();
-        SemanticStack.getSemanticStack().push(v3);
+        node.setDescription(newDescription);
     }
 
     private void cgenNOT(Node node) {
