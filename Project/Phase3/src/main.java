@@ -3841,10 +3841,37 @@ class CodeGen
 
     private void cgenVariable(Node node)
     {
-        Node type = node.getChildNodes().get(0);
-        Node ientifier = node.getChildNodes().get(1);
+        Node typeNode = node.getChildNodes().get(0);
+        Node identifier = node.getChildNodes().get(1);
+        String identifierType = getNodeType(typeNode);
 
+        String identifierMipsName = IDGenerator.generateID();
+        Description description = new Description(identifierMipsName, identifierType);
+        addToData(identifierMipsName, getMipsType(identifierType), 0);
+        identifier.setDescription(description);
+    }
 
+    private String getNodeType(Node typeNode)
+    {
+        ArrayList<Node> childs = typeNode.getChildNodes();
+        Node typeNodeChild = childs.get(0);
+        boolean isArray = childs.size() > 1;
+
+        if(!isArray){
+            switch (typeNodeChild.getSymbolName()){
+                case "INT":
+                    return "INT";
+                case "DOUBLE":
+                    return "DOUBLE";
+                case "BOOLEAN":
+                    return "BOOLEAN";
+                case "STRING":
+                    return "STRING";
+            }
+        }
+
+        // todo for array and class types
+        return "";
     }
 
     private void cgenIDENTIFIER(Node node)
