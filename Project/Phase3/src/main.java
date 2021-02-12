@@ -3888,9 +3888,26 @@ class CodeGen
             cgen(right);
             cgenDIV(node);
         }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("MOD") &&
+                childs.get(2).getSymbolName().equals("Expr")){  // case 11 of expr ---> Expr ::= Expr % Expr
+            Node left = childs.get(0);
+            Node right = childs.get(2);
+            cgen(left);
+            cgen(right);
+            cgenMOD(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("MINUS") &&
+                childs.get(1).getSymbolName().equals("Expr")){  // case 12 of expr ---> Expr ::= -Expr
+            Node expr = childs.get(1);
+            cgen(expr);
+            cgenNegativate(node);
+        }
 
 
     }
+
+
 
 
     private void cgenStart(Node node) throws Exception {
@@ -4276,33 +4293,35 @@ class CodeGen
     }
 
     private void cgenMOD(Node node) {
-        Description desc1 = SemanticStack.getSemanticStack().pop();
-        Description desc2 = SemanticStack.getSemanticStack().pop();
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
 
-        addToText("# Mod " + desc1.getName() + " on " + desc2.getName());
+        Description leftDescription = exprLeft.getDescription();
+        Description rightDescription = exprRight.getDescription();
 
-        if (desc1.getType().equals("INT")){
+        addToText("# Mod " + leftDescription.getName() + " on " + rightDescription.getName());
+        if (leftDescription.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
-            Description description = new Description(resultName, "INT");
+            Description newDescription = new Description(resultName, "INT");
             // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
-            addToText("lw $a0, " + desc1.getName());
+            addToText("lw $a0, " + leftDescription.getName());
             // if desc1 comes from array
-            addToText("lw $a1, " + desc2.getName());
+            addToText("lw $a1, " + rightDescription.getName());
             // if desc2 comes from array
 
             addToText("div $a0, $a1");
-            addToText("la $a2, " + description.getName());
+            addToText("la $a2, " + newDescription.getName());
             addToText("mfhi $t0");      // move remaining to $t0
             addToText("sw $t0, 0($a2)");
             addEmptyLine();
-            SemanticStack.getSemanticStack().push(description);
-
+            node.setDescription(newDescription);
         }
 
-        else if(desc1.getType().equals("DOUBLE")){
+        else if(leftDescription.getType().equals("DOUBLE")){
             // todo complete this part
         }
 
@@ -4410,6 +4429,36 @@ class CodeGen
         }
 
         else if(leftDescription.getType().equals("DOUBLE")){
+            // todo complete this part
+        }
+
+    }
+
+    private void cgenNegativate(Node node)
+    {
+        ArrayList<Node> childs = node.getChildNodes();
+        Node expr = childs.get(1);
+        Description exprDescription = expr.getDescription();
+
+        addToText("# Negitivating " + exprDescription.getName());
+        if (exprDescription.getType().equals("INT")){
+            String resultName = IDGenerator.generateID();
+            String mipsType = getMipsType("INT");
+            Description newDescription = new Description(resultName, "INT");
+            // add to SymbolTable
+            addToData(resultName, mipsType, 0);
+
+            addToText("lw $a1, " + exprDescription.getName());
+            // if desc2 comes from array
+
+            addToText("sub $t0, $zero, $a1");
+            addToText("la $a2, " + newDescription.getName());
+            addToText("sw $t0, 0($a2)");
+            addEmptyLine();
+            node.setDescription(newDescription);
+        }
+
+        else if(exprDescription.getType().equals("DOUBLE")){
             // todo complete this part
         }
 
