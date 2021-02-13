@@ -3287,6 +3287,46 @@ class SemanticAnalysis
         {
             analysisExprNodeThreeChildren(exprNode);
         }
+        else if (exprNode.getChildNodes().size() == 4)
+        {
+            analysisExprNodeFourChildren(exprNode);
+        }
+    }
+
+    private void analysisExprNodeFourChildren(Node exprNode) throws SemanticError
+    {
+        Node childNode = exprNode.getChildNodes().get(0);
+        switch (childNode.getSymbolName())
+        {
+            case "DTOI":
+                if (!exprNode.getChildNodes().get(2).getNodeValueType().equals("DOUBLE"))
+                {
+                    throw new SemanticError();
+                }
+                exprNode.setNodeValueType("INT");
+                break;
+            case "ITOD":
+                if (!exprNode.getChildNodes().get(2).getNodeValueType().equals("INT"))
+                {
+                    throw new SemanticError();
+                }
+                exprNode.setNodeValueType("DOUBLE");
+                break;
+            case "BTOI":
+                if (!exprNode.getChildNodes().get(2).getNodeValueType().equals("BOOL"))
+                {
+                    throw new SemanticError();
+                }
+                exprNode.setNodeValueType("INT");
+                break;
+            case "ITOB":
+                if (!exprNode.getChildNodes().get(2).getNodeValueType().equals("INT"))
+                {
+                    throw new SemanticError();
+                }
+                exprNode.setNodeValueType("BOOL");
+                break;
+        }
     }
 
     private void analysisExprNodeThreeChildren(Node exprNode) throws SemanticError
