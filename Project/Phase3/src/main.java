@@ -3306,7 +3306,7 @@ class SemanticAnalysis
             case "DIV":
             case "MOD":
                 checkTypeEqualityMinus(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
-                exprNode.setValue(exprNode.getChildNodes().get(0));
+                exprNode.setNodeValueType(exprNode.getChildNodes().get(0));
                 break;
             case "LT":
             case "LTEQ":
@@ -3317,6 +3317,35 @@ class SemanticAnalysis
                 checkTypeEqualityEQ(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
                 exprNode.setNodeValueType("BOOL");
                 break;
+            case "ANDAND":
+            case "OROR":
+                checkTypeEqualityBool(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
+                exprNode.setNodeValueType("BOOL");
+                break;
+        }
+        switch (exprNode.getChildNodes().get(0).getSymbolName())
+        {
+            case "READINTEGER":
+                exprNode.setNodeValueType("INT");
+                break;
+            case "READLINE":
+                exprNode.setNodeValueType("STRING");
+                break;
+        }
+    }
+
+    private void checkTypeEqualityBool(Node expr1, Node expr2) throws SemanticError
+    {
+        if (expr1.getNodeValueType().equals(expr2.getNodeValueType()))
+        {
+            if (!expr1.getNodeValueType().equals("BOOL"))
+            {
+                throw new SemanticError();
+            }
+        }
+        else
+        {
+            throw new SemanticError();
         }
     }
 
