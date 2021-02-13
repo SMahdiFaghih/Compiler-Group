@@ -4032,6 +4032,12 @@ class CodeGen
         else if (childs.get(0).getSymbolName().equals("READLINE")){  // case 22 of expr ---> Expr ::= READLINE
             cgenREADLINE(node);
         }
+        else if (childs.get(0).getSymbolName().equals("new") &&
+                childs.get(1).getSymbolName().equals("Expr")){  // case 23 of expr ---> Expr ::= !Expr
+            Node expr = childs.get(1);
+            cgen(expr);
+            cgenNOT(node);
+        }
 
 //        ArrayList<Node> childs = node.getChildNodes();
 //        Node exprLeft = childs.get(0);
@@ -4372,14 +4378,24 @@ class CodeGen
         Description exprDescription = expr.getDescription();
         Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
 
+        String makeItTrueLabel = "_make_it_True_Label_" + newDescription.getName();
+        String endLabel = "_end_Label_for_not_" + newDescription.getName();
+
         addToData(newDescription.getName(), getMipsType(newDescription.getType()), 0);
 
         addToText("# not " + exprDescription.getName() );
         addToText("lw $a0, " + exprDescription.getName());
         // is in array
-        addToText("not $t0, $a0");
+        addToText("bnez $a0, " + makeItTrueLabel);
+        addToText("li $a0, 0");
+        addToText("j " + endLabel);
+
+        addToText(makeItTrueLabel + ":", true);
+        addToText("li $a0, 1");
+
+        addToText(endLabel + ":", true);
         addToText("la $a1, " + newDescription.getName());
-        addToText("sw $t0, 0($a1)");
+        addToText("sw $a0, 0($a1)");
         addEmptyLine();
         node.setDescription(newDescription);
     }
