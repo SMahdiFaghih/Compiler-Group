@@ -3089,6 +3089,12 @@ class Node
     public void setDescription(Description description) {
         this.description = description;
     }
+
+    public void setValue(Node node)
+    {
+        this.nodeValueType = node.nodeValueType;
+        this.arrayNodeValueType = node.arrayNodeValueType;
+    }
 }
 
 class SemanticError extends Exception
@@ -3276,6 +3282,89 @@ class SemanticAnalysis
         if (exprNode.getChildNodes().size() == 1)
         {
             analysisExprNodeOneChild(exprNode);
+        }
+        else if (exprNode.getChildNodes().size() == 3)
+        {
+            analysisExprNodeThreeChildren(exprNode);
+        }
+    }
+
+    private void analysisExprNodeThreeChildren(Node exprNode) throws SemanticError
+    {
+        Node childNode = exprNode.getChildNodes().get(1);
+        switch (childNode.getSymbolName())
+        {
+            case "Expr": //LEFTPAREN Expr RIGHTPAREN
+                exprNode.setValue(childNode);
+                break;
+            case "PLUS":
+                checkTypeEqualityPlus(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
+                exprNode.setValue(exprNode.getChildNodes().get(0));
+                break;
+            case "MINUS":
+            case "MULT":
+            case "DIV":
+            case "MOD":
+                checkTypeEqualityMinus(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
+                exprNode.setValue(exprNode.getChildNodes().get(0));
+                break;
+            case "LT":
+            case "LTEQ":
+            case "QT":
+            case "GTEQ":
+            case "EQEQ":
+            case "NOTEQ":
+                checkTypeEqualityEQ(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
+                exprNode.setNodeValueType("BOOL");
+                break;
+        }
+    }
+
+    private void checkTypeEqualityEQ(Node expr1, Node expr2) throws SemanticError
+    {
+        if (expr1.getNodeValueType().equals(expr2.getNodeValueType()))
+        {
+            if (!expr1.getNodeValueType().equals("INT") && !expr1.getNodeValueType().equals("DOUBLE") && !expr1.getNodeValueType().equals("STRING"))
+            {
+                throw new SemanticError();
+            }
+        }
+        else
+        {
+            throw new SemanticError();
+        }
+    }
+
+    private void checkTypeEqualityMinus(Node expr1, Node expr2) throws SemanticError
+    {
+        if (expr1.getNodeValueType().equals(expr2.getNodeValueType()))
+        {
+            if (!expr1.getNodeValueType().equals("INT") && !expr1.getNodeValueType().equals("DOUBLE"))
+            {
+                throw new SemanticError();
+            }
+        }
+        else
+        {
+            throw new SemanticError();
+        }
+    }
+
+    private void checkTypeEqualityPlus(Node expr1, Node expr2) throws SemanticError
+    {
+        if (expr1.getNodeValueType().equals(expr2.getNodeValueType()) && !expr1.getNodeValueType().equals("BOOL") && !expr1.getNodeValueType().equals("VOID"))
+        {
+            if (expr1.getNodeValueType().equals("Array"))
+            {
+                if (!expr1.getArrayNodeValueType().equals(expr2.getArrayNodeValueType())) //todo probably has bogs
+                {
+                    throw new SemanticError();
+                }
+            }
+        }
+        else
+        {
+           throw new SemanticError();
         }
     }
 
