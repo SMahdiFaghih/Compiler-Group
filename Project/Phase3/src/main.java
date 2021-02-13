@@ -5236,64 +5236,6 @@ class CodeGen
         }
         cgenPrintNewLine(node);
 
-//        Description description = SemanticStack.getSemanticStack().pop();
-//        addToText("# Print " + description.getName());
-//        if (node.getNodeValueType().equals("INT"))
-//        {
-//            addToText("li $v0, 1");
-//            addToText("lw $a0, " + description.getName());
-//            if (description.isInArray()){
-//                addToText("lw $a0, 0($a0)");
-//            }
-//            addToText("syscall");
-//        }
-//
-//        else if(node.getNodeValueType().equals("BOOL"))
-//        {
-//            String trueLabel = "_print_true_label_" + description.getName();
-//            String falseLabel = "_print_false_label_" + description.getName();
-//            String endLabel = "_end_print_boolean_label_" + description.getName();
-//
-//            addToText("lw $s0, " + description.getName());
-//            if (description.isInArray()){
-//                addToText("lw $s0, 0($s0)");
-//            }
-//            addToText("beq $s0, $zero, " + falseLabel);
-//            addToText("j " + trueLabel);
-//
-//            addToText(falseLabel + ":", true);
-//            addToText("li $v0, 4");
-//            addToText("la $a0, _string_false");
-//            addToText("syscall");
-//            addToText("j " + endLabel);
-//
-//            addToText(trueLabel + ":", true);
-//            addToText("li $v0, 4");
-//            addToText("la $a0, _string_true");
-//            addToText("syscall");
-//
-//            addToText(endLabel + ":", true);
-//        }
-//
-//        else if (node.getNodeValueType().equals("DOUBLE"))
-//        {
-//            addToText("li $v0, 2");
-//            addToText("lw $a0, " + description.getName());
-//            if(description.isInArray()){
-//                addToText("lw $a0, 0($a0)");
-//            }
-//            addToText("mtc1 $a0, $f12");  // http://ww2.cs.fsu.edu/~dennis/teaching/2013_summer_cda3100/week5/week5-day2.pdf
-//            addToText("syscall");
-//        }
-//
-//        else if (node.getNodeValueType().equals("STRING"))
-//        {
-//            addToText("li $v0, 4");
-//            addToText("la $a0, " + description.getName());
-//            addToText("syscall");
-//        }
-//
-//        cgenPrintNewLine(node);
     }
 
     private void cgenPrintNewLine(Node node)
