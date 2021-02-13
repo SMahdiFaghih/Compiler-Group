@@ -106,12 +106,12 @@ start with Program;
 Program ::= Structure
 	;
 Structure ::= Decl Structure | Decl
-	;
+	;IDENTIFIER
 Decl ::= VariableDecl | FunctionDecl | ClassDecl | InterfaceDecl
 	;
 VariableDecl ::= Variable SEMICOLON
 	;
-Variable ::= Type IDENTIFIER
+Variable ::= Type 
 	;
 Type ::= INT | DOUBLE | BOOLEAN | STRING | IDENTIFIER | Type LEFTBRACK RIGHTBRACK
 	;
