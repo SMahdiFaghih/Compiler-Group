@@ -4032,11 +4032,20 @@ class CodeGen
         else if (childs.get(0).getSymbolName().equals("READLINE")){  // case 22 of expr ---> Expr ::= READLINE
             cgenREADLINE(node);
         }
-        else if (childs.get(0).getSymbolName().equals("new") &&
-                childs.get(1).getSymbolName().equals("Expr")){  // case 23 of expr ---> Expr ::= !Expr
+        else if (childs.get(0).getSymbolName().equals("NEW") &&
+                childs.get(1).getSymbolName().equals("IDENTIFIER")){  // case 23 of expr ---> Expr ::= new Ident
             Node expr = childs.get(1);
             cgen(expr);
-            cgenNOT(node);
+            cgenNEWIDENT(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("NEWARRAY") &&
+                childs.get(1).getSymbolName().equals("LEFTPAREN") &&
+                childs.get(2).getSymbolName().equals("Expr")){   // case 24 of expr ---> Expr ::= NewArray(Expr,Type)
+            Node expr = childs.get(2);
+            Node type = childs.get(4);
+            cgen(expr);
+            String arrayType = getNodeType(type);
+            cgenNewArray(node, arrayType);
         }
 
 //        ArrayList<Node> childs = node.getChildNodes();
@@ -4079,6 +4088,16 @@ class CodeGen
     }
 
     private void cgenInterfaceDecl(Node node) {
+    }
+
+    private void cgenNEWIDENT(Node node)
+    {
+
+    }
+
+    private void cgenNewArray(Node node, String arrayType)
+    {
+        // todo
     }
 
     private void cgenVariable(Node node)
