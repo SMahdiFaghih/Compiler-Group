@@ -3283,6 +3283,10 @@ class SemanticAnalysis
         {
             analysisExprNodeOneChild(exprNode);
         }
+        else if (exprNode.getChildNodes().size() == 2)
+        {
+            analysisExprNodeTwoChildren(exprNode);
+        }
         else if (exprNode.getChildNodes().size() == 3)
         {
             analysisExprNodeThreeChildren(exprNode);
@@ -3377,10 +3381,50 @@ class SemanticAnalysis
         }
     }
 
+    private void analysisExprNodeTwoChildren(Node exprNode) throws SemanticError
+    {
+        Node childNode = exprNode.getChildNodes().get(0);
+        switch (childNode.getSymbolName())
+        {
+            case "MINUS":
+                switch (exprNode.getChildNodes().get(1).getNodeValueType())
+                {
+                    case "INT":
+                        exprNode.setNodeValueType("INT");
+                        break;
+                    case "DOUBLE":
+                        exprNode.setNodeValueType("DOUBEL");
+                        break;
+                    default:
+                        throw new SemanticError();
+                        break;
+                }
+                break;
+            case "NOT":
+                if (!exprNode.getChildNodes().get(1).getNodeValueType().equals("BOOL"))
+                {
+                    throw new SemanticError();
+                }
+                exprNode.setNodeValueType("BOOL");
+                break;
+            case "NEW": //NEW IDENTIFIER
+                checkTypeEqualityPlus(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
+                exprNode.setValue(exprNode.getChildNodes().get(0));
+                break;
+        }
+    }
+
     private void checkTypeEqualityAssign(Node expr1, Node expr2) throws SemanticError
     {
-        Node nodeType = analysisLValue(expr1);
-        if (nodeType.getChildNodes().size() == 1)
+        Node nodeType = analysisLValue(expr1); //expr1 is LValue
+        if (nodeType.getSymbolName().equals("ClassDecl"))
+        {
+            if (!nodeType.getChildNodes().get(1).getIdentifierName().equals(expr2.getNodeValueType()))
+            {
+                throw new SemanticError();
+            }
+        }
+        else if (nodeType.getChildNodes().size() == 1)
         {
             if (!expr2.getNodeValueType().equals(nodeType.getChildNodes().get(0).getSymbolName().toUpperCase()))
             {
@@ -3471,15 +3515,22 @@ class SemanticAnalysis
                 exprNode.setNodeValueType(childNode.getChildNodes().get(0).getNodeValueType());
                 break;
             case "LValue":
-                Node nodeType = analysisLValue(childNode);
-                if (nodeType.getChildNodes().size() == 1)
+                Node nodeType = analysisLValue(childNode); //Type or ClassDecl
+                switch (nodeType.getSymbolName())
                 {
-                    exprNode.setNodeValueType(nodeType.getChildNodes().get(0).getSymbolName().toUpperCase());
-                }
-                else //Array
-                {
-                    exprNode.setNodeValueType("Array");
-                    exprNode.setArrayNodeValueType(nodeType);
+                    case "Type":
+                        if (nodeType.getChildNodes().size() == 1)
+                        {
+                            exprNode.setNodeValueType(nodeType.getChildNodes().get(0).getSymbolName().toUpperCase());
+                        }
+                        else //Array
+                        {
+                            exprNode.setNodeValueType("Array");
+                            exprNode.setArrayNodeValueType(nodeType);
+                        }
+                        break;
+                    case "ClassDecl":
+                        exprNode.setNodeValueType(nodeType.getChildNodes().get(1).getIdentifierName());
                 }
                 break;
             case "Call":
@@ -3629,7 +3680,22 @@ class SemanticAnalysis
     {
         if (lValueNode.getChildNodes().size() == 1) //IDENTIFIER
         {
-            return getVariableType(lValueNode.getChildNodes().get(0));
+            Node node = getVariableType(lValueNode.getChildNodes().get(0));
+            if (node == null)
+            {
+                for (MyClass myClass : classes)
+                {
+                    if (myClass.classNode.getChildNodes().get(1).getIdentifierName().equals(lValueNode.getChildNodes().get(0).getSymbolName()))
+                    {
+                        node = myClass.classNode;
+                    }
+                }
+            }
+            if (node == null)
+            {
+                throw new SemanticError();
+            }
+            return node;
         }
         else if (lValueNode.getChildNodes().size() == 3) //Expr DOT IDENTIFIER
         {
@@ -3652,7 +3718,7 @@ class SemanticAnalysis
         }
     }
 
-    private String getClassName(Node exprNode) throws SemanticError
+    private String getClassName(Node exprNode) throws SemanticError //todo this function is wrong
     {
         if (exprNode.getChildNodes().size() == 1)
         {
@@ -3738,7 +3804,7 @@ class SemanticAnalysis
                 }
             }
         }
-        throw new SemanticError();
+        return null;
     }
 
     private void generateClassesData()
