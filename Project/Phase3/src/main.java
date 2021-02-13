@@ -4021,26 +4021,26 @@ class CodeGen
             cgenOROR(node);
         }
         else if (childs.get(0).getSymbolName().equals("NOT") &&
-                childs.get(1).getSymbolName().equals("Expr")){  // case 20 of expr ---> Expr ::= !Expr
+                childs.get(1).getSymbolName().equals("Expr")){  // case 21 of expr ---> Expr ::= !Expr
             Node expr = childs.get(1);
             cgen(expr);
             cgenNOT(node);
         }
-        else if (childs.get(0).getSymbolName().equals("READINTEGER")){  // case 21 of expr ---> Expr ::= READINTEGER
+        else if (childs.get(0).getSymbolName().equals("READINTEGER")){  // case 22 of expr ---> Expr ::= READINTEGER
             cgenREADINTEGER(node);
         }
-        else if (childs.get(0).getSymbolName().equals("READLINE")){  // case 22 of expr ---> Expr ::= READLINE
+        else if (childs.get(0).getSymbolName().equals("READLINE")){  // case 23 of expr ---> Expr ::= READLINE
             cgenREADLINE(node);
         }
         else if (childs.get(0).getSymbolName().equals("NEW") &&
-                childs.get(1).getSymbolName().equals("IDENTIFIER")){  // case 23 of expr ---> Expr ::= new Ident
+                childs.get(1).getSymbolName().equals("IDENTIFIER")){  // case 24 of expr ---> Expr ::= new Ident
             Node expr = childs.get(1);
             cgen(expr);
             cgenNewIdent(node);
         }
         else if (childs.get(0).getSymbolName().equals("NEWARRAY") &&
                 childs.get(1).getSymbolName().equals("LEFTPAREN") &&
-                childs.get(2).getSymbolName().equals("Expr")){   // case 24 of expr ---> Expr ::= NewArray(Expr,Type)
+                childs.get(2).getSymbolName().equals("Expr")){   // case 25 of expr ---> Expr ::= NewArray(Expr,Type)
             Node expr = childs.get(2);
             Node type = childs.get(4);
             cgen(expr);
@@ -4050,7 +4050,7 @@ class CodeGen
         else if (childs.get(0).getSymbolName().equals("ITOD") &&
                 childs.get(1).getSymbolName().equals("LEFTPAREN") &&
                 childs.get(2).getSymbolName().equals("Expr") &&
-                childs.get(3).getSymbolName().equals("RIGHTPAREN")){   // case 25 of expr ---> Expr ::= ITOD(Expr)
+                childs.get(3).getSymbolName().equals("RIGHTPAREN")){   // case 26 of expr ---> Expr ::= ITOD(Expr)
             Node expr = childs.get(2);
             cgen(expr);
             cgenITOD(node);
@@ -4058,7 +4058,7 @@ class CodeGen
         else if (childs.get(0).getSymbolName().equals("DTOI") &&
                 childs.get(1).getSymbolName().equals("LEFTPAREN") &&
                 childs.get(2).getSymbolName().equals("Expr") &&
-                childs.get(3).getSymbolName().equals("RIGHTPAREN")){   // case 26 of expr ---> Expr ::= DTOI(Expr)
+                childs.get(3).getSymbolName().equals("RIGHTPAREN")){   // case 27 of expr ---> Expr ::= DTOI(Expr)
             Node expr = childs.get(2);
             cgen(expr);
             cgenDTOI(node);
@@ -4066,7 +4066,7 @@ class CodeGen
         else if (childs.get(0).getSymbolName().equals("ITOB") &&
                 childs.get(1).getSymbolName().equals("LEFTPAREN") &&
                 childs.get(2).getSymbolName().equals("Expr") &&
-                childs.get(3).getSymbolName().equals("RIGHTPAREN")){   // case 27 of expr ---> Expr ::= ITOB(Expr)
+                childs.get(3).getSymbolName().equals("RIGHTPAREN")){   // case 28 of expr ---> Expr ::= ITOB(Expr)
             Node expr = childs.get(2);
             cgen(expr);
             cgenITOB(node);
@@ -4074,14 +4074,11 @@ class CodeGen
         else if (childs.get(0).getSymbolName().equals("BTOI") &&
                 childs.get(1).getSymbolName().equals("LEFTPAREN") &&
                 childs.get(2).getSymbolName().equals("Expr") &&
-                childs.get(3).getSymbolName().equals("RIGHTPAREN")){   // case 28 of expr ---> Expr ::= BTOI(Expr)
+                childs.get(3).getSymbolName().equals("RIGHTPAREN")){   // case 29 of expr ---> Expr ::= BTOI(Expr)
             Node expr = childs.get(2);
             cgen(expr);
             cgenBTOI(node);
         }
-
-
-
     }
 
 
