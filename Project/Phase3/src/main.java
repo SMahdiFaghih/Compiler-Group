@@ -3823,9 +3823,14 @@ class CodeGen
             case "WhileStmt":
                 cgenWhile(node);
                 break;
+            case "LValue":
+                cgenLValue(node);
+                break;
 
         }
     }
+
+
 
     int label = 0;
     private void cgenIf(Node node)
@@ -4081,6 +4086,32 @@ class CodeGen
         }
     }
 
+
+
+    private void cgenLValue(Node node)
+    {
+        ArrayList<Node> childs = node.getChildNodes();
+        if (childs.get(0).getSymbolName().equals("IDENTIFIER")){   // case 1 for LValue  --->  LValue ::= ident
+            Node identNode = childs.get(0);
+            node.setDescription(identNode.getDescription());
+        }
+        else if(childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("DOT") &&
+                childs.get(2).getSymbolName().equals("IDENTIFIER")){   // case 2 for LValue  ---> LValue ::= Expr .ident
+            Node exprNode = childs.get(0);
+            Node identNode = childs.get(2);
+            // todo ?????
+        }
+        else if(childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(1).getSymbolName().equals("LEFTBRACK") &&
+                childs.get(2).getSymbolName().equals("Expr") &&
+                childs.get(3).getSymbolName().equals("RIGHTBRACK")){   // case 3 for LValue  ---> LValue ::= Expr[Expr]
+            Node expr1Node = childs.get(0);
+            Node expr2Node = childs.get(2);
+            // todo  ????
+
+        }
+    }
 
 
 
@@ -4530,6 +4561,8 @@ class CodeGen
         }
 
     }
+
+
 
     private void cgenMOD(Node node) {
         ArrayList<Node> childs = node.getChildNodes();
