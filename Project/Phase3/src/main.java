@@ -3408,8 +3408,19 @@ class SemanticAnalysis
                 exprNode.setNodeValueType("BOOL");
                 break;
             case "NEW": //NEW IDENTIFIER
-                checkTypeEqualityPlus(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
-                exprNode.setValue(exprNode.getChildNodes().get(0));
+                boolean classFound = false;
+                for (MyClass myClass : classes)
+                {
+                    if (myClass.classNode.getChildNodes().get(1).getIdentifierName().equals(exprNode.getChildNodes().get(1).getIdentifierName()))
+                    {
+                        exprNode.setNodeValueType(myClass.classNode.getChildNodes().get(1).getIdentifierName());
+                        classFound = true;
+                    }
+                }
+                if (!classFound)
+                {
+                    throw new SemanticError();
+                }
                 break;
         }
     }
