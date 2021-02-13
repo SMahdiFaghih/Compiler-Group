@@ -3294,6 +3294,9 @@ class SemanticAnalysis
         Node childNode = exprNode.getChildNodes().get(1);
         switch (childNode.getSymbolName())
         {
+            case "ASSIGN":
+                checkTypeEqualityAssign(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
+                break;
             case "Expr": //LEFTPAREN Expr RIGHTPAREN
                 exprNode.setValue(childNode);
                 break;
@@ -3331,6 +3334,28 @@ class SemanticAnalysis
             case "READLINE":
                 exprNode.setNodeValueType("STRING");
                 break;
+        }
+    }
+
+    private void checkTypeEqualityAssign(Node expr1, Node expr2) throws SemanticError
+    {
+        Node nodeType = analysisLValue(expr1);
+        if (nodeType.getChildNodes().size() == 1)
+        {
+            if (!expr2.getNodeValueType().equals(nodeType.getChildNodes().get(0).getSymbolName().toUpperCase()))
+            {
+                throw new SemanticError();
+            }
+        }
+        else //Array
+        {
+            if (expr1.getNodeValueType().equals("Array"))
+            {
+                if (!nodeType.getChildNodes().get(0).equals(expr2.getArrayNodeValueType())) //todo probably has bogs
+                {
+                    throw new SemanticError();
+                }
+            }
         }
     }
 
