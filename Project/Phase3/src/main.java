@@ -3944,6 +3944,9 @@ class CodeGen
             case "LValue":
                 cgenLValue(node);
                 break;
+            case "Call":
+                cgenCall(node);
+                break;
 
         }
     }
@@ -4202,6 +4205,7 @@ class CodeGen
             cgen(expr);
             cgenBTOI(node);
         }
+
     }
 
 
@@ -4228,6 +4232,26 @@ class CodeGen
             Node expr2Node = childs.get(2);
             // todo  ????
 
+        }
+    }
+
+    private void cgenCall(Node node) throws Exception
+    {
+        ArrayList<Node> childs = node.getChildNodes();
+        if (childs.get(0).getSymbolName().equals("IDENTIFIER") &&
+                childs.get(2).getSymbolName().equals("Actuals")){   // case 1 for Call  --->  Call ::= ident(Actuals)
+            Node identNode = childs.get(0);
+            Node actualsNode = childs.get(2);
+            cgen(actualsNode);
+        }
+        else if (childs.get(0).getSymbolName().equals("Expr") &&
+                childs.get(2).getSymbolName().equals("IDENTIFIER") &&
+                childs.get(4).getSymbolName().equals("Actuals")){   // case 2 for Call  --->  Call ::= Expr . ident(Actuals)
+            Node exprNode = childs.get(0);
+            Node identNode = childs.get(2);
+            Node actualsNode = childs.get(4);
+            cgen(exprNode);
+            cgen(actualsNode);
         }
     }
 
