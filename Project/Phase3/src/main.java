@@ -3295,6 +3295,15 @@ class SemanticAnalysis
         {
             analysisExprNodeFourChildren(exprNode);
         }
+        else //NEWARRAY LEFTPAREN Expr COMMA Type RIGHTPAREN
+        {
+            if (!exprNode.getChildNodes().get(2).getNodeValueType().equals("INT"))
+            {
+                throw new SemanticError();
+            }
+            exprNode.setNodeValueType("Array");
+            exprNode.setArrayNodeValueType(exprNode.getChildNodes().get(4));
+        }
     }
 
     private void analysisExprNodeFourChildren(Node exprNode) throws SemanticError
