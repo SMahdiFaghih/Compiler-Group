@@ -4036,7 +4036,7 @@ class CodeGen
                 childs.get(1).getSymbolName().equals("IDENTIFIER")){  // case 23 of expr ---> Expr ::= new Ident
             Node expr = childs.get(1);
             cgen(expr);
-            cgenNEWIDENT(node);
+            cgenNewIdent(node);
         }
         else if (childs.get(0).getSymbolName().equals("NEWARRAY") &&
                 childs.get(1).getSymbolName().equals("LEFTPAREN") &&
@@ -4047,18 +4047,38 @@ class CodeGen
             String arrayType = getNodeType(type);
             cgenNewArray(node, arrayType);
         }
-
-//        ArrayList<Node> childs = node.getChildNodes();
-//        Node exprLeft = childs.get(0);
-//        Node exprRight = childs.get(2);
-//
-//        Description leftDescription = exprLeft.getDescription();
-//        Description rightDescription = exprRight.getDescription();
-//        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
-
-
-
-
+        else if (childs.get(0).getSymbolName().equals("ITOD") &&
+                childs.get(1).getSymbolName().equals("LEFTPAREN") &&
+                childs.get(2).getSymbolName().equals("Expr") &&
+                childs.get(3).getSymbolName().equals("RIGHTPAREN")){   // case 25 of expr ---> Expr ::= ITOD(Expr)
+            Node expr = childs.get(2);
+            cgen(expr);
+            cgenITOD(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("DTOI") &&
+                childs.get(1).getSymbolName().equals("LEFTPAREN") &&
+                childs.get(2).getSymbolName().equals("Expr") &&
+                childs.get(3).getSymbolName().equals("RIGHTPAREN")){   // case 26 of expr ---> Expr ::= DTOI(Expr)
+            Node expr = childs.get(2);
+            cgen(expr);
+            cgenDTOI(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("ITOB") &&
+                childs.get(1).getSymbolName().equals("LEFTPAREN") &&
+                childs.get(2).getSymbolName().equals("Expr") &&
+                childs.get(3).getSymbolName().equals("RIGHTPAREN")){   // case 27 of expr ---> Expr ::= ITOB(Expr)
+            Node expr = childs.get(2);
+            cgen(expr);
+            cgenITOB(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("BTOI") &&
+                childs.get(1).getSymbolName().equals("LEFTPAREN") &&
+                childs.get(2).getSymbolName().equals("Expr") &&
+                childs.get(3).getSymbolName().equals("RIGHTPAREN")){   // case 28 of expr ---> Expr ::= BTOI(Expr)
+            Node expr = childs.get(2);
+            cgen(expr);
+            cgenBTOI(node);
+        }
 
 
 
@@ -4090,7 +4110,7 @@ class CodeGen
     private void cgenInterfaceDecl(Node node) {
     }
 
-    private void cgenNEWIDENT(Node node)
+    private void cgenNewIdent(Node node)
     {
 
     }
@@ -4152,9 +4172,13 @@ class CodeGen
 
 
     private void cgenDTOI(Node node) {    // I have doubt about this method
-        Description dOld = SemanticStack.getSemanticStack().pop();
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprNode = childs.get(2);
+
+        Description dOld = exprNode.getDescription();
+        Description dNew = new Description(IDGenerator.generateID(), "BOOL");
         // todo check dOld type is INT
-        Description dNew = new Description(IDGenerator.generateID(), "INT");
+
         // add to symbol table
         addToData(dNew.getName(), getMipsType("DOUBLE"), 0);
 
@@ -4168,14 +4192,18 @@ class CodeGen
         addToText("la $a1, " + dNew.getName());
         addToText("sw $a0, 0(a1)");
         addEmptyLine();
-        SemanticStack.getSemanticStack().push(dNew);
+        node.setDescription(dNew);
     }
 
     private void cgenBTOI(Node node)
     {
-        Description dOld = SemanticStack.getSemanticStack().pop();
-        // todo check dOld type is BOOL
-        Description dNew = new Description(IDGenerator.generateID(), "INT");
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprNode = childs.get(2);
+
+        Description dOld = exprNode.getDescription();
+        Description dNew = new Description(IDGenerator.generateID(), "BOOL");
+        // todo check dOld type is INT
+
         // add to symbol table
         addToData(dNew.getName(), getMipsType("INT"), 0);
 
@@ -4188,13 +4216,17 @@ class CodeGen
         addToText("sw $a0, 0($a1)");
 
         addEmptyLine();
-        SemanticStack.getSemanticStack().push(dNew);
+        node.setDescription(dNew);
     }
 
     private void cgenITOD(Node node) {
-        Description dOld = SemanticStack.getSemanticStack().pop();
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprNode = childs.get(2);
+
+        Description dOld = exprNode.getDescription();
+        Description dNew = new Description(IDGenerator.generateID(), "BOOL");
         // todo check dOld type is INT
-        Description dNew = new Description(IDGenerator.generateID(), "DOUBLE");
+
         // add to symbol table
         addToData(dNew.getName(), getMipsType("DOUBLE"), 0);
 
@@ -4209,14 +4241,18 @@ class CodeGen
         addToText("la $s1, " + dNew.getName());
         addToText("swc1 $f0, 0($s1)");
         addEmptyLine();
-        SemanticStack.getSemanticStack().push(dNew);
+        node.setDescription(dNew);
     }
 
     private void cgenITOB(Node node)
     {
-        Description dOld = SemanticStack.getSemanticStack().pop();
-        // todo check dOld type is INT
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprNode = childs.get(2);
+
+        Description dOld = exprNode.getDescription();
         Description dNew = new Description(IDGenerator.generateID(), "BOOL");
+        // todo check dOld type is INT
+
         // add to symbol table
         addToData(dNew.getName(), getMipsType("BOOL"), 0);
 
@@ -4243,8 +4279,7 @@ class CodeGen
 
         addToText(endItobLabel + ":", true);
         addEmptyLine();
-        SemanticStack.getSemanticStack().push(dNew);
-
+        node.setDescription(dNew);
     }
 
     private void cgenGTEQ(Node node) {
