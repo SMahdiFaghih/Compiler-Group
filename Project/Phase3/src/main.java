@@ -4408,7 +4408,8 @@ class CodeGen
     {
         ArrayList<Node> childs = node.getChildNodes();
         if (childs.get(0).getSymbolName().equals("IDENTIFIER")){   // case 1 for LValue  --->  LValue ::= ident
-            Node identNode = childs.get(0);
+            String identifierName = childs.get(0).getIdentifierName();
+            Node identNode = IdentidierDictionary.getIdentidierDictionary().getIdentifier(identifierName);
             node.setDescription(identNode.getDescription());
         }
         else if(childs.get(0).getSymbolName().equals("Expr") &&
@@ -4902,7 +4903,6 @@ class CodeGen
             addToText("la $a1, " + lValueDesc.getName());
             addToText("sw $a0, 0($a1)");
         }
-        node.setDescription(exprDesc);
 
     }
 
@@ -5318,7 +5318,7 @@ class CodeGen
 }
 
 class IdentidierDictionary{
-    private IdentidierDictionary identidierDictionary;
+    private static IdentidierDictionary identidierDictionary;
     private Map<String, Node> dict;
 
     private IdentidierDictionary() {
@@ -5326,7 +5326,7 @@ class IdentidierDictionary{
         dict = new HashMap<>();
     }
 
-    public IdentidierDictionary getIdentidierDictionary() {
+    public static IdentidierDictionary getIdentidierDictionary() {
         return identidierDictionary;
     }
 
