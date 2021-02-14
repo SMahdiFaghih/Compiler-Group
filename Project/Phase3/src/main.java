@@ -3097,6 +3097,8 @@ class Node
     }
 }
 
+//region Semantic Analysis
+
 class SemanticError extends Exception
 {
 
@@ -3961,6 +3963,9 @@ class Scope
     }
 }
 
+//endregion
+
+//region Code Generator
 
 class CodeGen
 {
@@ -5587,3 +5592,5 @@ class Compiler
         // codeGen phase call
     }
 }
+
+//endregion
