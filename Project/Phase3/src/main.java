@@ -3,10 +3,10 @@
 // source: Phase2.flex
 
 import java_cup.runtime.*;
+import java_cup.runtime.Scanner;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Stack;
+import java.util.*;
 
 @SuppressWarnings("FallThrough")
 public class main implements Scanner
@@ -4155,10 +4155,10 @@ class CodeGen
                 childs.get(0).getSymbolName().equals("LValue") &&
                 childs.get(1).getSymbolName().equals("ASSIGN") &&
                 childs.get(2).getSymbolName().equals("Expr")){  // case 1 of expr ---> Expr ::= LValue = Expr
-            Node left = childs.get(0);
-            Node right = childs.get(2);
-            cgen(left);
-            cgen(right);
+            Node lValueNode = childs.get(0);
+            Node exprNode = childs.get(2);
+            cgen(lValueNode);
+            cgen(exprNode);
             cgenASSIGN(node);
         }
         else if(childs.get(0).getSymbolName().equals("Constant")){  // case 2 of expr ---> Expr ::= Constant
@@ -4196,6 +4196,7 @@ class CodeGen
                 childs.get(2).getSymbolName().equals("RIGHTPAREN")){  // case 9 of expr ---> Expr ::= (Expr)
             Node expr = childs.get(1);
             cgen(expr);
+
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("PLUS") &&
@@ -4901,6 +4902,7 @@ class CodeGen
             addToText("la $a1, " + lValueDesc.getName());
             addToText("sw $a0, 0($a1)");
         }
+        node.setDescription(exprDesc);
 
     }
 
@@ -5313,6 +5315,32 @@ class CodeGen
         return mipsType;
     }
 
+}
+
+class IdentidierDictionary{
+    private IdentidierDictionary identidierDictionary;
+    private Map<String, Node> dict;
+
+    private IdentidierDictionary() {
+        identidierDictionary = new IdentidierDictionary();
+        dict = new HashMap<>();
+    }
+
+    public IdentidierDictionary getIdentidierDictionary() {
+        return identidierDictionary;
+    }
+
+    public Node getIdentifier(String identifierName){
+        return dict.get(identifierName);
+    }
+
+    public boolean isIdentifierInDict(String identifierName){
+        return dict.containsKey(identifierName);
+    }
+
+    public void putIdentifier(Node node){
+        dict.put(node.getIdentifierName(), node);
+    }
 }
 
 class Description
