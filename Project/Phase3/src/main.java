@@ -4,6 +4,7 @@
 
 import java_cup.runtime.*;
 import java_cup.runtime.Scanner;
+import sun.security.krb5.internal.crypto.Des;
 
 import java.io.*;
 import java.util.*;
@@ -4534,7 +4535,32 @@ class CodeGen
 
     private void cgenNewArray(Node node, String arrayType)
     {
-        // todo
+        Description exprDescription = node.getChildNodes().get(0).getDescription();
+
+        if(arrayType.equals("VOID")){
+            // throw exception
+        }
+        Description newDescription = new Description(IDGenerator.generateID(), arrayType);
+        addToData(newDescription.getName(), getMipsType(arrayType), 0);
+
+        addToText("# Creating new Array of type " + arrayType + " on heap");
+        addToText("li $v0, 9");
+        addToText("lw $a0, " + exprDescription.getName());
+        if(exprDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+
+        addToText("mult $a0, $s0");  // to get size of matrix
+        addToText("mflo $a0");
+        addToText("addi $a0, $a0, 4");
+        addToText("syscall");
+        addToText("sw $v0, " + newDescription.getName());
+        addToText("lw $a0, " + exprDescription.getName());
+        addToText("lw $a1, " + newDescription.getName());
+        addToText("sw $a0, 0($a1)");
+        addEmptyLine();
+
+        node.setDescription(newDescription);
     }
 
     private void cgenVariable(Node node)
@@ -4566,6 +4592,10 @@ class CodeGen
                 case "STRING":
                     return "STRING";
             }
+        }
+
+        else if(isArray){
+            return "ARRAY";
         }
 
         // todo for array and class types
