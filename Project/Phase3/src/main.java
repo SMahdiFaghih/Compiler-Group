@@ -3740,7 +3740,7 @@ class SemanticAnalysis
         }
     }
 
-    private String getClassName(Node exprNode) throws SemanticError //todo this function is wrong
+    private String getClassName(Node exprNode) throws SemanticError
     {
         if (exprNode.getChildNodes().size() == 1)
         {
