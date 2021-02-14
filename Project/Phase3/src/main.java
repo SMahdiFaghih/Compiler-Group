@@ -3234,16 +3234,17 @@ class SemanticAnalysis
         switch (stmtChildNode.getSymbolName())
         {
             case "IfStmt":
-                //todo check condition is bool
-                addStmtScope(stmtChildNode.getChildNodes().get(4)); //Stmt in IfStmt
+            case "WhileStmt":
+                analysisExprNode(stmtChildNode.getChildNodes().get(2));
+                if (!stmtChildNode.getChildNodes().get(2).getNodeValueType().equals("BOOL"))
+                {
+                    throw new SemanticError();
+                }
+                addStmtScope(stmtChildNode.getChildNodes().get(4)); //Stmt in IfStmt or WhileStmt
                 break;
             case "IfElseStmt":
                 addStmtScope(stmtChildNode);
                 addStmtScope(stmtChildNode.getChildNodes().get(2)); //Stmt in IfElseStmt
-                break;
-            case "WhileStmt":
-                //todo check condition is bool
-                addStmtScope(stmtChildNode.getChildNodes().get(4)); //Stmt in WhileStmt
                 break;
             case "ForStmt":
                 if (stmtChildNode.getChildNodes().get(2).getChildNodes().size() != 0)
