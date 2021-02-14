@@ -4100,6 +4100,8 @@ class CodeGen
             case "Actuals":
                 cgenActuals(node);
                 break;
+            case "ForStmt":
+                cgenForStmt(node);
 
         }
     }
@@ -4132,17 +4134,34 @@ class CodeGen
         label ++;
         return s;
     }
-    private void cgenWhile(Node node)
+    private void cgenWhile(Node node) throws Exception
     {
+        ArrayList<Node> childs = node.getChildNodes();
         addToText("#while" + "(");
+        cgen(childs.get(2));
         // گرفتن بولین عبارت داخل شرط برای ورود به وایل
         String loop = getLabel();
         String exit = getLabel();
 
         addToText("beq" + "sabat" + "0" + exit);
         // داخل وایل
+        cgen(childs.get(4));
         addToText("j" + loop);
         addToText(exit + ":");
+
+    }
+    private void  cgenForStmt (Node node) throws Exception
+    {
+
+        ArrayList<Node> childs = node.getChildNodes();
+        cgen(childs.get(3));
+        cgen(childs.get(6));
+        cgen(childs.get(9));
+
+        addToText("#for" + "(");
+        // گرفتن بولین عبارت داخل شرط برای ورود به وایل
+        String loop = getLabel();
+        String exit = getLabel();
 
     }
 
@@ -4690,13 +4709,52 @@ class CodeGen
 
         addToData(newDescription.getName(), getMipsType("BOOL"), 0);
         addToText("# Is " + rightDescription.getName() + " == " + leftDescription.getName());
-        addToText("lw $a0, " + leftDescription.getName());
-        // is in array?
-        addToText("lw $a1, " + rightDescription.getName());
-        // is in array?
-        addToText("seq $t0, $a0, $a1");
-        addToText("la $a2, " + newDescription.getName());
-        addToText("sw $t0, 0($a2)");
+
+        if(exprLeft.getNodeValueType().equals("INT") ||
+                exprLeft.getNodeValueType().equals("DOUBLE") ||
+                exprLeft.getNodeValueType().equals("BOOLEAN")){
+            addToText("lw $a0, " + leftDescription.getName());
+            // is in array?
+            addToText("lw $a1, " + rightDescription.getName());
+            // is in array?
+            addToText("seq $t0, $a0, $a1");
+            addToText("la $a2, " + newDescription.getName());
+            addToText("sw $t0, 0($a2)");
+        }
+        else if(exprLeft.getNodeValueType().equals("STRING")){
+            String checkerLoopLabel = "_string_equality_checker_label_" + newDescription.getName();
+            String isEqualLabel = "_string_is_equal_label_" + newDescription.getName();
+            String isNotEqual = "_string_is_not_equal_label_" + newDescription.getName();
+            String endLabel = "_string_equality_check_end_label_" + newDescription.getName();
+
+            addToText("lw $s0, " + leftDescription.getName());
+            addToText("lw $s1, " + rightDescription.getName());
+
+            addToText(checkerLoopLabel + ":", true);
+            addToText("lb $s2, 0($s0)");
+            addToText("lb $s3, 0($s1)");
+            addToText("bne $s2, $s3," + isNotEqual);
+            addToText("beq $s2, $zero," + isEqualLabel);
+            addToText("addi $s0, $s0, 1");
+            addToText("addi $s1, $s1, 1");
+            addToText("j " + checkerLoopLabel);
+
+            addToText(isNotEqual + ":", true);
+            addToText("sw $zero, " + newDescription.getName());
+            addToText("j " + endLabel);
+
+            addToText(isEqualLabel + ":", true);
+            addToText("li $t0, 1");
+            addToText("sw $s0, " + newDescription.getName());
+
+            addToText(endLabel + ":", true);
+            addEmptyLine();
+
+        }
+        else if(exprLeft.getNodeValueType().equals("ARRAY")){
+            // todo
+        }
+
         addEmptyLine();
         node.setDescription(newDescription);
     }
@@ -4934,10 +4992,6 @@ class CodeGen
             addToText("sw $t0, 0($a2)");
             addEmptyLine();
             node.setDescription(newDescription);
-        }
-
-        else if(leftDescription.getType().equals("DOUBLE")){
-            // todo complete this part
         }
 
     }
