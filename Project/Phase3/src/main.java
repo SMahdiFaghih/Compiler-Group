@@ -4408,8 +4408,8 @@ class CodeGen
     {
         ArrayList<Node> childs = node.getChildNodes();
         if (childs.get(0).getSymbolName().equals("IDENTIFIER")){   // case 1 for LValue  --->  LValue ::= ident
-            String identifierName = childs.get(0).getIdentifierName();
-            Node identNode = IdentidierDictionary.getIdentidierDictionary().getIdentifier(identifierName);
+            Node newNode = childs.get(0);
+            Node identNode = IdentidierDictionary.getIdentidierDictionary().getIdentifier(newNode);
             node.setDescription(identNode.getDescription());
         }
         else if(childs.get(0).getSymbolName().equals("Expr") &&
@@ -5120,7 +5120,22 @@ class CodeGen
         }
 
         else if(descLeft.getType().equals("DOUBLE")){
-            // todo complete this part
+            String resultName = IDGenerator.generateID();
+            String mipsType = getMipsType("DOUBLE");
+            Description newDescription = new Description(resultName, "DOUBLE");
+            // add to SymbolTable
+            addToData(resultName, mipsType, 0);
+
+            addToText("lw $a0, " + descLeft.getName());
+            // if desc1 comes from array
+            addToText("mtc1 $a0, $f0");
+            addToText("lw $a1, " + descRight.getName());
+            // if desc2 comes from array
+            addToText("mtc1 $a1, $f01");
+
+            addToText("add.s $f2, $f1, $f0");
+            addToText("la $a0, " + newDescription.getName());
+            addToText("swc1 $f2, 0($a0)");
         }
 
 
@@ -5330,7 +5345,11 @@ class IdentidierDictionary{
         return identidierDictionary;
     }
 
-    public Node getIdentifier(String identifierName){
+    public Node getIdentifier(Node node){
+        String identifierName = node.getIdentifierName();
+        if(! isIdentifierInDict(identifierName)){
+            putIdentifier(node);
+        }
         return dict.get(identifierName);
     }
 
