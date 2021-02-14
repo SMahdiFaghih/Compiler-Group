@@ -3282,7 +3282,23 @@ class SemanticAnalysis
                     analysisExprNode(stmtChildNode.getChildNodes().get(0));
                 }
                 break;
+            case "ReturnStmt":
+                analysisReturnNode(stmtNode);
+                break;
+            case "PrintStmt":
+                //todo
+                break;
         }
+    }
+
+    private void analysisReturnNode(Node returnStmtNode) throws SemanticError
+    {
+        Node exprEpsilonNode = returnStmtNode.getChildNodes().get(1);
+        if (exprEpsilonNode.getChildNodes().size() != 0)
+        {
+            analysisExprNode(exprEpsilonNode.getChildNodes().get(0));
+        }
+        //todo
     }
 
     private void analysisExprNode(Node exprNode) throws SemanticError
