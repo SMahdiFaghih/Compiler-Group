@@ -3032,6 +3032,19 @@ class Node
         this.childNodes = new ArrayList<>();
     }
 
+    public static boolean checkTypeNodesEquality(Node node1, Node node2)
+    {
+        if (node1.getChildNodes().size() != node2.getChildNodes().size())
+        {
+            return false;
+        }
+        if (node1.getChildNodes().size() == 1)
+        {
+            return node1.getChildNodes().get(0).getSymbolName().equals(node2.getChildNodes().get(0).getSymbolName());
+        }
+        return checkTypeNodesEquality(node1.getChildNodes().get(0), node2.getChildNodes().get(0));
+    }
+
     public String getSymbolName()
     {
         return symbolName;
@@ -3457,7 +3470,7 @@ class SemanticAnalysis
         {
             if (expr1.getNodeValueType().equals("Array"))
             {
-                if (!nodeType.getChildNodes().get(0).equals(expr2.getArrayNodeValueType())) //todo probably has bogs
+                if (!Node.checkTypeNodesEquality(nodeType, expr2.getArrayNodeValueType()))
                 {
                     throw new SemanticError();
                 }
@@ -3516,7 +3529,7 @@ class SemanticAnalysis
         {
             if (expr1.getNodeValueType().equals("Array"))
             {
-                if (!expr1.getArrayNodeValueType().equals(expr2.getArrayNodeValueType())) //todo probably has bogs
+                if (!Node.checkTypeNodesEquality(expr1.getArrayNodeValueType(), expr2.getArrayNodeValueType()))
                 {
                     throw new SemanticError();
                 }
@@ -3628,7 +3641,7 @@ class SemanticAnalysis
             {
                 if (currentFormalsType.getChildNodes().get(0).getSymbolName().toUpperCase().equals("TYPE") && currentActualsExpr.getNodeValueType().equals("Array"))
                 {
-                    if (!currentFormalsType.getChildNodes().get(0).equals(currentActualsExpr.getArrayNodeValueType())) //todo probably has bogs
+                    if (!Node.checkTypeNodesEquality(currentFormalsType.getChildNodes().get(0), currentActualsExpr.getArrayNodeValueType()))
                     {
                         throw new SemanticError();
                     }
