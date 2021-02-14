@@ -4111,21 +4111,20 @@ class CodeGen
 
 
     int label = 0;
-    private void cgenIf(Node node)
+    private void cgenIf(Node node) throws Exception
     {
-        //cgenExpr   to get t0 , t1
-        // t0 همان بولین
-        //beq
+        ArrayList<Node> childs = node.getChildNodes();
 
-        addToText("#if" + "(");
-        //تابعی را صدا میزنیم که ب ازای شرط داخل ایف کدی را بسازد
-        //خروجی را مننننننننن میگیرم که خروجی به من یه ثبات میده که اون ثباته برای بی ای کیو استفاده میشه
+
+        addToText("#if");
+
+        cgen(childs.get(2));
 
 
 
         String label =  getLabel();
-        addToText("beq" + "sabate" + "ya 0 ya 1" + label);
-        //صدا زدن تابع برای داخل ایف
+        addToText("beq" + "t0" + "1" + label);
+        cgen(childs.get(4));
         addToText(label + ":");
 
     }
@@ -4138,14 +4137,14 @@ class CodeGen
     private void cgenWhile(Node node) throws Exception
     {
         ArrayList<Node> childs = node.getChildNodes();
-        addToText("#while" + "(");
+        addToText("#whileLoap");
         cgen(childs.get(2));
-        // گرفتن بولین عبارت داخل شرط برای ورود به وایل
+        // getting bool for while condition
         String loop = getLabel();
         String exit = getLabel();
 
-        addToText("beq" + "sabat" + "0" + exit);
-        // داخل وایل
+        addToText("beq" + "t0" + "0" + exit);
+        // in while block
         cgen(childs.get(4));
         addToText("j" + loop);
         addToText(exit + ":");
@@ -4155,14 +4154,19 @@ class CodeGen
     {
 
         ArrayList<Node> childs = node.getChildNodes();
-        cgen(childs.get(3));
-        cgen(childs.get(6));
-        cgen(childs.get(9));
-
-        addToText("#for" + "(");
-        // گرفتن بولین عبارت داخل شرط برای ورود به وایل
+        addToText("#forLoap");
         String loop = getLabel();
         String exit = getLabel();
+        //getting condition
+        cgen(childs.get(3));
+        cgen(childs.get(6));
+        //in for
+        addToText(loop + ":");
+        addToText("beq" + "t0" + "0" + exit);
+        cgen(childs.get(12));
+        cgen(childs.get(9));
+        addToText("j" + loop);
+        addToText(exit + ":");
 
     }
 
