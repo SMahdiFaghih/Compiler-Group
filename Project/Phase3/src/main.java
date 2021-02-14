@@ -4101,6 +4101,8 @@ class CodeGen
             case "Actuals":
                 cgenActuals(node);
                 break;
+            case "ForStmt":
+                cgenForStmt(node);
 
         }
     }
@@ -4133,17 +4135,34 @@ class CodeGen
         label ++;
         return s;
     }
-    private void cgenWhile(Node node)
+    private void cgenWhile(Node node) throws Exception
     {
+        ArrayList<Node> childs = node.getChildNodes();
         addToText("#while" + "(");
+        cgen(childs.get(2));
         // گرفتن بولین عبارت داخل شرط برای ورود به وایل
         String loop = getLabel();
         String exit = getLabel();
 
         addToText("beq" + "sabat" + "0" + exit);
         // داخل وایل
+        cgen(childs.get(4));
         addToText("j" + loop);
         addToText(exit + ":");
+
+    }
+    private void  cgenForStmt (Node node) throws Exception
+    {
+
+        ArrayList<Node> childs = node.getChildNodes();
+        cgen(childs.get(3));
+        cgen(childs.get(6));
+        cgen(childs.get(9));
+
+        addToText("#for" + "(");
+        // گرفتن بولین عبارت داخل شرط برای ورود به وایل
+        String loop = getLabel();
+        String exit = getLabel();
 
     }
 
