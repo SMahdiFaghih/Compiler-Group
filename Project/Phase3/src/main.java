@@ -3744,13 +3744,17 @@ class SemanticAnalysis
     {
         if (exprNode.getChildNodes().size() == 1)
         {
-            if (exprNode.getChildNodes().get(0).getSymbolName().equals("IDENTIFIER"))
+            if (exprNode.getChildNodes().get(0).getSymbolName().equals("LValue"))
             {
-                for (MyClass myClass : classes)
+                Node lValueNode = exprNode.getChildNodes().get(0);
+                if (lValueNode.getChildNodes().size() == 1)
                 {
-                    if (myClass.classNode.getChildNodes().get(1).getIdentifierName().equals(exprNode.getChildNodes().get(0).getSymbolName()))
+                    for (MyClass myClass : classes)
                     {
-                        return myClass.classNode.getChildNodes().get(1).getIdentifierName();
+                        if (myClass.classNode.getChildNodes().get(1).getIdentifierName().equals(lValueNode.getChildNodes().get(0).getIdentifierName()))
+                        {
+                            return myClass.classNode.getChildNodes().get(1).getIdentifierName();
+                        }
                     }
                 }
             }
