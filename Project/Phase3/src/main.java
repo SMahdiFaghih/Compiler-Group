@@ -4492,12 +4492,36 @@ class CodeGen
         Node variableNode = node.getChildNodes().get(0);
         cgen(variableNode);
     }
-
-    private void cgenFunctionDecl(Node node)
+    ArrayList<String> variableName = new ArrayList<>();
+    private void cgenFunctionDecl(Node node) throws Exception
     {
-        // todo mamadreza
+        ArrayList<Node> childs = node.getChildNodes();
+        cgenVariableName(childs.get(3));
+        addToText("Macro" + childs.get(1).getIdentifierName() + "("+ variableName + ")");
+        addToText("StmtBlock :");
+        cgen(childs.get(5));
+        addToText("end_Macro");
+
+
     }
 
+    private void cgenVariableName(Node formalsNode)
+    {
+        ArrayList<Node> formalsTypes = new ArrayList<>();
+        if (formalsNode.getChildNodes().size() != 0)
+        {
+            formalsTypes.add(formalsNode.getChildNodes().get(0).getChildNodes().get(0));
+            variableName.add(formalsNode.getChildNodes().get(0).getChildNodes().get(0).getIdentifierName());
+            Node formalsMore = formalsNode.getChildNodes().get(1);
+            while (formalsMore.getChildNodes().size() != 0)
+            {
+                formalsTypes.add(formalsMore.getChildNodes().get(1).getChildNodes().get(0));
+                variableName.add(formalsMore.getChildNodes().get(1).getChildNodes().get(0).getIdentifierName());
+                formalsMore = formalsMore.getChildNodes().get(2);
+            }
+        }
+
+    }
     private void cgenClassDecl(Node node) {
     }
 
