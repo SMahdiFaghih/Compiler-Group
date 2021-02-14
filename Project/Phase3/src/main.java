@@ -5010,7 +5010,23 @@ class CodeGen
         }
 
         else if(leftDescription.getType().equals("DOUBLE")){
-            // todo complete this part
+            String resultName = IDGenerator.generateID();
+            String mipsType = getMipsType("DOUBLE");
+            Description newDescription = new Description(resultName, "DOUBLE");
+            // add to SymbolTable
+            addToData(resultName, mipsType, 0);
+
+            addToText("lw $a0, " + leftDescription.getName());
+            // if desc1 comes from array
+            addToText("mtc1 $a0, $f0");
+            addToText("lw $a1, " + rightDescription.getName());
+            // if desc2 comes from array
+            addToText("mtc1 $a1, $f1");
+
+            addToText("mul.s $f2, $f0, $f1");
+            addToText("la $a0, " + newDescription.getName());
+            addToText("swc1 $f2, 0($a0)");
+            node.setDescription(newDescription);
         }
 
     }
@@ -5045,7 +5061,23 @@ class CodeGen
         }
 
         else if(leftDescription.getType().equals("DOUBLE")){
-            // todo complete this part
+            String resultName = IDGenerator.generateID();
+            String mipsType = getMipsType("DOUBLE");
+            Description newDescription = new Description(resultName, "DOUBLE");
+            // add to SymbolTable
+            addToData(resultName, mipsType, 0);
+
+            addToText("lw $a0, " + leftDescription.getName());
+            // if desc1 comes from array
+            addToText("mtc1 $a0, $f0");
+            addToText("lw $a1, " + rightDescription.getName());
+            // if desc2 comes from array
+            addToText("mtc1 $a1, $f1");
+
+            addToText("sub.s $f2, $f0, $f1");
+            addToText("la $a0, " + newDescription.getName());
+            addToText("swc1 $f2, 0($a0)");
+            node.setDescription(newDescription);
         }
 
     }
@@ -5131,11 +5163,12 @@ class CodeGen
             addToText("mtc1 $a0, $f0");
             addToText("lw $a1, " + descRight.getName());
             // if desc2 comes from array
-            addToText("mtc1 $a1, $f01");
+            addToText("mtc1 $a1, $f1");
 
-            addToText("add.s $f2, $f1, $f0");
+            addToText("add.s $f2, $f0, $f1");
             addToText("la $a0, " + newDescription.getName());
             addToText("swc1 $f2, 0($a0)");
+            node.setDescription(newDescription);
         }
 
 
