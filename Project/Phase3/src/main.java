@@ -3362,7 +3362,7 @@ class SemanticAnalysis
             case "DIV":
             case "MOD":
                 checkTypeEqualityMinus(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
-                exprNode.setNodeValueType(exprNode.getChildNodes().get(0));
+                exprNode.setValue(exprNode.getChildNodes().get(0));
                 break;
             case "LT":
             case "LTEQ":
@@ -3406,7 +3406,6 @@ class SemanticAnalysis
                         break;
                     default:
                         throw new SemanticError();
-                        break;
                 }
                 break;
             case "NOT":
