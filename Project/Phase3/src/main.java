@@ -4,6 +4,7 @@
 
 import java_cup.runtime.*;
 import java_cup.runtime.Scanner;
+import sun.security.krb5.internal.crypto.Des;
 
 import java.io.*;
 import java.util.*;
@@ -3032,6 +3033,19 @@ class Node
         this.childNodes = new ArrayList<>();
     }
 
+    public static boolean checkTypeNodesEquality(Node node1, Node node2)
+    {
+        if (node1.getChildNodes().size() != node2.getChildNodes().size())
+        {
+            return false;
+        }
+        if (node1.getChildNodes().size() == 1)
+        {
+            return node1.getChildNodes().get(0).getSymbolName().equals(node2.getChildNodes().get(0).getSymbolName());
+        }
+        return checkTypeNodesEquality(node1.getChildNodes().get(0), node2.getChildNodes().get(0));
+    }
+
     public String getSymbolName()
     {
         return symbolName;
@@ -3096,6 +3110,8 @@ class Node
         this.arrayNodeValueType = node.arrayNodeValueType;
     }
 }
+
+//region Semantic Analysis
 
 class SemanticError extends Exception
 {
@@ -3234,16 +3250,17 @@ class SemanticAnalysis
         switch (stmtChildNode.getSymbolName())
         {
             case "IfStmt":
-                //todo check condition is bool
-                addStmtScope(stmtChildNode.getChildNodes().get(4)); //Stmt in IfStmt
+            case "WhileStmt":
+                analysisExprNode(stmtChildNode.getChildNodes().get(2));
+                if (!stmtChildNode.getChildNodes().get(2).getNodeValueType().equals("BOOL"))
+                {
+                    throw new SemanticError();
+                }
+                addStmtScope(stmtChildNode.getChildNodes().get(4)); //Stmt in IfStmt or WhileStmt
                 break;
             case "IfElseStmt":
                 addStmtScope(stmtChildNode);
                 addStmtScope(stmtChildNode.getChildNodes().get(2)); //Stmt in IfElseStmt
-                break;
-            case "WhileStmt":
-                //todo check condition is bool
-                addStmtScope(stmtChildNode.getChildNodes().get(4)); //Stmt in WhileStmt
                 break;
             case "ForStmt":
                 if (stmtChildNode.getChildNodes().get(2).getChildNodes().size() != 0)
@@ -3266,7 +3283,23 @@ class SemanticAnalysis
                     analysisExprNode(stmtChildNode.getChildNodes().get(0));
                 }
                 break;
+            case "ReturnStmt":
+                analysisReturnNode(stmtNode);
+                break;
+            case "PrintStmt":
+                //todo
+                break;
         }
+    }
+
+    private void analysisReturnNode(Node returnStmtNode) throws SemanticError
+    {
+        Node exprEpsilonNode = returnStmtNode.getChildNodes().get(1);
+        if (exprEpsilonNode.getChildNodes().size() != 0)
+        {
+            analysisExprNode(exprEpsilonNode.getChildNodes().get(0));
+        }
+        //todo
     }
 
     private void analysisExprNode(Node exprNode) throws SemanticError
@@ -3454,7 +3487,7 @@ class SemanticAnalysis
         {
             if (expr1.getNodeValueType().equals("Array"))
             {
-                if (!nodeType.getChildNodes().get(0).equals(expr2.getArrayNodeValueType())) //todo probably has bogs
+                if (!Node.checkTypeNodesEquality(nodeType, expr2.getArrayNodeValueType()))
                 {
                     throw new SemanticError();
                 }
@@ -3513,7 +3546,7 @@ class SemanticAnalysis
         {
             if (expr1.getNodeValueType().equals("Array"))
             {
-                if (!expr1.getArrayNodeValueType().equals(expr2.getArrayNodeValueType())) //todo probably has bogs
+                if (!Node.checkTypeNodesEquality(expr1.getArrayNodeValueType(), expr2.getArrayNodeValueType()))
                 {
                     throw new SemanticError();
                 }
@@ -3625,7 +3658,7 @@ class SemanticAnalysis
             {
                 if (currentFormalsType.getChildNodes().get(0).getSymbolName().toUpperCase().equals("TYPE") && currentActualsExpr.getNodeValueType().equals("Array"))
                 {
-                    if (!currentFormalsType.getChildNodes().get(0).equals(currentActualsExpr.getArrayNodeValueType())) //todo probably has bogs
+                    if (!Node.checkTypeNodesEquality(currentFormalsType.getChildNodes().get(0), currentActualsExpr.getArrayNodeValueType()))
                     {
                         throw new SemanticError();
                     }
@@ -3737,17 +3770,21 @@ class SemanticAnalysis
         }
     }
 
-    private String getClassName(Node exprNode) throws SemanticError //todo this function is wrong
+    private String getClassName(Node exprNode) throws SemanticError
     {
         if (exprNode.getChildNodes().size() == 1)
         {
-            if (exprNode.getChildNodes().get(0).getSymbolName().equals("IDENTIFIER"))
+            if (exprNode.getChildNodes().get(0).getSymbolName().equals("LValue"))
             {
-                for (MyClass myClass : classes)
+                Node lValueNode = exprNode.getChildNodes().get(0);
+                if (lValueNode.getChildNodes().size() == 1)
                 {
-                    if (myClass.classNode.getChildNodes().get(1).getIdentifierName().equals(exprNode.getChildNodes().get(0).getSymbolName()))
+                    for (MyClass myClass : classes)
                     {
-                        return myClass.classNode.getChildNodes().get(1).getIdentifierName();
+                        if (myClass.classNode.getChildNodes().get(1).getIdentifierName().equals(lValueNode.getChildNodes().get(0).getIdentifierName()))
+                        {
+                            return myClass.classNode.getChildNodes().get(1).getIdentifierName();
+                        }
                     }
                 }
             }
@@ -3960,6 +3997,9 @@ class Scope
     }
 }
 
+//endregion
+
+//region Code Generator
 
 class CodeGen
 {
@@ -4535,7 +4575,32 @@ class CodeGen
 
     private void cgenNewArray(Node node, String arrayType)
     {
-        // todo
+        Description exprDescription = node.getChildNodes().get(0).getDescription();
+
+        if(arrayType.equals("VOID")){
+            // throw exception
+        }
+        Description newDescription = new Description(IDGenerator.generateID(), arrayType);
+        addToData(newDescription.getName(), getMipsType(arrayType), 0);
+
+        addToText("# Creating new Array of type " + arrayType + " on heap");
+        addToText("li $v0, 9");
+        addToText("lw $a0, " + exprDescription.getName());
+        if(exprDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+
+        addToText("mult $a0, $s0");  // to get size of matrix
+        addToText("mflo $a0");
+        addToText("addi $a0, $a0, 4");
+        addToText("syscall");
+        addToText("sw $v0, " + newDescription.getName());
+        addToText("lw $a0, " + exprDescription.getName());
+        addToText("lw $a1, " + newDescription.getName());
+        addToText("sw $a0, 0($a1)");
+        addEmptyLine();
+
+        node.setDescription(newDescription);
     }
 
     private void cgenVariable(Node node)
@@ -4567,6 +4632,10 @@ class CodeGen
                 case "STRING":
                     return "STRING";
             }
+        }
+
+        else if(isArray){
+            return "ARRAY";
         }
 
         // todo for array and class types
@@ -5610,3 +5679,5 @@ class Compiler
         // codeGen phase call
     }
 }
+
+//endregion
