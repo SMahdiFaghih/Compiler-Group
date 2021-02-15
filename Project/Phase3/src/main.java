@@ -2847,7 +2847,7 @@ class parser extends java_cup.runtime.lr_parser
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Constant", 35, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value.toString();
-                addTerminalToAST("BOOLCONSTANT", "BOOL", value);
+                addTerminalToAST("BOOLCONSTANT", "BOOLEAN", value);
                 addSubtreeToAST("Constant", 1);
                 return CUP$parser$result;
 
@@ -3255,7 +3255,7 @@ class SemanticAnalysis
             case "IfStmt":
             case "WhileStmt":
                 analysisExprNode(stmtChildNode.getChildNodes().get(2));
-                if (!stmtChildNode.getChildNodes().get(2).getNodeValueType().equals("BOOL"))
+                if (!stmtChildNode.getChildNodes().get(2).getNodeValueType().equals("BOOLEAN"))
                 {
                     throw new SemanticError();
                 }
@@ -3410,7 +3410,7 @@ class SemanticAnalysis
                 exprNode.setNodeValueType("DOUBLE");
                 break;
             case "BTOI":
-                if (!exprNode.getChildNodes().get(2).getNodeValueType().equals("BOOL"))
+                if (!exprNode.getChildNodes().get(2).getNodeValueType().equals("BOOLEAN"))
                 {
                     throw new SemanticError();
                 }
@@ -3421,7 +3421,7 @@ class SemanticAnalysis
                 {
                     throw new SemanticError();
                 }
-                exprNode.setNodeValueType("BOOL");
+                exprNode.setNodeValueType("BOOLEAN");
                 break;
         }
     }
@@ -3455,12 +3455,12 @@ class SemanticAnalysis
             case "EQEQ":
             case "NOTEQ":
                 checkTypeEqualityEQ(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
-                exprNode.setNodeValueType("BOOL");
+                exprNode.setNodeValueType("BOOLEAN");
                 break;
             case "ANDAND":
             case "OROR":
                 checkTypeEqualityBool(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
-                exprNode.setNodeValueType("BOOL");
+                exprNode.setNodeValueType("BOOLEAN");
                 break;
         }
         switch (exprNode.getChildNodes().get(0).getSymbolName())
@@ -3493,11 +3493,11 @@ class SemanticAnalysis
                 }
                 break;
             case "NOT":
-                if (!exprNode.getChildNodes().get(1).getNodeValueType().equals("BOOL"))
+                if (!exprNode.getChildNodes().get(1).getNodeValueType().equals("BOOLEAN"))
                 {
                     throw new SemanticError();
                 }
-                exprNode.setNodeValueType("BOOL");
+                exprNode.setNodeValueType("BOOLEAN");
                 break;
             case "NEW": //NEW IDENTIFIER
                 boolean classFound = false;
@@ -3560,7 +3560,7 @@ class SemanticAnalysis
     {
         if (expr1.getNodeValueType().equals(expr2.getNodeValueType()))
         {
-            if (!expr1.getNodeValueType().equals("BOOL"))
+            if (!expr1.getNodeValueType().equals("BOOLEAN"))
             {
                 throw new SemanticError();
             }
@@ -3603,7 +3603,7 @@ class SemanticAnalysis
 
     private void checkTypeEqualityPlus(Node expr1, Node expr2) throws SemanticError
     {
-        if (expr1.getNodeValueType().equals(expr2.getNodeValueType()) && !expr1.getNodeValueType().equals("BOOL") && !expr1.getNodeValueType().equals("VOID"))
+        if (expr1.getNodeValueType().equals(expr2.getNodeValueType()) && !expr1.getNodeValueType().equals("BOOLEAN") && !expr1.getNodeValueType().equals("VOID"))
         {
             if (expr1.getNodeValueType().equals("Array"))
             {
@@ -3672,9 +3672,26 @@ class SemanticAnalysis
         else //Expr DOT IDENTIFIER LEFTPAREN Actuals RIGHTPAREN
         {
             String className = getClassName(callNode.getChildNodes().get(0));
-            Node functionDeclNode = getClassFunctionNode(callNode.getChildNodes().get(2), className);
-            checkFunctionParameters(functionDeclNode.getChildNodes().get(3), callNode.getChildNodes().get(4));
-            return functionDeclNode.getChildNodes().get(0);
+            if (className.equals("Array"))
+            {
+                if (callNode.getChildNodes().get(2).getIdentifierName().equals("length") && callNode.getChildNodes().get(4).getChildNodes().size() == 0)
+                {
+                    Node intNode = new Node("INT");
+                    Node typeNode = new Node("Type");
+                    typeNode.addChildNode(intNode);
+                    return typeNode;
+                }
+                else
+                {
+                    throw new SemanticError();
+                }
+            }
+            else
+            {
+                Node functionDeclNode = getClassFunctionNode(callNode.getChildNodes().get(2), className);
+                checkFunctionParameters(functionDeclNode.getChildNodes().get(3), callNode.getChildNodes().get(4));
+                return functionDeclNode.getChildNodes().get(0);
+            }
         }
     }
 
@@ -3839,7 +3856,11 @@ class SemanticAnalysis
             {
                 Node lValueNode = exprNode.getChildNodes().get(0);
                 Node typeNode = analysisLValue(lValueNode);
-                if (typeNode.getChildNodes().size() != 1 || !typeNode.getChildNodes().get(0).getSymbolName().equals("IDENTIFIER"))
+                if (typeNode.getChildNodes().size() != 1)
+                {
+                    return "Array";
+                }
+                else if (!typeNode.getChildNodes().get(0).getSymbolName().equals("IDENTIFIER"))
                 {
                     throw new SemanticError();
                 }
@@ -3858,7 +3879,7 @@ class SemanticAnalysis
             {
                 if (scopes.get(1).classNode != null)
                 {
-                    return scopes.get(1).classNode.classNode.getIdentifierName();
+                    return scopes.get(1).classNode.classNode.getChildNodes().get(1).getIdentifierName();
                 }
             }
         }
