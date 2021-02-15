@@ -4022,6 +4022,8 @@ class CodeGen
     private void initial() {
         addToData("_string_true", ".asciiz", "true");
         addToData("_string_false", ".asciiz", "false");
+        addToData("_array_size_negative_error", ".asciiz", "ERROR : array size is negative");
+
     }
 
     public void cgen(Node node) throws Exception
@@ -4392,6 +4394,7 @@ class CodeGen
             Node expr = childs.get(2);
             Node type = childs.get(4);
             cgen(expr);
+            cgenCheckArraySize(node);
             String arrayType = getNodeType(type);
             cgenNewArray(node, arrayType);
         }
@@ -4428,6 +4431,32 @@ class CodeGen
             cgenBTOI(node);
         }
 
+    }
+
+    private void cgenCheckArraySize(Node node) {
+        Node exprNode = node.getChildNodes().get(2);
+        Description exprDescription = exprNode.getDescription();
+        if (!exprNode.getNodeValueType().equals("INT")){
+            // todo throw Exceprion
+        }
+
+        String sizeIsNegativeLabel = "_size_is_negative_label_for_" + exprDescription.getName();
+        String sizeCheckingEndLabel = "_size_checkin_end_label_for_" + exprDescription.getName();
+        addToText("# checking size of array");
+
+        addToText("lw $a0, " + exprDescription.getName());
+        if(exprDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+        addToText("blt $a0, $zero, " + sizeIsNegativeLabel);
+        addToText(sizeIsNegativeLabel + ":", true);
+        addToText("li $v0, 4");
+        addToText("la $a0, _array_size_negative_error");
+        addToText("syscall");
+        addToText("li $v0, 10");
+        addToText("syscall");
+        addToText(sizeCheckingEndLabel + ":", true);
+        addEmptyLine();
     }
 
     private void cgenConstant(Node node)
@@ -4576,11 +4605,20 @@ class CodeGen
     private void cgenNewArray(Node node, String arrayType)
     {
         Description exprDescription = node.getChildNodes().get(0).getDescription();
+        ArrayDescription newArrayDescription;
 
         if(arrayType.equals("VOID")){
             // throw exception
+            return;
         }
-        Description newDescription = new Description(IDGenerator.generateID(), arrayType);
+        else if(! arrayType.equals("ARRAY")){
+            newArrayDescription = new ArrayDescription(IDGenerator.generateID(), arrayType, 1);
+        }
+        else if(arrayType.equals("ARRAY")){
+            newArrayDescription = new ArrayDescription(IDGenerator.generateID(), "ARRAY", )
+        }
+
+
         addToData(newDescription.getName(), getMipsType(arrayType), 0);
 
         addToText("# Creating new Array of type " + arrayType + " on heap");
@@ -5635,6 +5673,71 @@ class Description
         this.type = type;
     }
 }
+
+class ArrayDescription extends Description
+{
+    private String subType;
+    private int dimension;
+
+    public ArrayDescription(String name, String subType, int dimension)
+    {
+        this(name, subType, false, dimension);
+    }
+
+    public ArrayDescription(String name, String type, boolean isInArray, int dimension)
+    {
+        super(name, "ARRAY", isInArray);
+        this.subType = type;
+        this.dimension = dimension;
+    }
+
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
+    }
+
+    public void setSubType(String subType) {
+        this.subType = subType;
+    }
+
+    public int getDimension() {
+        return dimension;
+    }
+
+    public String getSubType() {
+        return subType;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public String getType()
+    {
+        return type;
+    }
+
+    public boolean isInArray()
+    {
+        return isInArray;
+    }
+
+    public void setInArray(boolean inArray)
+    {
+        isInArray = inArray;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public void setType(String type)
+    {
+        this.type = type;
+    }
+}
+
 
 class SemanticStack{
     private static SemanticStack semanticStack = new SemanticStack();
