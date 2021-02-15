@@ -3385,7 +3385,7 @@ class SemanticAnalysis
             {
                 throw new SemanticError();
             }
-            exprNode.setNodeValueType("Array");
+            exprNode.setNodeValueType("ARRAY");
             exprNode.setArrayNodeValueType(exprNode.getChildNodes().get(4));
         }
     }
@@ -3544,9 +3544,9 @@ class SemanticAnalysis
                 }
             }
         }
-        else //Array
+        else //ARRAY
         {
-            if (expr2.getNodeValueType().equals("Array"))
+            if (expr2.getNodeValueType().equals("ARRAY"))
             {
                 if (!Node.checkTypeNodesEquality(nodeType, expr2.getArrayNodeValueType()))
                 {
@@ -3605,7 +3605,7 @@ class SemanticAnalysis
     {
         if (expr1.getNodeValueType().equals(expr2.getNodeValueType()) && !expr1.getNodeValueType().equals("BOOLEAN") && !expr1.getNodeValueType().equals("VOID"))
         {
-            if (expr1.getNodeValueType().equals("Array"))
+            if (expr1.getNodeValueType().equals("ARRAY"))
             {
                 if (!Node.checkTypeNodesEquality(expr1.getArrayNodeValueType(), expr2.getArrayNodeValueType()))
                 {
@@ -3636,9 +3636,9 @@ class SemanticAnalysis
                         {
                             exprNode.setNodeValueType(nodeType.getChildNodes().get(0).getSymbolName());
                         }
-                        else //Array
+                        else //ARRAY
                         {
-                            exprNode.setNodeValueType("Array");
+                            exprNode.setNodeValueType("ARRAY");
                             exprNode.setArrayNodeValueType(nodeType);
                         }
                         break;
@@ -3652,9 +3652,9 @@ class SemanticAnalysis
                 {
                     exprNode.setNodeValueType(functionReturnType.getChildNodes().get(0).getSymbolName());
                 }
-                else //Array
+                else //ARRAY
                 {
-                    exprNode.setNodeValueType("Array");
+                    exprNode.setNodeValueType("ARRAY");
                     exprNode.setArrayNodeValueType(functionReturnType);
                 }
                 break;
@@ -3672,7 +3672,7 @@ class SemanticAnalysis
         else //Expr DOT IDENTIFIER LEFTPAREN Actuals RIGHTPAREN
         {
             String className = getClassName(callNode.getChildNodes().get(0));
-            if (className.equals("Array"))
+            if (className.equals("ARRAY"))
             {
                 if (callNode.getChildNodes().get(2).getIdentifierName().equals("length") && callNode.getChildNodes().get(4).getChildNodes().size() == 0)
                 {
@@ -3734,7 +3734,7 @@ class SemanticAnalysis
             Node currentActualsExpr = actualsExprs.get(i);
             if (!currentFormalsType.getChildNodes().get(0).getSymbolName().equals(currentActualsExpr.getNodeValueType()))
             {
-                if (currentFormalsType.getChildNodes().get(0).getSymbolName().equals("Type") && currentActualsExpr.getNodeValueType().equals("Array"))
+                if (currentFormalsType.getChildNodes().get(0).getSymbolName().equals("Type") && currentActualsExpr.getNodeValueType().equals("ARRAY"))
                 {
                     if (!Node.checkTypeNodesEquality(currentFormalsType.getChildNodes().get(0), currentActualsExpr.getArrayNodeValueType()))
                     {
@@ -3840,7 +3840,7 @@ class SemanticAnalysis
             {
                 throw new SemanticError();
             }
-            if (!lValueNode.getChildNodes().get(0).getNodeValueType().equals("Array"))
+            if (!lValueNode.getChildNodes().get(0).getNodeValueType().equals("ARRAY"))
             {
                 throw new SemanticError();
             }
@@ -3858,7 +3858,7 @@ class SemanticAnalysis
                 Node typeNode = analysisLValue(lValueNode);
                 if (typeNode.getChildNodes().size() != 1)
                 {
-                    return "Array";
+                    return "ARRAY";
                 }
                 else if (!typeNode.getChildNodes().get(0).getSymbolName().equals("IDENTIFIER"))
                 {
