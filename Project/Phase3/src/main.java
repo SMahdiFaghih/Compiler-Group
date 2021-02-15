@@ -2775,7 +2775,7 @@ class parser extends java_cup.runtime.lr_parser
                 addTerminalToAST("LEFTPAREN");
                 parseStack.push(first);
                 addTerminalToAST("RIGHTPAREN");
-                addSubtreeToAST("Call", 5);
+                addSubtreeToAST("Call", 4);
                 return CUP$parser$result;
 
                 /*. . . . . . . . . . . . . . . . . . . .*/
