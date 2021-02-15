@@ -4395,8 +4395,7 @@ class CodeGen
             Node type = childs.get(4);
             cgen(expr);
             cgenCheckArraySize(node);
-            String arrayType = getNodeType(type);
-            cgenNewArray(node, arrayType);
+            cgenNewArray(node);
         }
         else if (childs.get(0).getSymbolName().equals("ITOD") &&
                 childs.get(1).getSymbolName().equals("LEFTPAREN") &&
@@ -4602,43 +4601,45 @@ class CodeGen
 
     }
 
-    private void cgenNewArray(Node node, String arrayType)
+    private void cgenNewArray(Node node)
     {
-        Description exprDescription = node.getChildNodes().get(0).getDescription();
-        ArrayDescription newArrayDescription;
-
-        if(arrayType.equals("VOID")){
-            // throw exception
-            return;
-        }
-        else if(! arrayType.equals("ARRAY")){
-            newArrayDescription = new ArrayDescription(IDGenerator.generateID(), arrayType, 1);
-        }
-        else if(arrayType.equals("ARRAY")){
-            newArrayDescription = new ArrayDescription(IDGenerator.generateID(), "ARRAY", )
-        }
+        Node exprNode = node.getChildNodes().get(2);
+        Node typeNode = node.getChildNodes().get(4);
 
 
-        addToData(newDescription.getName(), getMipsType(arrayType), 0);
 
-        addToText("# Creating new Array of type " + arrayType + " on heap");
-        addToText("li $v0, 9");
-        addToText("lw $a0, " + exprDescription.getName());
-        if(exprDescription.isInArray()){
-            addToText("lw $a0, 0($a0)");
-        }
-
-        addToText("mult $a0, $s0");  // to get size of matrix
-        addToText("mflo $a0");
-        addToText("addi $a0, $a0, 4");
-        addToText("syscall");
-        addToText("sw $v0, " + newDescription.getName());
-        addToText("lw $a0, " + exprDescription.getName());
-        addToText("lw $a1, " + newDescription.getName());
-        addToText("sw $a0, 0($a1)");
-        addEmptyLine();
-
-        node.setDescription(newDescription);
+//        if(arrayType.equals("VOID")){
+//            // throw exception
+//            return;
+//        }
+//        else if(! arrayType.equals("ARRAY")){
+//            newArrayDescription = new ArrayDescription(IDGenerator.generateID(), arrayType, 1);
+//        }
+//        else if(arrayType.equals("ARRAY")){
+//            newArrayDescription = new ArrayDescription(IDGenerator.generateID(), "ARRAY", )
+//        }
+//
+//
+//        addToData(newDescription.getName(), getMipsType(arrayType), 0);
+//
+//        addToText("# Creating new Array of type " + arrayType + " on heap");
+//        addToText("li $v0, 9");
+//        addToText("lw $a0, " + exprDescription.getName());
+//        if(exprDescription.isInArray()){
+//            addToText("lw $a0, 0($a0)");
+//        }
+//
+//        addToText("mult $a0, $s0");  // to get size of matrix
+//        addToText("mflo $a0");
+//        addToText("addi $a0, $a0, 4");
+//        addToText("syscall");
+//        addToText("sw $v0, " + newDescription.getName());
+//        addToText("lw $a0, " + exprDescription.getName());
+//        addToText("lw $a1, " + newDescription.getName());
+//        addToText("sw $a0, 0($a1)");
+//        addEmptyLine();
+//
+//        node.setDescription(newDescription);
     }
 
     private void cgenVariable(Node node)
@@ -5641,70 +5642,6 @@ class Description
         this.name = name;
         this.type = type;
         this.isInArray = isInArray;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public String getType()
-    {
-        return type;
-    }
-
-    public boolean isInArray()
-    {
-        return isInArray;
-    }
-
-    public void setInArray(boolean inArray)
-    {
-        isInArray = inArray;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public void setType(String type)
-    {
-        this.type = type;
-    }
-}
-
-class ArrayDescription extends Description
-{
-    private String subType;
-    private int dimension;
-
-    public ArrayDescription(String name, String subType, int dimension)
-    {
-        this(name, subType, false, dimension);
-    }
-
-    public ArrayDescription(String name, String type, boolean isInArray, int dimension)
-    {
-        super(name, "ARRAY", isInArray);
-        this.subType = type;
-        this.dimension = dimension;
-    }
-
-    public void setDimension(int dimension) {
-        this.dimension = dimension;
-    }
-
-    public void setSubType(String subType) {
-        this.subType = subType;
-    }
-
-    public int getDimension() {
-        return dimension;
-    }
-
-    public String getSubType() {
-        return subType;
     }
 
     public String getName()
