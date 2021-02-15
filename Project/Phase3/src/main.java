@@ -3311,9 +3311,12 @@ class SemanticAnalysis
         Node functionDeclNode = null;
         for (Scope scope : scopes)
         {
-            if (scope.scopeNode.getSymbolName().equals("FunctionDecl"))
+            if (scope.scopeNode != null)
             {
-                functionDeclNode = scope.scopeNode;
+                if (scope.scopeNode.getSymbolName().equals("FunctionDecl"))
+                {
+                    functionDeclNode = scope.scopeNode;
+                }
             }
         }
         Node exprEpsilonNode = returnStmtNode.getChildNodes().get(1);
