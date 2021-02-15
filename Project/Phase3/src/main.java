@@ -3095,6 +3095,10 @@ class Node
         this.childNodes.addAll(childNodes);
     }
 
+    public void setChildNodes(ArrayList<Node> childNodes) {
+        this.childNodes = childNodes;
+    }
+
     public Description getDescription() {
         return description;
     }
@@ -4606,75 +4610,111 @@ class CodeGen
         Node exprNode = node.getChildNodes().get(2);
         Node typeNode = node.getChildNodes().get(4);
 
+        Description newDescription;
+        Description exprDescription = exprNode.getDescription();
+        String subType;
 
+        Object type = getNodeType(typeNode, 0);
+        if (type instanceof String){
+            subType = (String) type;
+            newDescription = new ArrayDescription(IDGenerator.generateID(), subType, 1);
+        }
+        else {
+            subType = (String) ((ArrayList) type).get(0);
+            int dimenstion = (int) ((ArrayList) type).get(1);
+            newDescription = new ArrayDescription(IDGenerator.generateID(), subType, dimenstion);
+        }
 
-//        if(arrayType.equals("VOID")){
-//            // throw exception
-//            return;
-//        }
-//        else if(! arrayType.equals("ARRAY")){
-//            newArrayDescription = new ArrayDescription(IDGenerator.generateID(), arrayType, 1);
-//        }
-//        else if(arrayType.equals("ARRAY")){
-//            newArrayDescription = new ArrayDescription(IDGenerator.generateID(), "ARRAY", )
-//        }
-//
-//
-//        addToData(newDescription.getName(), getMipsType(arrayType), 0);
-//
-//        addToText("# Creating new Array of type " + arrayType + " on heap");
-//        addToText("li $v0, 9");
-//        addToText("lw $a0, " + exprDescription.getName());
-//        if(exprDescription.isInArray()){
-//            addToText("lw $a0, 0($a0)");
-//        }
-//
-//        addToText("mult $a0, $s0");  // to get size of matrix
-//        addToText("mflo $a0");
-//        addToText("addi $a0, $a0, 4");
-//        addToText("syscall");
-//        addToText("sw $v0, " + newDescription.getName());
-//        addToText("lw $a0, " + exprDescription.getName());
-//        addToText("lw $a1, " + newDescription.getName());
-//        addToText("sw $a0, 0($a1)");
-//        addEmptyLine();
-//
-//        node.setDescription(newDescription);
+        addToData(newDescription.getName(), getMipsType(subType), 0);
+
+        addToText("# Creating new Array of type " + subType + " on heap");
+        addToText("li $v0, 9");
+        addToText("lw $a0, " + exprDescription.getName());
+        if(exprDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+
+        addToText("mult $a0, $s0");  // to get size of matrix
+        addToText("mflo $a0");
+        addToText("addi $a0, $a0, 4");
+        addToText("syscall");
+        addToText("sw $v0, " + newDescription.getName());
+        addToText("lw $a0, " + exprDescription.getName());
+        addToText("lw $a1, " + newDescription.getName());
+        addToText("sw $a0, 0($a1)");
+        addEmptyLine();
+
+        node.setDescription(newDescription);
     }
 
     private void cgenVariable(Node node)
     {
         Node typeNode = node.getChildNodes().get(0);
         Node identifier = node.getChildNodes().get(1);
-        String identifierType = getNodeType(typeNode);
+        Object identifierType = getNodeType(typeNode, 0);
 
-        String identifierMipsName = IDGenerator.generateID();
-        Description description = new Description(identifierMipsName, identifierType);
-        addToData(identifierMipsName, getMipsType(identifierType), 0);
-        identifier.setDescription(description);
+        if(identifierType instanceof String) {
+            String identifierMipsName = IDGenerator.generateID();
+            Description description = new Description(identifierMipsName, (String) identifierType);
+            addToData(identifierMipsName, getMipsType((String) identifierType), 0);
+            identifier.setDescription(description);
+        }
     }
 
-    private String getNodeType(Node typeNode)
+    private Object getNodeType(Node typeNode, int level)
     {
         ArrayList<Node> childs = typeNode.getChildNodes();
         Node typeNodeChild = childs.get(0);
         boolean isArray = childs.size() > 1;
 
         if(!isArray){
-            switch (typeNodeChild.getSymbolName()){
-                case "INT":
-                    return "INT";
-                case "DOUBLE":
-                    return "DOUBLE";
-                case "BOOLEAN":
-                    return "BOOLEAN";
-                case "STRING":
-                    return "STRING";
+            if (level == 0) {
+                switch (typeNodeChild.getSymbolName()) {
+                    case "INT":
+                        return "INT";
+                    case "DOUBLE":
+                        return "DOUBLE";
+                    case "BOOLEAN":
+                        return "BOOLEAN";
+                    case "STRING":
+                        return "STRING";
+
+                }
+            }
+            else {
+                switch (typeNodeChild.getSymbolName()) {
+                    case "INT":
+                        ArrayList<Object> arr1 = new ArrayList<>();
+                        arr1.add("INT");
+                        arr1.add(level);
+                        return arr1;
+                    case "DOUBLE":
+                        ArrayList<Object> arr2 = new ArrayList<>();
+                        arr2.add("DOUBLE");
+                        arr2.add(level);
+                        return arr2;
+                    case "BOOLEAN":
+                        ArrayList<Object> arr3 = new ArrayList<>();
+                        arr3.add("BOOLEAN");
+                        arr3.add(level);
+                        return arr3;
+                    case "STRING":
+                        ArrayList<Object> arr4 = new ArrayList<>();
+                        arr4.add("STRING");
+                        arr4.add(level);
+                        return arr4;
+
+                }
             }
         }
 
         else if(isArray){
-            return "ARRAY";
+            Node newNode = new Node("newNode" + level);
+            ArrayList<Node> newChilds = new ArrayList<>(childs);
+            newChilds.remove(childs.size()-1);
+            newChilds.remove(childs.size()-1);
+            newNode.setChildNodes(newChilds);
+            getNodeType(newNode, level + 1);
         }
 
         // todo for array and class types
@@ -5672,6 +5712,34 @@ class Description
     public void setType(String type)
     {
         this.type = type;
+    }
+}
+
+class ArrayDescription extends Description{
+    private String subType;
+    private int dimension;
+
+    public ArrayDescription(String name, String subType, int dimension){
+        super(name, "ARRAY", false);
+        this.subType = subType;
+        this.dimension = dimension;
+    }
+
+
+    public String getSubType() {
+        return subType;
+    }
+
+    public void setSubType(String subType) {
+        this.subType = subType;
+    }
+
+    public int getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
     }
 }
 
