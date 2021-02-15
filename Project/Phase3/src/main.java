@@ -3331,7 +3331,7 @@ class SemanticAnalysis
             }
             if (functionReturnTypeNode.getChildNodes().size() == 1)
             {
-                if (!functionReturnTypeNode.getChildNodes().get(0).getSymbolName().equals(exprNode.getNodeValueType()))
+                if (!functionReturnTypeNode.getChildNodes().get(0).getSymbolName().toUpperCase().equals(exprNode.getNodeValueType()))
                 {
                     throw new SemanticError();
                 }
@@ -3688,7 +3688,7 @@ class SemanticAnalysis
             Node exprWith = actualsNode.getChildNodes().get(0);
             analysisExprNode(exprWith.getChildNodes().get(0));
             actualsExprs.add(exprWith.getChildNodes().get(0));
-            Node exprMore = formalsNode.getChildNodes().get(1);
+            Node exprMore = exprWith.getChildNodes().get(1);
             while (exprMore.getChildNodes().size() != 0)
             {
                 analysisExprNode(exprMore.getChildNodes().get(1));
