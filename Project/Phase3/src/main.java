@@ -3283,7 +3283,7 @@ class SemanticAnalysis
                 }
                 break;
             case "ReturnStmt":
-                analysisReturnNode(stmtNode);
+                analysisReturnNode(stmtChildNode);
                 break;
             case "PrintStmt":
                 //todo
