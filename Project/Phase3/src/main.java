@@ -3331,7 +3331,7 @@ class SemanticAnalysis
             }
             if (functionReturnTypeNode.getChildNodes().size() == 1)
             {
-                if (!functionReturnTypeNode.getChildNodes().get(0).getSymbolName().toUpperCase().equals(exprNode.getNodeValueType()))
+                if (!functionReturnTypeNode.getChildNodes().get(0).getSymbolName().equals(exprNode.getNodeValueType()))
                 {
                     throw new SemanticError();
                 }
@@ -3529,9 +3529,19 @@ class SemanticAnalysis
         }
         else if (nodeType.getChildNodes().size() == 1)
         {
-            if (!expr2.getNodeValueType().equals(nodeType.getChildNodes().get(0).getSymbolName().toUpperCase()))
+            if (nodeType.getChildNodes().get(0).getSymbolName().equals("IDENTIFIER"))
             {
-                throw new SemanticError();
+                if (!expr2.getNodeValueType().equals(nodeType.getChildNodes().get(0).getIdentifierName()))
+                {
+                    throw new SemanticError();
+                }
+            }
+            else
+            {
+                if (!expr2.getNodeValueType().equals(nodeType.getChildNodes().get(0).getSymbolName()))
+                {
+                    throw new SemanticError();
+                }
             }
         }
         else //Array
@@ -3624,7 +3634,7 @@ class SemanticAnalysis
                     case "Type":
                         if (nodeType.getChildNodes().size() == 1)
                         {
-                            exprNode.setNodeValueType(nodeType.getChildNodes().get(0).getSymbolName().toUpperCase());
+                            exprNode.setNodeValueType(nodeType.getChildNodes().get(0).getSymbolName());
                         }
                         else //Array
                         {
@@ -3640,7 +3650,7 @@ class SemanticAnalysis
                 Node functionReturnType = analysisCall(childNode);
                 if (functionReturnType.getChildNodes().size() == 1)
                 {
-                    exprNode.setNodeValueType(functionReturnType.getChildNodes().get(0).getSymbolName().toUpperCase());
+                    exprNode.setNodeValueType(functionReturnType.getChildNodes().get(0).getSymbolName());
                 }
                 else //Array
                 {
@@ -3705,9 +3715,9 @@ class SemanticAnalysis
         {
             Node currentFormalsType = formalsTypes.get(i);
             Node currentActualsExpr = actualsExprs.get(i);
-            if (!currentFormalsType.getChildNodes().get(0).getSymbolName().toUpperCase().equals(currentActualsExpr.getNodeValueType()))
+            if (!currentFormalsType.getChildNodes().get(0).getSymbolName().equals(currentActualsExpr.getNodeValueType()))
             {
-                if (currentFormalsType.getChildNodes().get(0).getSymbolName().toUpperCase().equals("TYPE") && currentActualsExpr.getNodeValueType().equals("Array"))
+                if (currentFormalsType.getChildNodes().get(0).getSymbolName().equals("Type") && currentActualsExpr.getNodeValueType().equals("Array"))
                 {
                     if (!Node.checkTypeNodesEquality(currentFormalsType.getChildNodes().get(0), currentActualsExpr.getArrayNodeValueType()))
                     {
@@ -3828,11 +3838,16 @@ class SemanticAnalysis
             if (exprNode.getChildNodes().get(0).getSymbolName().equals("LValue"))
             {
                 Node lValueNode = exprNode.getChildNodes().get(0);
+                Node typeNode = analysisLValue(lValueNode);
+                if (typeNode.getChildNodes().size() != 1 || !typeNode.getChildNodes().get(0).getSymbolName().equals("IDENTIFIER"))
+                {
+                    throw new SemanticError();
+                }
                 if (lValueNode.getChildNodes().size() == 1)
                 {
                     for (MyClass myClass : classes)
                     {
-                        if (myClass.classNode.getChildNodes().get(1).getIdentifierName().equals(lValueNode.getChildNodes().get(0).getIdentifierName()))
+                        if (myClass.classNode.getChildNodes().get(1).getIdentifierName().equals(typeNode.getChildNodes().get(0).getIdentifierName()))
                         {
                             return myClass.classNode.getChildNodes().get(1).getIdentifierName();
                         }
@@ -3961,17 +3976,20 @@ class SemanticAnalysis
                 {
                     currentClass.publicVariables.add(currentNode.getChildNodes().get(0));
                 }
-                switch (fieldNode.getChildNodes().get(0).getChildNodes().get(0).getSymbolName()) //AccessMode
+                else
                 {
-                    case "PRIVATE":
-                        currentClass.privateVariables.add(currentNode.getChildNodes().get(0));
-                        break;
-                    case "PUBLIC":
-                        currentClass.publicVariables.add(currentNode.getChildNodes().get(0));
-                        break;
-                    case "PROTECTED":
-                        currentClass.protectedVariables.add(currentNode.getChildNodes().get(0));
-                        break;
+                    switch (fieldNode.getChildNodes().get(0).getChildNodes().get(0).getSymbolName()) //AccessMode
+                    {
+                        case "PRIVATE":
+                            currentClass.privateVariables.add(currentNode.getChildNodes().get(0));
+                            break;
+                        case "PUBLIC":
+                            currentClass.publicVariables.add(currentNode.getChildNodes().get(0));
+                            break;
+                        case "PROTECTED":
+                            currentClass.protectedVariables.add(currentNode.getChildNodes().get(0));
+                            break;
+                    }
                 }
                 break;
             case "FunctionDecl":
@@ -3979,17 +3997,20 @@ class SemanticAnalysis
                 {
                     currentClass.publicFunctions.add(currentNode);
                 }
-                switch (fieldNode.getChildNodes().get(0).getChildNodes().get(0).getSymbolName()) //AccessMode
+                else
                 {
-                    case "PRIVATE":
-                        currentClass.privateFunctions.add(currentNode);
-                        break;
-                    case "PUBLIC":
-                        currentClass.publicFunctions.add(currentNode);
-                        break;
-                    case "PROTECTED":
-                        currentClass.protectedFunctions.add(currentNode);
-                        break;
+                    switch (fieldNode.getChildNodes().get(0).getChildNodes().get(0).getSymbolName()) //AccessMode
+                    {
+                        case "PRIVATE":
+                            currentClass.privateFunctions.add(currentNode);
+                            break;
+                        case "PUBLIC":
+                            currentClass.publicFunctions.add(currentNode);
+                            break;
+                        case "PROTECTED":
+                            currentClass.protectedFunctions.add(currentNode);
+                            break;
+                    }
                 }
                 break;
         }
