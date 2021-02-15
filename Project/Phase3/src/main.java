@@ -3450,7 +3450,7 @@ class SemanticAnalysis
                 break;
             case "LT":
             case "LTEQ":
-            case "QT":
+            case "GT":
             case "GTEQ":
             case "EQEQ":
             case "NOTEQ":
