@@ -4234,34 +4234,40 @@ class CodeGen
         else if(childs.get(0).getSymbolName().equals("Call")){  // case 5 of expr ---> Expr ::= Call
             // todo related to classes
         }
+        else if (childs.get(0).getSymbolName().equals("READINTEGER")){  // case 6 of expr ---> Expr ::= READINTEGER
+            cgenREADINTEGER(node);
+        }
+        else if (childs.get(0).getSymbolName().equals("READLINE")){  // case 7 of expr ---> Expr ::= READLINE
+            cgenREADLINE(node);
+        }
         else if (childs.get(0).getSymbolName().equals("MINUS") &&
-                childs.get(1).getSymbolName().equals("Expr")){  // case 6 of expr ---> Expr ::= -Expr
+                childs.get(1).getSymbolName().equals("Expr")){  // case 8 of expr ---> Expr ::= -Expr
             Node expr = childs.get(1);
             cgen(expr);
             cgenNegativate(node);
         }
         else if (childs.get(0).getSymbolName().equals("NOT") &&
-                childs.get(1).getSymbolName().equals("Expr")){  // case 7 of expr ---> Expr ::= !Expr
+                childs.get(1).getSymbolName().equals("Expr")){  // case 9 of expr ---> Expr ::= !Expr
             Node expr = childs.get(1);
             cgen(expr);
             cgenNOT(node);
         }
         else if (childs.get(0).getSymbolName().equals("NEW") &&
-                childs.get(1).getSymbolName().equals("IDENTIFIER")){  // case 8 of expr ---> Expr ::= new Ident
+                childs.get(1).getSymbolName().equals("IDENTIFIER")){  // case 10 of expr ---> Expr ::= new Ident
             Node expr = childs.get(1);
             cgen(expr);
             cgenNewIdent(node);
         }
         else if (childs.get(0).getSymbolName().equals("LEFTPAREN") &&
                 childs.get(1).getSymbolName().equals("Expr") &&
-                childs.get(2).getSymbolName().equals("RIGHTPAREN")){  // case 9 of expr ---> Expr ::= (Expr)
+                childs.get(2).getSymbolName().equals("RIGHTPAREN")){  // case 11 of expr ---> Expr ::= (Expr)
             Node expr = childs.get(1);
             cgen(expr);
 
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("PLUS") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 10 of expr ---> Expr ::= Expr + Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 12 of expr ---> Expr ::= Expr + Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4270,7 +4276,7 @@ class CodeGen
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("MINUS") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 11 of expr ---> Expr ::= Expr - Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 13 of expr ---> Expr ::= Expr - Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4279,7 +4285,7 @@ class CodeGen
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("MULT") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 12 of expr ---> Expr ::= Expr * Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 14 of expr ---> Expr ::= Expr * Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4288,7 +4294,7 @@ class CodeGen
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("DIV") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 13 of expr ---> Expr ::= Expr / Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 15 of expr ---> Expr ::= Expr / Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4297,7 +4303,7 @@ class CodeGen
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("MOD") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 14 of expr ---> Expr ::= Expr % Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 16 of expr ---> Expr ::= Expr % Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4307,7 +4313,7 @@ class CodeGen
 
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("LT") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 15 of expr ---> Expr ::= Expr < Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 17 of expr ---> Expr ::= Expr < Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4316,7 +4322,7 @@ class CodeGen
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("LTEQ") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 16 of expr ---> Expr ::= Expr <= Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 18 of expr ---> Expr ::= Expr <= Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4325,7 +4331,7 @@ class CodeGen
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("GT") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 17 of expr ---> Expr ::= Expr > Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 19 of expr ---> Expr ::= Expr > Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4334,7 +4340,7 @@ class CodeGen
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("GTEQ") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 18 of expr ---> Expr ::= Expr >= Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 20 of expr ---> Expr ::= Expr >= Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4343,7 +4349,7 @@ class CodeGen
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("EQEQ") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 19 of expr ---> Expr ::= Expr == Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 21 of expr ---> Expr ::= Expr == Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4352,7 +4358,7 @@ class CodeGen
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("NOTEQ") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 20 of expr ---> Expr ::= Expr != Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 22 of expr ---> Expr ::= Expr != Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4361,7 +4367,7 @@ class CodeGen
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("ANDAND") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 21 of expr ---> Expr ::= Expr && Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 23 of expr ---> Expr ::= Expr && Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4370,7 +4376,7 @@ class CodeGen
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("OROR") &&
-                childs.get(2).getSymbolName().equals("Expr")){  // case 22 of expr ---> Expr ::= Expr || Expr
+                childs.get(2).getSymbolName().equals("Expr")){  // case 24 of expr ---> Expr ::= Expr || Expr
             Node left = childs.get(0);
             Node right = childs.get(2);
             cgen(left);
@@ -4378,12 +4384,7 @@ class CodeGen
             cgenOROR(node);
         }
 
-        else if (childs.get(0).getSymbolName().equals("READINTEGER")){  // case 23 of expr ---> Expr ::= READINTEGER
-            cgenREADINTEGER(node);
-        }
-        else if (childs.get(0).getSymbolName().equals("READLINE")){  // case 24 of expr ---> Expr ::= READLINE
-            cgenREADLINE(node);
-        }
+
 
         else if (childs.get(0).getSymbolName().equals("NEWARRAY") &&
                 childs.get(1).getSymbolName().equals("LEFTPAREN") &&
@@ -5288,7 +5289,7 @@ class CodeGen
             cgenStringConcatination(node);
             return;
         }
-        else if(exprLeft.getNodeValueType().equals("Array")){
+        else if(exprLeft.getNodeValueType().equals("ARRAY")){
             cgenArrayConcatination(node);
             return;
         }
