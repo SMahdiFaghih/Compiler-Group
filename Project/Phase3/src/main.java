@@ -3546,7 +3546,7 @@ class SemanticAnalysis
         }
         else //Array
         {
-            if (expr1.getNodeValueType().equals("Array"))
+            if (expr2.getNodeValueType().equals("Array"))
             {
                 if (!Node.checkTypeNodesEquality(nodeType, expr2.getArrayNodeValueType()))
                 {
