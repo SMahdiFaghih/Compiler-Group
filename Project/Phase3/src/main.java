@@ -2847,7 +2847,7 @@ class parser extends java_cup.runtime.lr_parser
                     CUP$parser$result = parser.getSymbolFactory().newSymbol("Constant", 35, ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), ((java_cup.runtime.Symbol) CUP$parser$stack.peek()), RESULT);
                 }
                 value = ((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top)).value.toString();
-                addTerminalToAST("BOOLCONSTANT", "BOOL", value);
+                addTerminalToAST("BOOLCONSTANT", "BOOLEAN", value);
                 addSubtreeToAST("Constant", 1);
                 return CUP$parser$result;
 
@@ -3255,7 +3255,7 @@ class SemanticAnalysis
             case "IfStmt":
             case "WhileStmt":
                 analysisExprNode(stmtChildNode.getChildNodes().get(2));
-                if (!stmtChildNode.getChildNodes().get(2).getNodeValueType().equals("BOOL"))
+                if (!stmtChildNode.getChildNodes().get(2).getNodeValueType().equals("BOOLEAN"))
                 {
                     throw new SemanticError();
                 }
@@ -3410,7 +3410,7 @@ class SemanticAnalysis
                 exprNode.setNodeValueType("DOUBLE");
                 break;
             case "BTOI":
-                if (!exprNode.getChildNodes().get(2).getNodeValueType().equals("BOOL"))
+                if (!exprNode.getChildNodes().get(2).getNodeValueType().equals("BOOLEAN"))
                 {
                     throw new SemanticError();
                 }
@@ -3421,7 +3421,7 @@ class SemanticAnalysis
                 {
                     throw new SemanticError();
                 }
-                exprNode.setNodeValueType("BOOL");
+                exprNode.setNodeValueType("BOOLEAN");
                 break;
         }
     }
@@ -3455,12 +3455,12 @@ class SemanticAnalysis
             case "EQEQ":
             case "NOTEQ":
                 checkTypeEqualityEQ(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
-                exprNode.setNodeValueType("BOOL");
+                exprNode.setNodeValueType("BOOLEAN");
                 break;
             case "ANDAND":
             case "OROR":
                 checkTypeEqualityBool(exprNode.getChildNodes().get(0), exprNode.getChildNodes().get(2));
-                exprNode.setNodeValueType("BOOL");
+                exprNode.setNodeValueType("BOOLEAN");
                 break;
         }
         switch (exprNode.getChildNodes().get(0).getSymbolName())
@@ -3493,11 +3493,11 @@ class SemanticAnalysis
                 }
                 break;
             case "NOT":
-                if (!exprNode.getChildNodes().get(1).getNodeValueType().equals("BOOL"))
+                if (!exprNode.getChildNodes().get(1).getNodeValueType().equals("BOOLEAN"))
                 {
                     throw new SemanticError();
                 }
-                exprNode.setNodeValueType("BOOL");
+                exprNode.setNodeValueType("BOOLEAN");
                 break;
             case "NEW": //NEW IDENTIFIER
                 boolean classFound = false;
@@ -3550,7 +3550,7 @@ class SemanticAnalysis
     {
         if (expr1.getNodeValueType().equals(expr2.getNodeValueType()))
         {
-            if (!expr1.getNodeValueType().equals("BOOL"))
+            if (!expr1.getNodeValueType().equals("BOOLEAN"))
             {
                 throw new SemanticError();
             }
@@ -3593,7 +3593,7 @@ class SemanticAnalysis
 
     private void checkTypeEqualityPlus(Node expr1, Node expr2) throws SemanticError
     {
-        if (expr1.getNodeValueType().equals(expr2.getNodeValueType()) && !expr1.getNodeValueType().equals("BOOL") && !expr1.getNodeValueType().equals("VOID"))
+        if (expr1.getNodeValueType().equals(expr2.getNodeValueType()) && !expr1.getNodeValueType().equals("BOOLEAN") && !expr1.getNodeValueType().equals("VOID"))
         {
             if (expr1.getNodeValueType().equals("Array"))
             {
@@ -4569,7 +4569,6 @@ class CodeGen
             cgenExpr(expr1Node);
             cgenExpr(expr2Node);
             cgenGetItemFromArray(node);
-
         }
     }
 
@@ -4853,7 +4852,7 @@ class CodeGen
         Node exprNode = childs.get(2);
 
         Description dOld = exprNode.getDescription();
-        Description dNew = new Description(IDGenerator.generateID(), "BOOL");
+        Description dNew = new Description(IDGenerator.generateID(), "BOOLEAN");
         // todo check dOld type is INT
 
         // add to symbol table
@@ -4878,7 +4877,7 @@ class CodeGen
         Node exprNode = childs.get(2);
 
         Description dOld = exprNode.getDescription();
-        Description dNew = new Description(IDGenerator.generateID(), "BOOL");
+        Description dNew = new Description(IDGenerator.generateID(), "BOOLEAN");
         // todo check dOld type is INT
 
         // add to symbol table
@@ -4901,7 +4900,7 @@ class CodeGen
         Node exprNode = childs.get(2);
 
         Description dOld = exprNode.getDescription();
-        Description dNew = new Description(IDGenerator.generateID(), "BOOL");
+        Description dNew = new Description(IDGenerator.generateID(), "BOOLEAN");
         // todo check dOld type is INT
 
         // add to symbol table
@@ -4927,11 +4926,11 @@ class CodeGen
         Node exprNode = childs.get(2);
 
         Description dOld = exprNode.getDescription();
-        Description dNew = new Description(IDGenerator.generateID(), "BOOL");
+        Description dNew = new Description(IDGenerator.generateID(), "BOOLEAN");
         // todo check dOld type is INT
 
         // add to symbol table
-        addToData(dNew.getName(), getMipsType("BOOL"), 0);
+        addToData(dNew.getName(), getMipsType("BOOLEAN"), 0);
 
         addToText("# Applying itob on " + dOld.getName());
 
@@ -4967,9 +4966,9 @@ class CodeGen
 
         Description rightDescription = exprRight.getDescription();
         Description leftDescription = exprLeft.getDescription();
-        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOLEAN");
 
-        addToData(newDescription.getName(), getMipsType("BOOL"), 0);
+        addToData(newDescription.getName(), getMipsType("BOOLEAN"), 0);
         addToText("# Is " + leftDescription.getName() + " >= " + rightDescription.getName());
         addToText("lw $a0, " + leftDescription.getName());
         // is in array?
@@ -4992,9 +4991,9 @@ class CodeGen
 
         Description rightDescription = exprRight.getDescription();
         Description leftDescription = exprLeft.getDescription();
-        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOLEAN");
 
-        addToData(newDescription.getName(), getMipsType("BOOL"), 0);
+        addToData(newDescription.getName(), getMipsType("BOOLEAN"), 0);
         addToText("# Is " + rightDescription.getName() + " == " + leftDescription.getName());
 
         if(exprLeft.getNodeValueType().equals("INT") ||
@@ -5053,11 +5052,11 @@ class CodeGen
 
         Description rightDescription = exprRight.getDescription();
         Description leftDescription = exprLeft.getDescription();
-        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOLEAN");
 
         // add to symbol table
 
-        addToData(newDescription.getName(), getMipsType("BOOL"), 0);
+        addToData(newDescription.getName(), getMipsType("BOOLEAN"), 0);
         addToText("# Is " + leftDescription.getName() + " > " + rightDescription.getName());
         addToText("lw $a0, " + leftDescription.getName());
         // is in array?
@@ -5080,9 +5079,9 @@ class CodeGen
 
         Description rightDescription = exprRight.getDescription();
         Description leftDescription = exprLeft.getDescription();
-        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOLEAN");
 
-        addToData(newDescription.getName(), getMipsType("BOOL"), 0);
+        addToData(newDescription.getName(), getMipsType("BOOLEAN"), 0);
         addToText("# Is " + rightDescription.getName() + " != " + leftDescription.getName());
         addToText("lw $a0, " + leftDescription.getName());
         // is in array?
@@ -5102,9 +5101,9 @@ class CodeGen
 
         Description rightDescription = exprRight.getDescription();
         Description leftDescription = exprLeft.getDescription();
-        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOLEAN");
 
-        addToData(newDescription.getName(), getMipsType("BOOL"), 0);
+        addToData(newDescription.getName(), getMipsType("BOOLEAN"), 0);
         addToText("# Is " + leftDescription.getName() + " <= " + rightDescription.getName());
         addToText("lw $a0, " + leftDescription.getName());
         // is in array?
@@ -5125,10 +5124,10 @@ class CodeGen
 
         Description rightDescription = exprRight.getDescription();
         Description leftDescription = exprLeft.getDescription();
-        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOLEAN");
         // add to symbol table
 
-        addToData(newDescription.getName(), getMipsType("BOOL"), 0);
+        addToData(newDescription.getName(), getMipsType("BOOLEAN"), 0);
         addToText("# Is " + leftDescription.getName() + " < " + rightDescription.getName());
         addToText("lw $a0, " + leftDescription.getName());
         // is in array?
@@ -5146,7 +5145,7 @@ class CodeGen
         Node expr = childs.get(1);
 
         Description exprDescription = expr.getDescription();
-        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOLEAN");
 
         String makeItTrueLabel = "_make_it_True_Label_" + newDescription.getName();
         String endLabel = "_end_Label_for_not_" + newDescription.getName();
@@ -5177,7 +5176,7 @@ class CodeGen
 
         Description leftDescription = exprLeft.getDescription();
         Description rightDescription = exprRight.getDescription();
-        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOLEAN");
 
         addToData(newDescription.getName(), getMipsType(newDescription.getType()), 0);
 
@@ -5201,7 +5200,7 @@ class CodeGen
 
         Description leftDescription = exprLeft.getDescription();
         Description rightDescription = exprRight.getDescription();
-        Description newDescription = new Description(IDGenerator.generateID(), "BOOL");
+        Description newDescription = new Description(IDGenerator.generateID(), "BOOLEAN");
 
         addToData(newDescription.getName(), getMipsType(newDescription.getType()), 0);
 
@@ -5229,7 +5228,7 @@ class CodeGen
         if(exprDesc.getType().equals("ARRAY")){   // also Object
             // todo assign address to lValue's mips variabel
         }
-        else if(exprDesc.getType().equals("INT") || exprDesc.getType().equals("BOOL")){
+        else if(exprDesc.getType().equals("INT") || exprDesc.getType().equals("BOOLEAN")){
             addToText("lw $a0, " + exprDesc.getName());
             // if expr is in array
             addToText("la $a1, " + lValueDesc.getName());
@@ -5617,7 +5616,7 @@ class CodeGen
                     addToText("syscall");
                 }
 
-                else if(child.getNodeValueType().equals("BOOL"))
+                else if(child.getNodeValueType().equals("BOOLEAN"))
                 {
                     String trueLabel = "_print_true_label_" + description.getName();
                     String falseLabel = "_print_false_label_" + description.getName();
@@ -5729,7 +5728,7 @@ class CodeGen
         String mipsType = ".";
         switch (type)
         {
-            case "BOOL":
+            case "BOOLEAN":
             case "INT":
             case "DOUBLE":
             case "ARRAY":
