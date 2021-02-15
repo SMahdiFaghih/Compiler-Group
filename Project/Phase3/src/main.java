@@ -4546,8 +4546,7 @@ class CodeGen
     }
 
 
-    private void cgenLValue(Node node)
-    {
+    private void cgenLValue(Node node) throws Exception {
         ArrayList<Node> childs = node.getChildNodes();
         if (childs.get(0).getSymbolName().equals("IDENTIFIER")){   // case 1 for LValue  --->  LValue ::= ident
             Node newNode = childs.get(0);
@@ -4567,10 +4566,13 @@ class CodeGen
                 childs.get(3).getSymbolName().equals("RIGHTBRACK")){   // case 3 for LValue  ---> LValue ::= Expr[Expr]
             Node expr1Node = childs.get(0);
             Node expr2Node = childs.get(2);
-            // todo  ????
+            cgenExpr(expr1Node);
+            cgenExpr(expr2Node);
+            cgenGetItemFromArray(node);
 
         }
     }
+
 
     private void cgenCall(Node node) throws Exception
     {
@@ -4682,6 +4684,7 @@ class CodeGen
             addToText("lw $a0, 0($a0)");
         }
 
+        addToText("li $s0, 4");
         addToText("mult $a0, $s0");  // to get size of matrix
         addToText("mflo $a0");
         addToText("addi $a0, $a0, 4");
@@ -4694,6 +4697,66 @@ class CodeGen
 
         node.setDescription(newDescription);
     }
+
+    private void cgenGetItemFromArray(Node node) {
+        Node arrayNode = node.getChildNodes().get(0);
+        Node indexNode = node.getChildNodes().get(2);
+
+        Description arrayDescriptionTemp = arrayNode.getDescription();
+        Description indexDescription = indexNode.getDescription();
+        if(!indexDescription.getType().equals("INT")){
+            // todo throw exception
+        }
+        if(!(arrayDescriptionTemp instanceof ArrayDescription)){
+            // todo throw exception
+        }
+
+        ArrayDescription arrayDescription = (ArrayDescription) arrayDescriptionTemp;
+        Description newDescription;
+        if(arrayDescription.getDimension() == 1){
+            newDescription = new Description(IDGenerator.generateID(), arrayDescription.getSubType(), true);
+        }
+        else {
+            newDescription = new ArrayDescription(IDGenerator.generateID(), arrayDescription.getSubType(),
+                    arrayDescription.getDimension() - 1, true);
+        }
+
+        addToData(newDescription.getName(), newDescription.getType(), 0);
+        addToText("# Getting items from array");
+        String errorLabel = "_error_index_label_for_" + arrayDescription.getName() + "_with_index_" + newDescription.getName();
+        String endLabel = "_end_label_for_getting_items_from_array_" + arrayDescription.getName()
+                + "_with_index_"+ newDescription.getName();
+
+        addToText("lw $s0, " + arrayDescription.getName());
+        if(arrayDescription.isInArray()){
+            addToText("lw $s0, 0($s0)");
+        }
+        addToText("lw $s1, " + indexDescription.getName());
+        if(arrayDescription.isInArray()){
+            addToText("lw $s1, 0($s1)");
+        }
+        addToText("lw $s2, 0($s0)");
+        addToText("li $t0, 1");
+        addToText("sub $s2, $s2, $t0");
+        addToText("blt $s2, $s1, " + errorLabel);
+        addToText("li $t0, 4");
+        addToText("mult $s1, $t0");
+        addToText("mflo $s1");
+        addToText("addi $s0, $s0, 4");
+        addToText("add $s0, $s0, $s1");
+        addToText("sw $s0, " + newDescription.getName());
+        addToText("j " + endLabel);
+        addToText(errorLabel + ":", true);
+        addToText("li $v0, 4");
+        addToText("la $a0, _array_size_negative_error");
+        addToText("syscall");
+        addToText("li $v0, 10");
+        addToText("syscall");
+        addToText(endLabel + ":", true);
+        addEmptyLine();
+        node.setDescription(newDescription);
+    }
+
 
     private void cgenVariable(Node node)
     {
@@ -5669,6 +5732,7 @@ class CodeGen
             case "BOOL":
             case "INT":
             case "DOUBLE":
+            case "ARRAY":
                 mipsType += "word";
                 break;
             case "STRING":
@@ -5769,6 +5833,12 @@ class ArrayDescription extends Description{
 
     public ArrayDescription(String name, String subType, int dimension){
         super(name, "ARRAY", false);
+        this.subType = subType;
+        this.dimension = dimension;
+    }
+
+    public ArrayDescription(String name, String subType, int dimension, boolean isInArray){
+        super(name, "ARRAY", isInArray);
         this.subType = subType;
         this.dimension = dimension;
     }
