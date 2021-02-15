@@ -5346,7 +5346,30 @@ class CodeGen
     }
 
     private void cgenStringConcatination(Node node) {
-        // todo mamadreza  ---> first get node's childs
+        ArrayList<Node> childs = node.getChildNodes();
+        Node exprLeft = childs.get(0);
+        Node exprRight = childs.get(2);
+        String loop = getLabel();
+        String exit = getLabel();
+        Description descLeft = exprLeft.getDescription();
+        Description descRight = exprRight.getDescription();
+        addToText( "xor $a2, $a2, $a2" ); // $a2 is index (first 0)
+        addToText( "la $a0, " + exprLeft.getIdentifierName() ); // $a0 has the address of string
+        addToText( loop + ": ", true );
+        addToText( "add $a1, $a2, $a0" ); // address of current char of string is in $a1
+        addToText( "lbu $a3, 0($a1)" );    // current char of string is in $a3
+        addToText( "beq $a3, $zero, " + exit);
+        addToText( "li $s4, 10" );       // $s4 has \n in it
+        addToText( "addi $a2, $a2, 1" );
+        addToText( "bne $a3, $s4, " + loop );
+        addToText(exit + ":"); // $a3 is last char and $a1 is address of a3
+        addToText( "la $a5, " + exprRight.getIdentifierName() ); // $a5 has the address of string
+        addToText("addi $a5 , a1 ,1");
+
+
+
+
+
     }
 
 
