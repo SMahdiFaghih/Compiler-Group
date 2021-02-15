@@ -4736,11 +4736,11 @@ class CodeGen
             addToText("lw $s1, 0($s1)");
         }
         addToText("lw $s2, 0($s0)");
-        addToText("li $s4, 1");
-        addToText("sub $s2, $s2, $s4");
+        addToText("li $t0, 1");
+        addToText("sub $s2, $s2, $t0");
         addToText("blt $s2, $s1, " + errorLabel);
-        addToText("li $s4, 4");
-        addToText("mult $s1, $s4");
+        addToText("li $t0, 4");
+        addToText("mult $s1, $t0");
         addToText("mflo $s1");
         addToText("addi $s0, $s0, 4");
         addToText("add $s0, $s0, $s1");
