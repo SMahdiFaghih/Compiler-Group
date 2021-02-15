@@ -3290,19 +3290,67 @@ class SemanticAnalysis
                 analysisReturnNode(stmtChildNode);
                 break;
             case "PrintStmt":
-                //todo
+                analysisExprWithNode(stmtChildNode.getChildNodes().get(2));
                 break;
+        }
+    }
+
+    private void analysisExprWithNode(Node exprWithNode) throws SemanticError
+    {
+        analysisExprNode(exprWithNode.getChildNodes().get(0));
+        Node exprMore = exprWithNode.getChildNodes().get(1);
+        while (exprMore.getChildNodes().size() != 0)
+        {
+            analysisExprNode(exprMore.getChildNodes().get(1));
+            exprMore = exprMore.getChildNodes().get(2);
         }
     }
 
     private void analysisReturnNode(Node returnStmtNode) throws SemanticError
     {
+        Node functionDeclNode = null;
+        for (Scope scope : scopes)
+        {
+            if (scope.scopeNode != null)
+            {
+                if (scope.scopeNode.getSymbolName().equals("FunctionDecl"))
+                {
+                    functionDeclNode = scope.scopeNode;
+                }
+            }
+        }
         Node exprEpsilonNode = returnStmtNode.getChildNodes().get(1);
         if (exprEpsilonNode.getChildNodes().size() != 0)
         {
-            analysisExprNode(exprEpsilonNode.getChildNodes().get(0));
+            Node exprNode = exprEpsilonNode.getChildNodes().get(0);
+            analysisExprNode(exprNode);
+            Node functionReturnTypeNode = functionDeclNode.getChildNodes().get(0);
+            if (functionDeclNode.getSymbolName().equals("VOID"))
+            {
+                throw new SemanticError();
+            }
+            if (functionReturnTypeNode.getChildNodes().size() == 1)
+            {
+                if (!functionReturnTypeNode.getChildNodes().get(0).getSymbolName().equals(exprNode.getNodeValueType()))
+                {
+                    throw new SemanticError();
+                }
+            }
+            else
+            {
+                if (!Node.checkTypeNodesEquality(functionReturnTypeNode, exprNode.getArrayNodeValueType()))
+                {
+                    throw new SemanticError();
+                }
+            }
         }
-        //todo
+        else
+        {
+            if (!functionDeclNode.getChildNodes().get(0).getSymbolName().equals("VOID"))
+            {
+                throw new SemanticError();
+            }
+        }
     }
 
     private void analysisExprNode(Node exprNode) throws SemanticError
