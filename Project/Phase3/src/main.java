@@ -4119,10 +4119,10 @@ class CodeGen
     }
 
     public void initial() {
-        addToData("_string_true", ".asciiz", "true");
-        addToData("_string_false", ".asciiz", "false");
-        addToData("errorMsg", ".asciiz","Semantic Error");
-        addToData("_array_size_negative_error", ".asciiz", "ERROR : array size is negative");
+        addToData("_string_true", ".asciiz", "\"true\"");
+        addToData("_string_false", ".asciiz", "\"false\"");
+        addToData("errorMsg", ".asciiz","\"Semantic Error\"");
+        addToData("_array_size_negative_error", ".asciiz", "\"ERROR : array size is negative\"");
 
     }
 
@@ -5880,11 +5880,12 @@ class CodeGen
 }
 
 class IdentidierDictionary{
-    private static IdentidierDictionary identidierDictionary = new IdentidierDictionary();
-    private Map<String, Node> dict = new HashMap<>();;
+    private static IdentidierDictionary identidierDictionary;
+    private Map<String, Node> dict;
 
     private IdentidierDictionary() {
-        //Singleton
+        identidierDictionary = new IdentidierDictionary();
+        dict = new HashMap<>();
     }
 
     public static IdentidierDictionary getIdentidierDictionary() {
