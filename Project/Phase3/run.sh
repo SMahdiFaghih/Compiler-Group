@@ -45,7 +45,7 @@ do
 			if [ $? -eq 0 ]; then
 				echo "MIPS Generated Successfuly!"
 			fi
-			spim -a -f "$OUTPUT_DIRECTORY$folder/$output_asm" < "$TEST_DIRECTORY$folder/$program_input" > "$OUTPUT_DIRECTORY$folder/$output_filename"
+			spim -a -f "$OUTPUT_DIRECTORY$folder/$output_asm" < "$TEST_DIRECTORY$folder/$program_input" > "$OUTPUT_DIRECTORY$folder/$output_filename" && tail -n +2 "$OUTPUT_DIRECTORY$folder/$output_asm" > "$OUTPUT_DIRECTORY$folder/output_filename.tmp" && mv "$OUTPUT_DIRECTORY$folder/output_filename.tmp" "$OUTPUT_DIRECTORY$folder/output_filename"
 			if [ $? -eq 0 ]; then
 				echo "Code Executed Successfuly!"
 				if command -v python3; then
