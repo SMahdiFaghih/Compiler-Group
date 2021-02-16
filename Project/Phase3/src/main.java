@@ -5371,6 +5371,7 @@ class CodeGen
         }
 
         if(expr.getChildNodes().get(0).getSymbolName().equals("READINTEGER")){
+            addToText("added to identifierDictionary");
             IdentidierDictionary.getIdentidierDictionary().putIdentifier(lValue);
         }
 
