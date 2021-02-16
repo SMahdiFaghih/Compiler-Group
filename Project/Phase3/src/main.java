@@ -1320,7 +1320,7 @@ public class main implements Scanner
             try
             {
                 SemanticAnalysis.getInstance().startSemanticAnalysis();
-                CodeGen.getInstance().cgen(Node.root);
+                CodeGen.getInstance().startCgen(Node.root);
                 writeInFile(CodeGen.dataPart);
                 writeInFile(CodeGen.textPart);
             } catch (SemanticError e)
@@ -5782,12 +5782,6 @@ class CodeGen
     }
 
 
-
-    private void pushRegistersA()
-    {
-
-    }
-
     private void addToText(String input)
     {
         addToText(input, false);
@@ -5807,9 +5801,9 @@ class CodeGen
         addToText("");
     }
 
-    private void addToData(String name)
+    private void addToData(String string)
     {
-        dataPart += "\t" + name + "\n";
+        dataPart += "\t" + string + "\n";
     }
 
     private void addToData(String name, String type, String value)
