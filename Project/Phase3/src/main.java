@@ -1333,6 +1333,7 @@ public class main implements Scanner
         } catch (Exception e)
         {
             writeInFile("Syntax Error");
+            e.printStackTrace();
         }
     }
 
@@ -4134,6 +4135,7 @@ class CodeGen
                 break;
             case "Decl":
                 cgen(node.getChildNodes().get(0));
+                break;
             case "VariableDecl":
                 cgenVariableDecl(node);
                 break;
@@ -4158,10 +4160,25 @@ class CodeGen
             case "Structure":
                 cgenStrcuture(node);
                 break;
+            case "StmtBlock":
+                cgen(node.getChildNodes().get(1));
+                break;
+            case "VariableUsage":
+                cgenVariableUsage(node);
+                break;
+            case "Stmt":
+                cgen(node.getChildNodes().get(0));
+                break;
+            case "ExprEpsilon":
+                if (node.getChildNodes().size() != 0)
+                {
+                    cgen(node.getChildNodes().get(0));
+                }
+                break;
             case "PrintStmt":
                 cgenPrint(node);
                 break;
-            case "EXPR":
+            case "Expr":
                 cgenExpr(node);
                 break;
             case "READINTEGER":
@@ -4245,6 +4262,15 @@ class CodeGen
             case "ForStmt":
                 cgenForStmt(node);
 
+        }
+    }
+
+    private void cgenVariableUsage(Node node) throws Exception
+    {
+        if (node.getChildNodes().size() > 0)
+        {
+            cgen(node.getChildNodes().get(0));
+            cgen(node.getChildNodes().get(1));
         }
     }
 
@@ -4659,35 +4685,37 @@ class CodeGen
         Node variableNode = node.getChildNodes().get(0);
         cgen(variableNode);
     }
-    ArrayList<String> variableName = new ArrayList<>();
+
     private void cgenFunctionDecl(Node node) throws Exception
     {
         ArrayList<Node> childs = node.getChildNodes();
-        cgenVariableName(childs.get(3));
-        addToText("Macro" + childs.get(1).getIdentifierName() + "("+ variableName + ")");
-        addToText("StmtBlock :");
+        String parameters = cgenVariableName(childs.get(3));
+        addToText(".macro " + childs.get(1).getIdentifierName() + "("+ parameters + ")");
+        //addToText("StmtBlock :");
         cgen(childs.get(5));
-        addToText("end_Macro");
+        addToText(".end_macro");
 
 
     }
 
-    private void cgenVariableName(Node formalsNode)
+    private String cgenVariableName(Node formalsNode)
     {
+        StringBuilder parameters = new StringBuilder();
         ArrayList<Node> formalsTypes = new ArrayList<>();
         if (formalsNode.getChildNodes().size() != 0)
         {
             formalsTypes.add(formalsNode.getChildNodes().get(0).getChildNodes().get(0));
-            variableName.add(formalsNode.getChildNodes().get(0).getChildNodes().get(0).getIdentifierName());
+            parameters.append(formalsNode.getChildNodes().get(0).getChildNodes().get(0).getIdentifierName());
             Node formalsMore = formalsNode.getChildNodes().get(1);
             while (formalsMore.getChildNodes().size() != 0)
             {
                 formalsTypes.add(formalsMore.getChildNodes().get(1).getChildNodes().get(0));
-                variableName.add(formalsMore.getChildNodes().get(1).getChildNodes().get(0).getIdentifierName());
+                parameters.append(", ");
+                parameters.append(formalsMore.getChildNodes().get(1).getChildNodes().get(0).getIdentifierName());
                 formalsMore = formalsMore.getChildNodes().get(2);
             }
         }
-
+        return parameters.toString();
     }
     private void cgenClassDecl(Node node) {
     }
