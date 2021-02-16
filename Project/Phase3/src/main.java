@@ -4175,6 +4175,12 @@ class CodeGen
                     cgen(node.getChildNodes().get(0));
                 }
                 break;
+            case "ExprWith":
+                cgenExprWith(node);
+                break;
+            case "ExprMore":
+                cgenExprMore(node);
+                break;
             case "PrintStmt":
                 cgenPrint(node);
                 break;
@@ -4262,6 +4268,20 @@ class CodeGen
             case "ForStmt":
                 cgenForStmt(node);
 
+        }
+    }
+
+    private void cgenExprWith(Node node) throws Exception{
+        ArrayList<Node> childs = node.getChildNodes();
+        for(Node child : childs){
+            cgen(child);
+        }
+    }
+
+    private void cgenExprMore(Node node) throws Exception{
+        ArrayList<Node> childs = node.getChildNodes();
+        for(Node child : childs){
+            cgen(child);
         }
     }
 
@@ -5729,65 +5749,64 @@ class CodeGen
         ArrayList<Node> childs = node.getChildNodes();
 
         for(Node child : childs){
-            if(child.getSymbolName().equals("Expr")){
-                cgen(child);
-                Description description = child.getDescription();
 
-                addToText("# Print " + description.getName());
-                if (child.getNodeValueType().equals("INT"))
-                {
-                    addToText("li $v0, 1");
-                    addToText("lw $a0, " + description.getName());
-                    if (description.isInArray()){
-                        addToText("lw $a0, 0($a0)");
-                    }
-                    addToText("syscall");
+            cgen(child);
+            Description description = child.getDescription();
+
+            addToText("# Print " + description.getName());
+            if (child.getNodeValueType().equals("INT"))
+            {
+                addToText("li $v0, 1");
+                addToText("lw $a0, " + description.getName());
+                if (description.isInArray()){
+                    addToText("lw $a0, 0($a0)");
                 }
+                addToText("syscall");
+            }
 
-                else if(child.getNodeValueType().equals("BOOLEAN"))
-                {
-                    String trueLabel = "_print_true_label_" + description.getName();
-                    String falseLabel = "_print_false_label_" + description.getName();
-                    String endLabel = "_end_print_boolean_label_" + description.getName();
+            else if(child.getNodeValueType().equals("BOOLEAN"))
+            {
+                String trueLabel = "_print_true_label_" + description.getName();
+                String falseLabel = "_print_false_label_" + description.getName();
+                String endLabel = "_end_print_boolean_label_" + description.getName();
 
-                    addToText("lw $s0, " + description.getName());
-                    if (description.isInArray()){
-                        addToText("lw $s0, 0($s0)");
-                    }
-                    addToText("beq $s0, $zero, " + falseLabel);
-                    addToText("j " + trueLabel);
-
-                    addToText(falseLabel + ":", true);
-                    addToText("li $v0, 4");
-                    addToText("la $a0, _string_false");
-                    addToText("syscall");
-                    addToText("j " + endLabel);
-
-                    addToText(trueLabel + ":", true);
-                    addToText("li $v0, 4");
-                    addToText("la $a0, _string_true");
-                    addToText("syscall");
-
-                    addToText(endLabel + ":", true);
+                addToText("lw $s0, " + description.getName());
+                if (description.isInArray()){
+                    addToText("lw $s0, 0($s0)");
                 }
+                addToText("beq $s0, $zero, " + falseLabel);
+                addToText("j " + trueLabel);
 
-                else if (child.getNodeValueType().equals("DOUBLE"))
-                {
-                    addToText("li $v0, 2");
-                    addToText("lw $a0, " + description.getName());
-                    if(description.isInArray()){
-                        addToText("lw $a0, 0($a0)");
-                    }
-                    addToText("mtc1 $a0, $f12");  // http://ww2.cs.fsu.edu/~dennis/teaching/2013_summer_cda3100/week5/week5-day2.pdf
-                    addToText("syscall");
-                }
+                addToText(falseLabel + ":", true);
+                addToText("li $v0, 4");
+                addToText("la $a0, _string_false");
+                addToText("syscall");
+                addToText("j " + endLabel);
 
-                else if (child.getNodeValueType().equals("STRING"))
-                {
-                    addToText("li $v0, 4");
-                    addToText("la $a0, " + description.getName());
-                    addToText("syscall");
+                addToText(trueLabel + ":", true);
+                addToText("li $v0, 4");
+                addToText("la $a0, _string_true");
+                addToText("syscall");
+
+                addToText(endLabel + ":", true);
+            }
+
+            else if (child.getNodeValueType().equals("DOUBLE"))
+            {
+                addToText("li $v0, 2");
+                addToText("lw $a0, " + description.getName());
+                if(description.isInArray()){
+                    addToText("lw $a0, 0($a0)");
                 }
+                addToText("mtc1 $a0, $f12");  // http://ww2.cs.fsu.edu/~dennis/teaching/2013_summer_cda3100/week5/week5-day2.pdf
+                addToText("syscall");
+            }
+
+            else if (child.getNodeValueType().equals("STRING"))
+            {
+                addToText("li $v0, 4");
+                addToText("la $a0, " + description.getName());
+                addToText("syscall");
             }
 
 
