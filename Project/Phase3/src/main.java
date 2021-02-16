@@ -1327,7 +1327,7 @@ public class main implements Scanner
             {
                 CodeGen.getInstance().initial();
                 CodeGen.getInstance().cgenSemanticError();
-                CodeGen.getInstance().addToText("li $v0, 10", false);
+                CodeGen.getInstance().addToText("jr $ra", false);
                 writeInFile(CodeGen.dataPart);
                 writeInFile(CodeGen.textPart);
             }
