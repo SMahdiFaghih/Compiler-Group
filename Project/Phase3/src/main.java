@@ -1323,7 +1323,7 @@ public class main implements Scanner
                 writeInFile("OK");
             } catch (SemanticError e)
             {
-                writeInFile("Semantic Error");
+                CodeGen.getInstance().cgenSemanticError();
             }
         } catch (Exception e)
         {
@@ -5771,7 +5771,7 @@ class CodeGen
     {
     }
 
-    private void cgenSemanticError(){
+    public void cgenSemanticError(){
         addToText("# Printing semantic error message");
         addToText("la $a0, errorMsg");
         addToText("li $v0, 4");
