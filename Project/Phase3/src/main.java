@@ -5719,7 +5719,7 @@ class CodeGen
     {
     }
 
-    private void cgenSemanticError(Node node){
+    private void cgenSemanticError(){
         addToText("# Printing semantic error message");
         addToText("la $a0, errorMsg");
         addToText("li $v0, 4");
