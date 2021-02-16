@@ -4584,7 +4584,7 @@ class CodeGen
 
     private void cgenConstant(Node node)
     {
-        Node constantNode = node.getChildNodes().get(0);
+        Node constantNode = node.getChildNodes().get(0).getChildNodes().get(0);
         if(constantNode.getSymbolName().equals("INTCONSTANT")){
             Description description = new Description(IDGenerator.generateID(), "INT");
             addToData(description.getName(), getMipsType("INT"), constantNode.getConstantValue());
