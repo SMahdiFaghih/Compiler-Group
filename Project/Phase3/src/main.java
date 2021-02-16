@@ -4119,10 +4119,10 @@ class CodeGen
     }
 
     public void initial() {
-        addToData("_string_true", ".asciiz", "true");
-        addToData("_string_false", ".asciiz", "false");
-        addToData("errorMsg", ".asciiz","Semantic Error");
-        addToData("_array_size_negative_error", ".asciiz", "ERROR : array size is negative");
+        addToData("_string_true", ".asciiz", "\"true\"");
+        addToData("_string_false", ".asciiz", "\"false\"");
+        addToData("errorMsg", ".asciiz","\"Semantic Error\"");
+        addToData("_array_size_negative_error", ".asciiz", "\"ERROR : array size is negative\"");
 
     }
 
