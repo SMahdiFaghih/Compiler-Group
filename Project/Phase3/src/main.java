@@ -4103,7 +4103,7 @@ class Scope
 class CodeGen
 {
     public static String dataPart = ".data\n";
-    public static String textPart = ".text\n";
+    public static String textPart = ".text\n\t.globl main\n";
     private static CodeGen codeGen = new CodeGen();
     private final static int INPUT_STRING_SIZE = 64;
 
@@ -4716,7 +4716,7 @@ class CodeGen
         String parameters = cgenVariableName(childs.get(3));
         if (childs.get(1).getIdentifierName().equals("main"))
         {
-            addToText(".globl main main:");
+            addToText("main:");
             cgen(childs.get(5));
         }
         else
