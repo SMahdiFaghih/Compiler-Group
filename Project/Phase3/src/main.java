@@ -4896,9 +4896,7 @@ class CodeGen
 
         Description dOld = exprNode.getDescription();
         Description dNew = new Description(IDGenerator.generateID(), "BOOLEAN");
-        // todo check dOld type is INT
 
-        // add to symbol table
         addToData(dNew.getName(), getMipsType("DOUBLE"), 0);
 
         addToText("sw $a0, " + dOld.getName());
@@ -4921,9 +4919,6 @@ class CodeGen
 
         Description dOld = exprNode.getDescription();
         Description dNew = new Description(IDGenerator.generateID(), "BOOLEAN");
-        // todo check dOld type is INT
-
-        // add to symbol table
         addToData(dNew.getName(), getMipsType("INT"), 0);
 
         addToText("# Apply btoi on " + dOld.getName());
@@ -4944,9 +4939,7 @@ class CodeGen
 
         Description dOld = exprNode.getDescription();
         Description dNew = new Description(IDGenerator.generateID(), "BOOLEAN");
-        // todo check dOld type is INT
 
-        // add to symbol table
         addToData(dNew.getName(), getMipsType("DOUBLE"), 0);
 
         addToText("# Applying itod on " + dOld.getName());
@@ -4970,9 +4963,7 @@ class CodeGen
 
         Description dOld = exprNode.getDescription();
         Description dNew = new Description(IDGenerator.generateID(), "BOOLEAN");
-        // todo check dOld type is INT
 
-        // add to symbol table
         addToData(dNew.getName(), getMipsType("BOOLEAN"), 0);
 
         addToText("# Applying itob on " + dOld.getName());
@@ -5014,9 +5005,13 @@ class CodeGen
         addToData(newDescription.getName(), getMipsType("BOOLEAN"), 0);
         addToText("# Is " + leftDescription.getName() + " >= " + rightDescription.getName());
         addToText("lw $a0, " + leftDescription.getName());
-        // is in array?
         addToText("lw $a1, " + rightDescription.getName());
-        // is in array?
+        if(leftDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+        if(rightDescription.isInArray()){
+            addToText("lw $a1, 0($a1)");
+        }
         addToText("sge $t0, $a0, $a1");
         addToText("la $a2, " + newDescription.getName());
         addToText("sw $t0, 0($a2)");
@@ -5044,9 +5039,13 @@ class CodeGen
                 exprLeft.getNodeValueType().equals("BOOLEAN") ||
                 exprLeft.getNodeValueType().equals("ARRAY")){
             addToText("lw $a0, " + leftDescription.getName());
-            // is in array?
             addToText("lw $a1, " + rightDescription.getName());
-            // is in array?
+            if(leftDescription.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
+            if(rightDescription.isInArray()){
+                addToText("lw $a1, 0($a1)");
+            }
             addToText("seq $t0, $a0, $a1");
             addToText("la $a2, " + newDescription.getName());
             addToText("sw $t0, 0($a2)");
@@ -5094,14 +5093,16 @@ class CodeGen
         Description leftDescription = exprLeft.getDescription();
         Description newDescription = new Description(IDGenerator.generateID(), "BOOLEAN");
 
-        // add to symbol table
-
         addToData(newDescription.getName(), getMipsType("BOOLEAN"), 0);
         addToText("# Is " + leftDescription.getName() + " > " + rightDescription.getName());
         addToText("lw $a0, " + leftDescription.getName());
-        // is in array?
+        if(leftDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
         addToText("lw $a1, " + rightDescription.getName());
-        // is in array?
+        if(rightDescription.isInArray()){
+            addToText("lw $a1, 0($a1)");
+        }
         addToText("sgt $t0, $a0, $a1");
         addToText("la $a2, " + newDescription.getName());
         addToText("sw $t0, 0($a2)");
@@ -5124,9 +5125,13 @@ class CodeGen
         addToData(newDescription.getName(), getMipsType("BOOLEAN"), 0);
         addToText("# Is " + rightDescription.getName() + " != " + leftDescription.getName());
         addToText("lw $a0, " + leftDescription.getName());
-        // is in array?
+        if(leftDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
         addToText("lw $a1, " + rightDescription.getName());
-        // is in array?
+        if(rightDescription.isInArray()){
+            addToText("lw $a1, 0($a1)");
+        }
         addToText("sne $t0, $a0, $a1");
         addToText("la $a2, " + newDescription.getName());
         addToText("sw $t0, 0($a2)");
@@ -5146,9 +5151,13 @@ class CodeGen
         addToData(newDescription.getName(), getMipsType("BOOLEAN"), 0);
         addToText("# Is " + leftDescription.getName() + " <= " + rightDescription.getName());
         addToText("lw $a0, " + leftDescription.getName());
-        // is in array?
+        if(leftDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
         addToText("lw $a1, " + rightDescription.getName());
-        // is in array?
+        if(rightDescription.isInArray()){
+            addToText("lw $a1, 0($a1)");
+        }
         addToText("sle $t0, $a0, $a1");
         addToText("la $a2, " + newDescription.getName());
         addToText("sw $t0, 0($a2)");
@@ -5165,14 +5174,17 @@ class CodeGen
         Description rightDescription = exprRight.getDescription();
         Description leftDescription = exprLeft.getDescription();
         Description newDescription = new Description(IDGenerator.generateID(), "BOOLEAN");
-        // add to symbol table
 
         addToData(newDescription.getName(), getMipsType("BOOLEAN"), 0);
         addToText("# Is " + leftDescription.getName() + " < " + rightDescription.getName());
         addToText("lw $a0, " + leftDescription.getName());
-        // is in array?
+        if(leftDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
         addToText("lw $a1, " + rightDescription.getName());
-        // is in array?
+        if(rightDescription.isInArray()){
+            addToText("lw $a1, 0($a1)");
+        }
         addToText("slt $t0, $a0, $a1");
         addToText("la $a2, " + newDescription.getName());
         addToText("sw $t0, 0($a2)");
@@ -5194,7 +5206,9 @@ class CodeGen
 
         addToText("# not " + exprDescription.getName() );
         addToText("lw $a0, " + exprDescription.getName());
-        // is in array
+        if(exprDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
         addToText("bnez $a0, " + makeItTrueLabel);
         addToText("li $a0, 0");
         addToText("j " + endLabel);
@@ -5222,9 +5236,13 @@ class CodeGen
 
         addToText("# || " + leftDescription.getName() + " and " + rightDescription.getName());
         addToText("lw $a0, " + leftDescription.getName());
-        // is in array
+        if(leftDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
         addToText("lw $a1, " + rightDescription.getName());
-        // is in array
+        if(rightDescription.isInArray()){
+            addToText("lw $a1, 0($a1)");
+        }
         addToText("or $t0, $a0, $a1");
         addToText("la $a2, " + newDescription.getName());
         addToText("sw $t0, 0($a2)");
@@ -5246,9 +5264,13 @@ class CodeGen
 
         addToText("# && " + leftDescription.getName() + " and " + rightDescription.getName());
         addToText("lw $a0, " + leftDescription.getName());
-        // is in array
+        if(leftDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
         addToText("lw $a1, " + rightDescription.getName());
-        // is in array
+        if(rightDescription.isInArray()){
+            addToText("lw $a1, 0($a1)");
+        }
         addToText("and $t0, $a0, $a1");
         addToText("la $a2, " + newDescription.getName());
         addToText("sw $t0, 0($a2)");
@@ -5270,13 +5292,17 @@ class CodeGen
         }
         else if(exprDesc.getType().equals("INT") || exprDesc.getType().equals("BOOLEAN")){
             addToText("lw $a0, " + exprDesc.getName());
-            // if expr is in array
+            if(exprDesc.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("la $a1, " + lValueDesc.getName());
             addToText("sw $a0, 0($a1)");
         }
         else if(exprDesc.getType().equals("DOUBLE")){
             addToText("lw $a0, " + exprDesc.getName());
-            // if expr is in array
+            if(exprDesc.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("mtc1 $a0, $f0");
             addToText("la $a1, " + lValueDesc.getName());
             addToText("swc1 $f0, 0($a1)");
@@ -5304,13 +5330,16 @@ class CodeGen
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
             Description newDescription = new Description(resultName, "INT");
-            // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
             addToText("lw $a0, " + leftDescription.getName());
-            // if desc1 comes from array
+            if(leftDescription.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("lw $a1, " + rightDescription.getName());
-            // if desc2 comes from array
+            if(rightDescription.isInArray()){
+                addToText("lw $a1, 0($a1)");
+            }
 
             addToText("div $a0, $a1");
             addToText("la $a2, " + newDescription.getName());
@@ -5336,14 +5365,16 @@ class CodeGen
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
             Description newDescription = new Description(resultName, "INT");
-            // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
             addToText("lw $a0, " + leftDescription.getName());
-            // if desc1 comes from array
+            if(leftDescription.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("lw $a1, " + rightDescription.getName());
-            // if desc2 comes from array
-
+            if(rightDescription.isInArray()){
+                addToText("lw $a1, 0($a1)");
+            }
             addToText("div $a0, $a1");
             addToText("la $a2, " + newDescription.getName());
             addToText("mflo $t0");         // move quotient to $t0
@@ -5356,14 +5387,17 @@ class CodeGen
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("DOUBLE");
             Description newDescription = new Description(resultName, "DOUBLE");
-            // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
             addToText("lw $a0, " + leftDescription.getName());
-            // if desc1 comes from array
+            if(leftDescription.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("mtc1 $a0, $f0");
             addToText("lw $a1, " + rightDescription.getName());
-            // if desc2 comes from array
+            if(rightDescription.isInArray()){
+                addToText("lw $a1, 0($a1)");
+            }
             addToText("mtc1 $a1, $f1");
 
             addToText("div.s $f2, $f1, $f0");
@@ -5389,13 +5423,16 @@ class CodeGen
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
             Description newDescription = new Description(resultName, "INT");
-            // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
             addToText("lw $a0, " + leftDescription.getName());
-            // if desc1 comes from array
+            if(leftDescription.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("lw $a1, " + rightDescription.getName());
-            // if desc2 comes from array
+            if(rightDescription.isInArray()){
+                addToText("lw $a1, 0($a1)");
+            }
 
             addToText("mult $a0, $a1");
             addToText("la $a2, " + newDescription.getName());
@@ -5409,14 +5446,17 @@ class CodeGen
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("DOUBLE");
             Description newDescription = new Description(resultName, "DOUBLE");
-            // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
             addToText("lw $a0, " + leftDescription.getName());
-            // if desc1 comes from array
+            if(leftDescription.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("mtc1 $a0, $f0");
             addToText("lw $a1, " + rightDescription.getName());
-            // if desc2 comes from array
+            if(rightDescription.isInArray()){
+                addToText("lw $a1, 0($a1)");
+            }
             addToText("mtc1 $a1, $f1");
 
             addToText("mul.s $f2, $f0, $f1");
@@ -5442,14 +5482,16 @@ class CodeGen
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
             Description newDescription = new Description(resultName, "INT");
-            // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
             addToText("lw $a0, " + leftDescription.getName());
-            // if desc1 comes from array
+            if(leftDescription.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("lw $a1, " + rightDescription.getName());
-            // if desc2 comes from array
-
+            if(rightDescription.isInArray()){
+                addToText("lw $a1, 0($a1)");
+            }
             addToText("sub $t0, $a0, $a1");
             addToText("la $a2, " + newDescription.getName());
             addToText("sw $t0, 0($a2)");
@@ -5461,14 +5503,17 @@ class CodeGen
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("DOUBLE");
             Description newDescription = new Description(resultName, "DOUBLE");
-            // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
             addToText("lw $a0, " + leftDescription.getName());
-            // if desc1 comes from array
+            if(leftDescription.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("mtc1 $a0, $f0");
             addToText("lw $a1, " + rightDescription.getName());
-            // if desc2 comes from array
+            if(rightDescription.isInArray()){
+                addToText("lw $a1, 0($a1)");
+            }
             addToText("mtc1 $a1, $f1");
 
             addToText("sub.s $f2, $f0, $f1");
@@ -5490,11 +5535,12 @@ class CodeGen
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
             Description newDescription = new Description(resultName, "INT");
-            // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
             addToText("lw $a1, " + exprDescription.getName());
-            // if desc2 comes from array
+            if(exprDescription.isInArray()){
+                addToText("lw $a1, 0($a1)");
+            }
 
             addToText("sub $t0, $zero, $a1");
             addToText("la $a2, " + newDescription.getName());
@@ -5532,13 +5578,16 @@ class CodeGen
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("INT");
             Description newDescription = new Description(resultName, "INT");
-            // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
             addToText("lw $a0, " + descLeft.getName());
-            // if desc1 comes from array
+            if(descLeft.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("lw $a1, " + descRight.getName());
-            // if desc2 comes from array
+            if(descLeft.isInArray()){
+                addToText("lw $a1, 0($a1)");
+            }
 
             addToText("add $t0, $a0, $a1");
             addToText("la $a2, " + newDescription.getName());
@@ -5552,14 +5601,17 @@ class CodeGen
             String resultName = IDGenerator.generateID();
             String mipsType = getMipsType("DOUBLE");
             Description newDescription = new Description(resultName, "DOUBLE");
-            // add to SymbolTable
             addToData(resultName, mipsType, 0);
 
             addToText("lw $a0, " + descLeft.getName());
-            // if desc1 comes from array
+            if(descLeft.isInArray()){
+                addToText("lw $a0, 0($a0)");
+            }
             addToText("mtc1 $a0, $f0");
             addToText("lw $a1, " + descRight.getName());
-            // if desc2 comes from array
+            if (descRight.isInArray()){
+                addToText("lw $a1, 0($a1)");
+            }
             addToText("mtc1 $a1, $f1");
 
             addToText("add.s $f2, $f0, $f1");
