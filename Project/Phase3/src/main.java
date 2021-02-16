@@ -5769,8 +5769,12 @@ class CodeGen
         addEmptyLine();
     }
 
-    private void cgenStrcuture(Node node)
+    private void cgenStrcuture(Node node) throws Exception
     {
+        ArrayList<Node> childs = node.getChildNodes();
+        for(Node child : childs){
+            cgen(child);
+        }
     }
 
     public void cgenSemanticError(){
