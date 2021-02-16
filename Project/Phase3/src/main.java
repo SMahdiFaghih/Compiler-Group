@@ -5754,17 +5754,12 @@ class CodeGen
                 ArrayList<Node> exprs = new ArrayList<>();
                 findExprs(child, exprs);
                 for (Node expr : exprs){
-                    if(expr.getSymbolName().equals("Expr")){
+                    if(expr.getSymbolName().equals("Expr") && expr.getDescription() != null){
                         printExpr(expr);
                     }
 
                 }
             }
-
-
-            cgen(child);
-
-
         }
         cgenPrintNewLine(node);
 
