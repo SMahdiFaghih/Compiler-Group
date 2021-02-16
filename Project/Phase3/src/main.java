@@ -4842,6 +4842,7 @@ class CodeGen
             Description description = new Description(identifierMipsName, (String) identifierType);
             addToData(identifierMipsName, getMipsType((String) identifierType), 0);
             identifier.setDescription(description);
+            IdentidierDictionary.getIdentidierDictionary().putIdentifier(identifier);
         }
     }
 
