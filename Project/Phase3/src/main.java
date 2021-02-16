@@ -1327,6 +1327,7 @@ public class main implements Scanner
             {
                 CodeGen.getInstance().initial();
                 CodeGen.getInstance().cgenSemanticError();
+                CodeGen.getInstance().addToText("li $v0, 10", false);
                 writeInFile(CodeGen.dataPart);
                 writeInFile(CodeGen.textPart);
             }
@@ -4715,7 +4716,7 @@ class CodeGen
         String parameters = cgenVariableName(childs.get(3));
         if (childs.get(1).getIdentifierName().equals("main"))
         {
-            addToText(".globl main:");
+            addToText(".globl main main:");
             cgen(childs.get(5));
         }
         else
@@ -5879,7 +5880,7 @@ class CodeGen
         addToText(input, false);
     }
 
-    private void addToText(String input, Boolean isLabel)
+    public void addToText(String input, Boolean isLabel)
     {
         if (!isLabel)
         {
