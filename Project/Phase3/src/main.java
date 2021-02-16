@@ -4584,7 +4584,7 @@ class CodeGen
 
     private void cgenConstant(Node node)
     {
-        Node constantNode = node.getChildNodes().get(0).getChildNodes().get(0);
+        Node constantNode = node.getChildNodes().get(0);
         if(constantNode.getSymbolName().equals("INTCONSTANT")){
             Description description = new Description(IDGenerator.generateID(), "INT");
             addToData(description.getName(), getMipsType("INT"), constantNode.getConstantValue());
@@ -5881,10 +5881,9 @@ class CodeGen
 
 class IdentidierDictionary{
     private static IdentidierDictionary identidierDictionary = new IdentidierDictionary();
-    private Map<String, Node> dict = new HashMap<>();
+    private Map<String, Node> dict;
 
     private IdentidierDictionary() {
-        identidierDictionary = new IdentidierDictionary();
         dict = new HashMap<>();
     }
 
