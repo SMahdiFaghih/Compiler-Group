@@ -4690,12 +4690,17 @@ class CodeGen
     {
         ArrayList<Node> childs = node.getChildNodes();
         String parameters = cgenVariableName(childs.get(3));
-        addToText(".macro " + childs.get(1).getIdentifierName() + "("+ parameters + ")");
-        //addToText("StmtBlock :");
-        cgen(childs.get(5));
-        addToText(".end_macro");
-
-
+        if (childs.get(1).getIdentifierName().equals("main"))
+        {
+            addToText("main:");
+            cgen(childs.get(5));
+        }
+        else
+        {
+            addToText(".macro " + childs.get(1).getIdentifierName() + "("+ parameters + ")");
+            cgen(childs.get(5));
+            addToText(".end_macro");
+        }
     }
 
     private String cgenVariableName(Node formalsNode)
