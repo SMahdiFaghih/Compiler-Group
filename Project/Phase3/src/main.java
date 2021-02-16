@@ -1321,6 +1321,7 @@ public class main implements Scanner
             {
                 SemanticAnalysis.getInstance().startSemanticAnalysis();
                 CodeGen.getInstance().startCgen(Node.root);
+                CodeGen.getInstance().addToText("jr $ra", false);
                 writeInFile(CodeGen.dataPart);
                 writeInFile(CodeGen.textPart);
             } catch (SemanticError e)
