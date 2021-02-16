@@ -5040,7 +5040,8 @@ class CodeGen
 
         if(exprLeft.getNodeValueType().equals("INT") ||
                 exprLeft.getNodeValueType().equals("DOUBLE") ||
-                exprLeft.getNodeValueType().equals("BOOLEAN")){
+                exprLeft.getNodeValueType().equals("BOOLEAN") ||
+                exprLeft.getNodeValueType().equals("ARRAY")){
             addToText("lw $a0, " + leftDescription.getName());
             // is in array?
             addToText("lw $a1, " + rightDescription.getName());
@@ -5048,6 +5049,7 @@ class CodeGen
             addToText("seq $t0, $a0, $a1");
             addToText("la $a2, " + newDescription.getName());
             addToText("sw $t0, 0($a2)");
+            addEmptyLine();
         }
         else if(exprLeft.getNodeValueType().equals("STRING")){
             String checkerLoopLabel = "_string_equality_checker_label_" + newDescription.getName();
@@ -5076,11 +5078,6 @@ class CodeGen
             addToText("sw $s0, " + newDescription.getName());
 
             addToText(endLabel + ":", true);
-            addEmptyLine();
-
-        }
-        else if(exprLeft.getNodeValueType().equals("ARRAY")){
-            // todo
         }
 
         addEmptyLine();
@@ -5902,32 +5899,6 @@ class ArrayDescription extends Description{
     }
 }
 
-
-class SemanticStack{
-    private static SemanticStack semanticStack = new SemanticStack();
-    private Stack<Object> mainStack;
-
-    private SemanticStack(){
-        mainStack = new Stack<>();
-    }
-
-    public static SemanticStack getSemanticStack(){
-        return semanticStack;
-    }
-
-    public Description pop(){
-        return (Description) mainStack.pop();
-    }
-
-    public Description top(){
-        return (Description) mainStack.peek();
-    }
-
-    public void push(Description description){
-        mainStack.push(description);
-    }
-
-}
 
 
 class IDGenerator
