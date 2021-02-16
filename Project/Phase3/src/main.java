@@ -4104,7 +4104,7 @@ class Scope
 class CodeGen
 {
     public static String dataPart = ".data\n";
-    public static String textPart = ".text\n\t.globl main\n";
+    public static String textPart = ".text\n.globl main\n";
     private static CodeGen codeGen = new CodeGen();
     private final static int INPUT_STRING_SIZE = 64;
 
@@ -5772,6 +5772,7 @@ class CodeGen
                 }
             }
         }
+        addEmptyLine();
         cgenPrintNewLine(node);
 
     }
