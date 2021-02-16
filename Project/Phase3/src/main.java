@@ -1325,7 +1325,10 @@ public class main implements Scanner
                 writeInFile(CodeGen.textPart);
             } catch (SemanticError e)
             {
+                CodeGen.getInstance().initial();
                 CodeGen.getInstance().cgenSemanticError();
+                writeInFile(CodeGen.dataPart);
+                writeInFile(CodeGen.textPart);
             }
         } catch (Exception e)
         {
@@ -4114,7 +4117,7 @@ class CodeGen
         cgen(root);
     }
 
-    private void initial() {
+    public void initial() {
         addToData("_string_true", ".asciiz", "true");
         addToData("_string_false", ".asciiz", "false");
         addToData("errorMsg", ".asciiz","Semantic Error");
