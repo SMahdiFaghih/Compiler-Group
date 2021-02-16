@@ -5370,7 +5370,7 @@ class CodeGen
             addToText("sw $a0, 0($a1)");
         }
 
-        if(expr.getChildNodes().get(0).equals("READINTEGER")){
+        if(expr.getChildNodes().get(0).getSymbolName().equals("READINTEGER")){
             IdentidierDictionary.getIdentidierDictionary().putIdentifier(lValue);
         }
 
