@@ -1325,11 +1325,15 @@ public class main implements Scanner
                 writeInFile(CodeGen.textPart);
             } catch (SemanticError e)
             {
+                CodeGen.getInstance().initial();
                 CodeGen.getInstance().cgenSemanticError();
+                writeInFile(CodeGen.dataPart);
+                writeInFile(CodeGen.textPart);
             }
         } catch (Exception e)
         {
             writeInFile("Syntax Error");
+            e.printStackTrace();
         }
     }
 
@@ -4114,11 +4118,11 @@ class CodeGen
         cgen(root);
     }
 
-    private void initial() {
-        addToData("_string_true", ".asciiz", "\"true\"");
-        addToData("_string_false", ".asciiz", "\"false\"");
-        addToData("errorMsg", ".asciiz","\"Semantic Error\"");
-        addToData("_array_size_negative_error", ".asciiz", "\"ERROR : array size is negative\"");
+    public void initial() {
+        addToData("_string_true", ".asciiz", "true");
+        addToData("_string_false", ".asciiz", "false");
+        addToData("errorMsg", ".asciiz","Semantic Error");
+        addToData("_array_size_negative_error", ".asciiz", "ERROR : array size is negative");
 
     }
 
@@ -4128,6 +4132,9 @@ class CodeGen
         {
             case "Program":
                 cgenStart(node);
+                break;
+            case "Decl":
+                cgen(node.getChildNodes().get(0));
                 break;
             case "VariableDecl":
                 cgenVariableDecl(node);
@@ -4153,10 +4160,25 @@ class CodeGen
             case "Structure":
                 cgenStrcuture(node);
                 break;
+            case "StmtBlock":
+                cgen(node.getChildNodes().get(1));
+                break;
+            case "VariableUsage":
+                cgenVariableUsage(node);
+                break;
+            case "Stmt":
+                cgen(node.getChildNodes().get(0));
+                break;
+            case "ExprEpsilon":
+                if (node.getChildNodes().size() != 0)
+                {
+                    cgen(node.getChildNodes().get(0));
+                }
+                break;
             case "PrintStmt":
                 cgenPrint(node);
                 break;
-            case "EXPR":
+            case "Expr":
                 cgenExpr(node);
                 break;
             case "READINTEGER":
@@ -4243,8 +4265,14 @@ class CodeGen
         }
     }
 
-
-
+    private void cgenVariableUsage(Node node) throws Exception
+    {
+        if (node.getChildNodes().size() > 0)
+        {
+            cgen(node.getChildNodes().get(0));
+            cgen(node.getChildNodes().get(1));
+        }
+    }
 
     int label = 0;
     private void cgenIf(Node node) throws Exception
@@ -4657,35 +4685,42 @@ class CodeGen
         Node variableNode = node.getChildNodes().get(0);
         cgen(variableNode);
     }
-    ArrayList<String> variableName = new ArrayList<>();
+
     private void cgenFunctionDecl(Node node) throws Exception
     {
         ArrayList<Node> childs = node.getChildNodes();
-        cgenVariableName(childs.get(3));
-        addToText("Macro" + childs.get(1).getIdentifierName() + "("+ variableName + ")");
-        addToText("StmtBlock :");
-        cgen(childs.get(5));
-        addToText("end_Macro");
-
-
+        String parameters = cgenVariableName(childs.get(3));
+        if (childs.get(1).getIdentifierName().equals("main"))
+        {
+            addToText("main:");
+            cgen(childs.get(5));
+        }
+        else
+        {
+            addToText(".macro " + childs.get(1).getIdentifierName() + "("+ parameters + ")");
+            cgen(childs.get(5));
+            addToText(".end_macro");
+        }
     }
 
-    private void cgenVariableName(Node formalsNode)
+    private String cgenVariableName(Node formalsNode)
     {
+        StringBuilder parameters = new StringBuilder();
         ArrayList<Node> formalsTypes = new ArrayList<>();
         if (formalsNode.getChildNodes().size() != 0)
         {
             formalsTypes.add(formalsNode.getChildNodes().get(0).getChildNodes().get(0));
-            variableName.add(formalsNode.getChildNodes().get(0).getChildNodes().get(0).getIdentifierName());
+            parameters.append(formalsNode.getChildNodes().get(0).getChildNodes().get(0).getIdentifierName());
             Node formalsMore = formalsNode.getChildNodes().get(1);
             while (formalsMore.getChildNodes().size() != 0)
             {
                 formalsTypes.add(formalsMore.getChildNodes().get(1).getChildNodes().get(0));
-                variableName.add(formalsMore.getChildNodes().get(1).getChildNodes().get(0).getIdentifierName());
+                parameters.append(", ");
+                parameters.append(formalsMore.getChildNodes().get(1).getChildNodes().get(0).getIdentifierName());
                 formalsMore = formalsMore.getChildNodes().get(2);
             }
         }
-
+        return parameters.toString();
     }
     private void cgenClassDecl(Node node) {
     }
@@ -4812,6 +4847,7 @@ class CodeGen
             Description description = new Description(identifierMipsName, (String) identifierType);
             addToData(identifierMipsName, getMipsType((String) identifierType), 0);
             identifier.setDescription(description);
+            IdentidierDictionary.getIdentidierDictionary().putIdentifier(identifier);
         }
     }
 
