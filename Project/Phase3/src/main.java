@@ -4116,6 +4116,7 @@ class CodeGen
     private void initial() {
         addToData("_string_true", ".asciiz", "true");
         addToData("_string_false", ".asciiz", "false");
+        addToData("errorMsg", ".asciiz","Semantic Error");
         addToData("_array_size_negative_error", ".asciiz", "ERROR : array size is negative");
 
     }
@@ -5606,7 +5607,6 @@ class CodeGen
     {
         String variableName = IDGenerator.generateID();
         Description description = new Description(variableName, "INT");
-        // add description to symbolTable
         String mipsType = getMipsType(node.getNodeValueType());
         addToData(variableName, mipsType, 0);
         addToText("# Reading an integer");
@@ -5624,7 +5624,6 @@ class CodeGen
         Description description = new Description(stringName, "STRING");
         String mipsType = getMipsType("STRING");
         addToData(stringName, mipsType, INPUT_STRING_SIZE);   // 64 is default use input stirng size
-        // add to symbol table
         addToText("# Read String from input");
         addToText("li $v8, 8");
         addToText("la $a0, " + stringName);
@@ -5718,6 +5717,14 @@ class CodeGen
 
     private void cgenStrcuture(Node node)
     {
+    }
+
+    private void cgenSemanticError(Node node){
+        addToText("# Printing semantic error message");
+        addToText("la $a0, errorMsg");
+        addToText("li $v0, 4");
+        addToText("syscall");
+        addEmptyLine();
     }
 
 
