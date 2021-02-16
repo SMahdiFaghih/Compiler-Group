@@ -4643,6 +4643,7 @@ class CodeGen
         if (childs.get(0).getSymbolName().equals("IDENTIFIER")){   // case 1 for LValue  --->  LValue ::= ident
             Node newNode = childs.get(0);
             Node identNode = IdentidierDictionary.getIdentidierDictionary().getIdentifier(newNode);
+            addToText("# mips type is" + identNode.getDescription().getName());
             node.setDescription(identNode.getDescription());
         }
         else if(childs.get(0).getSymbolName().equals("Expr") &&
@@ -5371,7 +5372,8 @@ class CodeGen
         }
 
         if(expr.getChildNodes().get(0).getSymbolName().equals("READINTEGER")){
-            addToText("added to identifierDictionary");
+            addEmptyLine();
+            addToText("# added to identifierDictionary");
             IdentidierDictionary.getIdentidierDictionary().putIdentifier(lValue);
         }
 
