@@ -5880,8 +5880,8 @@ class CodeGen
 }
 
 class IdentidierDictionary{
-    private static IdentidierDictionary identidierDictionary;
-    private Map<String, Node> dict;
+    private static IdentidierDictionary identidierDictionary = new IdentidierDictionary();
+    private Map<String, Node> dict = new HashMap<>();
 
     private IdentidierDictionary() {
         identidierDictionary = new IdentidierDictionary();
