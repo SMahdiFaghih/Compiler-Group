@@ -19,7 +19,8 @@ do
 	echo "Subtask $folder -------------------------------------"
 	cd ./out
 	mkdir -p $folder
-	cd ../report
+	cd ../
+	cd ./report
 	mkdir -p $folder
 	cd ..
 	cd ./tests
