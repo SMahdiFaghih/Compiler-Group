@@ -5349,6 +5349,7 @@ class CodeGen
             addToText("la $a1, " + lValueDesc.getName());
             addToText("sw $a0, 0($a1)");
         }
+        addEmptyLine();
 
     }
 
