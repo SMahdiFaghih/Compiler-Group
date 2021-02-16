@@ -4132,6 +4132,8 @@ class CodeGen
             case "Program":
                 cgenStart(node);
                 break;
+            case "Decl":
+                cgen(node.getChildNodes().get(0));
             case "VariableDecl":
                 cgenVariableDecl(node);
                 break;
@@ -4245,9 +4247,6 @@ class CodeGen
 
         }
     }
-
-
-
 
     int label = 0;
     private void cgenIf(Node node) throws Exception
