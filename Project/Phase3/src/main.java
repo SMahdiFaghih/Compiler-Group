@@ -4715,7 +4715,7 @@ class CodeGen
         String parameters = cgenVariableName(childs.get(3));
         if (childs.get(1).getIdentifierName().equals("main"))
         {
-            addToText("main:");
+            addToText(".globl main:");
             cgen(childs.get(5));
         }
         else
