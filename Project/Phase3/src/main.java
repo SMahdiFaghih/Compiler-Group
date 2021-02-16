@@ -1338,7 +1338,6 @@ public class main implements Scanner
         System.out.println(message);
         writer.write(message);
         writer.flush();
-        writer.close();
     }
 }
 
