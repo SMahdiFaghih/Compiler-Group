@@ -1320,7 +1320,9 @@ public class main implements Scanner
             try
             {
                 SemanticAnalysis.getInstance().startSemanticAnalysis();
-                writeInFile("OK");
+                CodeGen.getInstance().cgen(Node.root);
+                writeInFile(CodeGen.dataPart);
+                writeInFile(CodeGen.textPart);
             } catch (SemanticError e)
             {
                 CodeGen.getInstance().cgenSemanticError();
