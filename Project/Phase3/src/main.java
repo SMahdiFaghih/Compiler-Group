@@ -4348,11 +4348,14 @@ class CodeGen
         Node thirdExpr = childs.get(6);
         Node stmtNode = childs.get(8);
 
+        addToText("# for Loap");
+        addToText("# " + firstExpr.getSymbolName() + " - " + conditionExpr.getSymbolName() + " - " +
+                thirdExpr.getSymbolName());
+
         cgen(firstExpr);
         cgen(conditionExpr);
         cgenLValue(thirdExpr);
 
-        addToText("# for Loap");
         String loop = getLabel();
         String exit = getLabel();
         //in for
