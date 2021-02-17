@@ -76,9 +76,9 @@ do
 	for (( i=0; i<$len; i++ ))
 	do
 		if [[ "${subtasks[$i]}" == "$folder" ]]; then
-			subtask_score=$(( $NUMBER_OF_PASSED/($NUMBER_OF_PASSED + $NUMBER_OF_FAILED) * ${scores[$i]} ));
+			subtask_score=$(( ${scores[$i]} * $NUMBER_OF_PASSED/($NUMBER_OF_PASSED + $NUMBER_OF_FAILED) ));
 			echo $subtask_score;
-			(( score+= $NUMBER_OF_PASSED/($NUMBER_OF_PASSED + $NUMBER_OF_FAILED) * ${scores[$i]} ));
+			(( score+=${scores[$i]} * $NUMBER_OF_PASSED/($NUMBER_OF_PASSED + $NUMBER_OF_FAILED) ));
 		fi
 	done
 	
@@ -91,3 +91,4 @@ done
 
 echo "Final score: "
 echo "$score"
+
