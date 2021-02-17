@@ -4966,9 +4966,9 @@ class CodeGen
         Node exprNode = childs.get(2);
 
         Description dOld = exprNode.getDescription();
-        Description dNew = new Description(IDGenerator.generateID(), "BOOLEAN");
+        Description dNew = new Description(IDGenerator.generateID(), "INT");
 
-        addToData(dNew.getName(), getMipsType("DOUBLE"), 0);
+        addToData(dNew.getName(), getMipsType("INT"), 0);
 
         addToText("sw $a0, " + dOld.getName());
         if(dOld.isInArray()){
@@ -4989,7 +4989,7 @@ class CodeGen
         Node exprNode = childs.get(2);
 
         Description dOld = exprNode.getDescription();
-        Description dNew = new Description(IDGenerator.generateID(), "BOOLEAN");
+        Description dNew = new Description(IDGenerator.generateID(), "INT");
         addToData(dNew.getName(), getMipsType("INT"), 0);
 
         addToText("# Apply btoi on " + dOld.getName());
@@ -5009,7 +5009,7 @@ class CodeGen
         Node exprNode = childs.get(2);
 
         Description dOld = exprNode.getDescription();
-        Description dNew = new Description(IDGenerator.generateID(), "BOOLEAN");
+        Description dNew = new Description(IDGenerator.generateID(), "DOUBLE");
 
         addToData(dNew.getName(), getMipsType("DOUBLE"), 0);
 
