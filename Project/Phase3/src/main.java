@@ -4389,9 +4389,7 @@ class CodeGen
         Node thirdExpr = childs.get(6);
         Node stmtNode = childs.get(8);
 
-        addToText("# for Loap");
-        addToText("# " + firstExpr.getSymbolName() + " - " + conditionExpr.getSymbolName() + " - " +
-                thirdExpr.getSymbolName());
+        addToText("# for Loop");
 
         cgen(firstExpr);
         cgen(conditionExpr);
@@ -5970,7 +5968,7 @@ class CodeGen
             addToText("la $a0, " + description.getName());
             addToText("syscall");
         }
-
+        addEmptyLine();
     }
 
     private void findExprs(Node node, ArrayList<Node> exprs) {
