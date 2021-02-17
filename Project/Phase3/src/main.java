@@ -5374,6 +5374,11 @@ class CodeGen
             addToText("la $a1, " + lValueDesc.getName());
             addToText("sw $a0, 0($a1)");
         }
+        else if(exprDesc.getType().equals("STRINGCONSTANT")){
+            addToText("lw $a0, " + exprDesc.getName());
+            addToText("la $a1, " + lValueDesc.getName());
+            addToText("sw $a0, 0($a1)");
+        }
 
         if(expr.getChildNodes().get(0).getSymbolName().equals("READINTEGER")){
             addEmptyLine();
@@ -5705,18 +5710,86 @@ class CodeGen
         String exit = getLabel();
         Description descLeft = exprLeft.getDescription();
         Description descRight = exprRight.getDescription();
-        addToText( "xor $a2, $a2, $a2" ); // $a2 is index (first 0)
-        addToText( "la $a0, " + descLeft.getName() ); // $a0 has the address of string
-        addToText( loop + ": ", true );
-        addToText( "add $a1, $a2, $a0" ); // address of current char of string is in $a1
-        addToText( "lbu $a3, 0($a1)" );    // current char of string is in $a3
-        addToText( "beq $a3, $zero, " + exit);
-        addToText( "li $s4, 10" );       // $s4 has \n in it
-        addToText( "addi $a2, $a2, 1" );
-        addToText( "bne $a3, $s4, " + loop );
-        addToText(exit + ":"); // $a3 is last char and $a1 is address of a3
-        addToText( "la $t0, " + descRight.getName() ); // $t0 has the address of string
-        addToText("addi $t0 , $a1 ,1");
+        Description newDescription = new  Description(IDGenerator.generateID(), "STRING");
+
+        String getSizeOfStringLoopLabel_1 = "_get_size_of_string_loop_label_1_" + newDescription.getName();
+        String getSizeOfStringEndLabel_1 = "_get_size_of_string_end_label_1_" + newDescription.getName();
+
+        addToData(newDescription.getName(), getMipsType("STRING"), 0);
+        addToText("# concating " + descLeft.getName() + " with " + descRight.getName());
+        addToText("li $a0, 0");
+        addToText("lw $s0, " + descLeft.getName());
+        addToText(getSizeOfStringLoopLabel_1 + ":", true);
+        addToText("lb $s1, 0($0)");
+        addToText("beqz $s1, " + getSizeOfStringEndLabel_1);
+        addToText("addi $s0, $s0, 1");
+        addToText("addi $a0, $a0, 1");
+        addToText("j " + getSizeOfStringLoopLabel_1);
+        addToText(getSizeOfStringEndLabel_1 + ":", true);
+
+        String getSizeOfStringLoopLabel_2 = "_get_size_of_string_loop_label_2_" + newDescription.getName();
+        String getSizeOfStringEndLabel_2 = "_get_size_of_string_end_label_2_" + newDescription.getName();
+
+        addToText("li $a1, 0");
+        addToText("lw $s0, " + descRight.getName());
+        addToText(getSizeOfStringLoopLabel_2 + ":", true);
+        addToText("lb $s1, 0($s0)");
+        addToText("beqz $s1, " + getSizeOfStringEndLabel_2);
+        addToText("addi $s0, $s0, 1");
+        addToText("addi $a1, $a1, 1");
+        addToText("j " + getSizeOfStringLoopLabel_2);
+        addToText(getSizeOfStringEndLabel_2 + ":", true);
+
+        addToText("add $a0, $a0, $a1");
+        addToText("addi $a0, $a0, 1");
+        addToText("li $v0, 9");
+        addToText("syscall");  // allocate space for concated string
+        addToText("sw $v0, " + newDescription.getName());
+
+        // copy first part to new space
+        String loopForCopyingStringLabel_1 = "loop_for_copying_string_label_1" + newDescription.getName();
+        String endLoopForCopyingStringLabel_1 = "end_loop_for_copying_string_label_1" + newDescription.getName();
+        addToText("lw $a0, " + newDescription.getName() );
+        addToText("lw $s0, " + descLeft.getName());
+        addToText(loopForCopyingStringLabel_1 + ":", true);
+        addToText("lb $s1, 0($s0)");
+        addToText("beqz $s1, " + endLoopForCopyingStringLabel_1);
+        addToText("sb $s1, 0($a0)");
+        addToText("addi $a0, $a0, 1");
+        addToText("addi $s0, $s0, 1");
+        addToText("j " + loopForCopyingStringLabel_1);
+        addToText(endLoopForCopyingStringLabel_1, true);
+
+        // copy second part to new space
+        String loopForCopyingStringLabel_2 = "loop_for_copying_string_label_2" + newDescription.getName();
+        String endLoopForCopyingStringLabel_2 = "end_loop_for_copying_string_label_2" + newDescription.getName();
+        addToText("lw $s0, " + descRight.getName());
+        addToText(loopForCopyingStringLabel_2 + ":", true);
+        addToText("lb $s1, 0($s0)");
+        addToText("beqz $s1, " + endLoopForCopyingStringLabel_2);
+        addToText("sb $s1, 0($a0)");
+        addToText("addi $a0, $a0, 1");
+        addToText("addi $s0, $s0, 1");
+        addToText("j " + loopForCopyingStringLabel_2);
+        addToText(endLoopForCopyingStringLabel_2 + ":", true);
+        addToText("sb $zero, 0($a0)");
+        addEmptyLine();
+        node.setDescription(newDescription);
+
+
+        //
+//        addToText( "xor $a2, $a2, $a2" ); // $a2 is index (first 0)
+//        addToText( "la $a0, " + descLeft.getName() ); // $a0 has the address of string
+//        addToText( loop + ": ", true );
+//        addToText( "add $a1, $a2, $a0" ); // address of current char of string is in $a1
+//        addToText( "lbu $a3, 0($a1)" );    // current char of string is in $a3
+//        addToText( "beq $a3, $zero, " + exit);
+//        addToText( "li $s4, 10" );       // $s4 has \n in it
+//        addToText( "addi $a2, $a2, 1" );
+//        addToText( "bne $a3, $s4, " + loop );
+//        addToText(exit + ":"); // $a3 is last char and $a1 is address of a3
+//        addToText( "la $t0, " + descRight.getName() ); // $t0 has the address of string
+//        addToText("addi $t0 , $a1 ,1");
 
 
 
