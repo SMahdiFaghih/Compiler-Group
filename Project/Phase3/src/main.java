@@ -4,7 +4,6 @@
 
 import java_cup.runtime.*;
 import java_cup.runtime.Scanner;
-import sun.security.krb5.internal.crypto.Des;
 
 import java.io.*;
 import java.util.*;
