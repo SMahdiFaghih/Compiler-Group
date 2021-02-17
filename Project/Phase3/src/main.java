@@ -4338,21 +4338,25 @@ class CodeGen
     }
     private void  cgenForStmt (Node node) throws Exception
     {
-
         ArrayList<Node> childs = node.getChildNodes();
+        Node conditionExpr = childs.get(4);
+        Node firstExpr = childs.get(2);
+        Node thirdExpr = childs.get(6);
+        Node stmtNode = childs.get(8);
+
+        cgen(firstExpr);
+        cgen(conditionExpr);
+        cgenLValue(thirdExpr);
+
         addToText("#forLoap");
         String loop = getLabel();
         String exit = getLabel();
-        //getting condition
-        cgen(childs.get(3));
-        cgen(childs.get(6));
         //in for
-        addToText(loop + ":");
-        addToText("beq" + "t0" + "0" + exit);
-        cgen(childs.get(12));
-        cgen(childs.get(9));
-        addToText("j" + loop);
-        addToText(exit + ":");
+        addToText(loop + ":", true);
+        addToText("beq $zero, " + conditionExpr.getDescription().getName() + ", " + exit);
+        cgen(stmtNode);
+        addToText("j " + loop);
+        addToText(exit + ":", true);
 
     }
 
