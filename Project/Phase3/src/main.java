@@ -5715,8 +5715,8 @@ class CodeGen
         addToText( "addi $a2, $a2, 1" );
         addToText( "bne $a3, $s4, " + loop );
         addToText(exit + ":"); // $a3 is last char and $a1 is address of a3
-        addToText( "la $a5, " + exprRight.getIdentifierName() ); // $a5 has the address of string
-        addToText("addi $a5 , a1 ,1");
+        addToText( "la $t0, " + exprRight.getIdentifierName() ); // $t0 has the address of string
+        addToText("addi $t0 , $a1 ,1");
 
 
 
