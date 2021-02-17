@@ -5444,6 +5444,7 @@ class CodeGen
         Description rightDescription = exprRight.getDescription();
 
         addToText("# Dividing " + leftDescription.getName() + " and " + rightDescription.getName());
+        addToText("# Dividing " + leftDescription.getType() + " and " + rightDescription.getType());
 
         if (leftDescription.getType().equals("INT")){
             String resultName = IDGenerator.generateID();
