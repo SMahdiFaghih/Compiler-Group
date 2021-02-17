@@ -4393,7 +4393,7 @@ class CodeGen
 
         cgen(firstExpr);
         cgen(conditionExpr);
-        cgen(thirdExpr);
+
 
         Description conditionDesc = conditionExpr.getDescription();
         String loop = getLabel();
@@ -4405,9 +4405,12 @@ class CodeGen
             addToText("lw $a0, 0($a0)");
         }
         addToText("beq $a0, 0, " + exit);
+
         breakLabelStack.push(exit);
         continueLabelStack.push(loop);
         cgen(stmtNode);
+
+        cgen(thirdExpr);
         addToText("j " + loop);
         addToText(exit + ":", true);
         addEmptyLine();
