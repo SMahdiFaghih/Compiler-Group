@@ -4717,7 +4717,7 @@ class CodeGen
         String parameters = cgenVariableName(childs.get(3));
         if (childs.get(1).getIdentifierName().equals("main"))
         {
-            addToText("main:");
+//            addToText("main:");
             cgen(childs.get(5));
         }
         else
@@ -5869,6 +5869,7 @@ class CodeGen
     }
 
     public void cgenSemanticError(){
+        addToText("main:");
         addToText("# Printing semantic error message");
         addToText("la $a0, errorMsg");
         addToText("li $v0, 4");
