@@ -5758,7 +5758,7 @@ class CodeGen
         addToText("addi $a0, $a0, 1");
         addToText("addi $s0, $s0, 1");
         addToText("j " + loopForCopyingStringLabel_1);
-        addToText(endLoopForCopyingStringLabel_1, true);
+        addToText(endLoopForCopyingStringLabel_1 + ":", true);
 
         // copy second part to new space
         String loopForCopyingStringLabel_2 = "loop_for_copying_string_label_2" + newDescription.getName();
