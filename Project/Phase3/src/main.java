@@ -3017,6 +3017,7 @@ class Node
     private String constantValue; //used for Constants
     private ArrayList<Node> childNodes;
     private Description description;
+    private boolean hasBreak = false;
 
     Node(String symbolName)
     {
@@ -3118,6 +3119,14 @@ class Node
     {
         this.nodeValueType = node.nodeValueType;
         this.arrayNodeValueType = node.arrayNodeValueType;
+    }
+
+    public boolean isHasBreak() {
+        return hasBreak;
+    }
+
+    public void setHasBreak(boolean hasBreak) {
+        this.hasBreak = hasBreak;
     }
 }
 
@@ -4170,6 +4179,10 @@ class CodeGen
                 break;
             case "Stmt":
                 cgen(node.getChildNodes().get(0));
+                node.setHasBreak(node.getChildNodes().get(0).isHasBreak());
+                break;
+            case "BreakStmt":
+                cgenBreakStmt(node);
                 break;
             case "ExprEpsilon":
                 if (node.getChildNodes().size() != 0)
@@ -4273,6 +4286,10 @@ class CodeGen
         }
     }
 
+    private void cgenBreakStmt(Node node) {
+        node.setHasBreak(true);
+    }
+
     private void cgenExprWith(Node node) throws Exception{
         ArrayList<Node> childs = node.getChildNodes();
         for(Node child : childs){
@@ -4374,6 +4391,9 @@ class CodeGen
         }
         addToText("beq $a0, 0, " + exit);
         cgen(stmtNode);
+        if(stmtNode.isHasBreak()){
+            addToText("j " + exit);
+        }
         addToText("j " + loop);
         addToText(exit + ":", true);
         addEmptyLine();
