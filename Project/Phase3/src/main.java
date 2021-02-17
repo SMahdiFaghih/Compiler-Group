@@ -1326,7 +1326,7 @@ public class main implements Scanner
                 writeInFile(CodeGen.textPart);
             } catch (SemanticError e)
             {
-//                CodeGen.getInstance().initial();
+                CodeGen.getInstance().initial();
                 CodeGen.getInstance().cgenSemanticError();
                 CodeGen.getInstance().addToText("jr $ra", false);
                 writeInFile(CodeGen.dataPart);
