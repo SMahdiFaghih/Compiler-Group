@@ -4,6 +4,7 @@
 
 import java_cup.runtime.*;
 import java_cup.runtime.Scanner;
+import sun.security.krb5.internal.crypto.Des;
 
 import java.io.*;
 import java.util.*;
@@ -4300,26 +4301,33 @@ class CodeGen
     private void cgenIf(Node node) throws Exception
     {
         ArrayList<Node> childs = node.getChildNodes();
+        Node exprNode = childs.get(2);
+        Node stmtNode = childs.get(4);
 
+        cgen(exprNode);
 
-        addToText("#if");
+        Description exprDescription = exprNode.getDescription();
 
-        cgen(childs.get(2));
+        String endLabel = "_end_if_label_for_" + IDGenerator.generateID();
 
-
-
-        String label =  getLabel();
-        addToText("beq" + "t0" + "1" + label);
-        cgen(childs.get(4));
-        addToText(label + ":");
-
+        addToText("# If ");
+        addToText("lw $a0, " + exprDescription.getName());
+        if(exprDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+        addToText("beq $a0, 0, " + endLabel);
+        cgen(stmtNode);
+        addToText(endLabel + ":", true);
+        addEmptyLine();
     }
+
     private String getLabel ()
     {
         String s = "L" + label;
         label ++;
         return s;
     }
+
     private void cgenWhile(Node node) throws Exception
     {
         ArrayList<Node> childs = node.getChildNodes();
