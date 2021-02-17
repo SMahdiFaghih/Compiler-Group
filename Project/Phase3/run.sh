@@ -19,8 +19,7 @@ do
 	echo "Subtask $folder -------------------------------------"
 	cd ./out
 	mkdir -p $folder
-	cd ../
-	cd ./report
+	cd ../report
 	mkdir -p $folder
 	cd ..
 	cd ./tests
@@ -35,18 +34,16 @@ do
 		program_input="$filename.in"
 		report_filename="$filename.report.txt"
 		echo "Running Test $filename -------------------------------------"
-		javac -cp ./src/java-cup-11b.jar -cp ./src/java-cup-11b-runtime.jar ./src/main.java
+		javac main.java;
 		if [[ $? -eq 1 ]]; then
 			echo "Compiler Error"
 		else
 			echo "Code compiled successfuly"
-			cd ./src
-			java -cp ./java-cup-11b.jar -cp  ./java-cup-11b-runtime.jar ./main.java -i "$folder/$filelist" -o "$folder/$output_asm"
-			cd ../
+			java main -i "$folder/$filelist" -o "$folder/$output_asm"
 			if [ $? -eq 0 ]; then
 				echo "MIPS Generated Successfuly!"
 			fi
-			spim -a -f "$OUTPUT_DIRECTORY$folder/$output_asm" < "$TEST_DIRECTORY$folder/$program_input" > "$OUTPUT_DIRECTORY$folder/$output_filename" && tail -n +2 "$OUTPUT_DIRECTORY$folder/$output_asm" > "$OUTPUT_DIRECTORY$folder/output_filename.tmp" && mv "$OUTPUT_DIRECTORY$folder/output_filename.tmp" "$OUTPUT_DIRECTORY$folder/output_filename"
+			spim -a -f "$OUTPUT_DIRECTORY$folder/$output_asm" < "$TEST_DIRECTORY$folder/$program_input" > "$OUTPUT_DIRECTORY$folder/$output_filename"
 			if [ $? -eq 0 ]; then
 				echo "Code Executed Successfuly!"
 				if command -v python3; then
