@@ -4354,7 +4354,7 @@ class CodeGen
 
         cgen(firstExpr);
         cgen(conditionExpr);
-        cgenLValue(thirdExpr);
+        cgen(thirdExpr);
 
         String loop = getLabel();
         String exit = getLabel();
