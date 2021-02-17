@@ -4323,17 +4323,21 @@ class CodeGen
     private void cgenWhile(Node node) throws Exception
     {
         ArrayList<Node> childs = node.getChildNodes();
-        addToText("#whileLoap");
-        cgen(childs.get(2));
+        Node exprNode = childs.get(2);
+        Node stmtNode = childs.get(4);
+        addToText("# while Loop");
+        cgen(exprNode);
         // getting bool for while condition
         String loop = getLabel();
         String exit = getLabel();
 
-        addToText("beq" + "t0" + "0" + exit);
+        addToText(loop + ":", true);
+        addToText("beq $zero, " + exprNode.getDescription().getName() + ", " + exit);
         // in while block
-        cgen(childs.get(4));
-        addToText("j" + loop);
-        addToText(exit + ":");
+        cgen(stmtNode);
+        addToText("j " + loop);
+        addToText(exit + ":", true);
+        addEmptyLine();
 
     }
     private void  cgenForStmt (Node node) throws Exception
@@ -4348,7 +4352,7 @@ class CodeGen
         cgen(conditionExpr);
         cgenLValue(thirdExpr);
 
-        addToText("#forLoap");
+        addToText("# for Loap");
         String loop = getLabel();
         String exit = getLabel();
         //in for
@@ -4357,6 +4361,7 @@ class CodeGen
         cgen(stmtNode);
         addToText("j " + loop);
         addToText(exit + ":", true);
+        addEmptyLine();
 
     }
 
