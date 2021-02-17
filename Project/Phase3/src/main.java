@@ -4422,7 +4422,7 @@ class CodeGen
                 childs.get(2).getSymbolName().equals("RIGHTPAREN")){  // case 11 of expr ---> Expr ::= (Expr)
             Node expr = childs.get(1);
             cgen(expr);
-
+            node.setDescription(expr.getDescription());
         }
         else if (childs.get(0).getSymbolName().equals("Expr") &&
                 childs.get(1).getSymbolName().equals("PLUS") &&
