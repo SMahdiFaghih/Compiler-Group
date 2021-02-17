@@ -5706,7 +5706,7 @@ class CodeGen
         Description descLeft = exprLeft.getDescription();
         Description descRight = exprRight.getDescription();
         addToText( "xor $a2, $a2, $a2" ); // $a2 is index (first 0)
-        addToText( "la $a0, " + exprLeft.getIdentifierName() ); // $a0 has the address of string
+        addToText( "la $a0, " + descLeft.getName() ); // $a0 has the address of string
         addToText( loop + ": ", true );
         addToText( "add $a1, $a2, $a0" ); // address of current char of string is in $a1
         addToText( "lbu $a3, 0($a1)" );    // current char of string is in $a3
@@ -5715,7 +5715,7 @@ class CodeGen
         addToText( "addi $a2, $a2, 1" );
         addToText( "bne $a3, $s4, " + loop );
         addToText(exit + ":"); // $a3 is last char and $a1 is address of a3
-        addToText( "la $t0, " + exprRight.getIdentifierName() ); // $t0 has the address of string
+        addToText( "la $t0, " + descRight.getName() ); // $t0 has the address of string
         addToText("addi $t0 , $a1 ,1");
 
 
