@@ -4265,6 +4265,9 @@ class CodeGen
             case "IfStmt" :
                 cgenIf(node);
                 break;
+            case "IfElseStmt":
+                cgenIfElseStmt(node);
+                break;
             case "WhileStmt":
                 cgenWhile(node);
                 break;
@@ -4282,6 +4285,8 @@ class CodeGen
 
         }
     }
+
+
 
     private void cgenContinueStmt(Node node) {
         String continueLabel = continueLabelStack.pop();
@@ -4333,17 +4338,51 @@ class CodeGen
 
         Description exprDescription = exprNode.getDescription();
 
-        String endLabel = "_end_if_label_for_" + IDGenerator.generateID();
+        String endLabel_ = "_end_if_label_for_" + IDGenerator.generateID();
 
         addToText("# If ");
         addToText("lw $a0, " + exprDescription.getName());
         if(exprDescription.isInArray()){
             addToText("lw $a0, 0($a0)");
         }
-        addToText("beq $a0, 0, " + endLabel);
+        addToText("beq $a0, 0, " + endLabel_);
         cgen(stmtNode);
-        addToText(endLabel + ":", true);
+        addToText(endLabel_ + ":", true);
         addEmptyLine();
+    }
+
+    private void cgenIfElseStmt(Node node) throws Exception{
+        ArrayList<Node> childs = node.getChildNodes();
+        Node ifStmtNode = childs.get(0);
+        Node elsestmtNode = childs.get(2);
+
+        ArrayList<Node> ifChilds = ifStmtNode.getChildNodes();
+        Node exprNode = ifChilds.get(2);
+        Node ifInternalStmtNode = ifChilds.get(4);
+
+        cgen(exprNode);
+
+        Description exprDescription = exprNode.getDescription();
+
+        String elseLabel = "_else_if_label_for_" + IDGenerator.generateID();
+        String endLabel_ = "_end_if_label_for_" + IDGenerator.generateID();
+
+        addToText("# If else");
+        addToText("lw $a0, " + exprDescription.getName());
+        if(exprDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+        addToText("beq $a0, 0, " + elseLabel);
+        cgen(ifInternalStmtNode);
+        addToText("j " + endLabel_);
+        addEmptyLine();
+
+        addToText(elseLabel + ":", true);
+        cgen(elsestmtNode);
+        addEmptyLine();
+
+
+        addToText(endLabel_ + ":", true);
     }
 
     private String getLabel ()
