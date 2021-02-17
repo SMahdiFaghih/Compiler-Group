@@ -3017,7 +3017,6 @@ class Node
     private String constantValue; //used for Constants
     private ArrayList<Node> childNodes;
     private Description description;
-    private boolean hasBreak = false;
 
     Node(String symbolName)
     {
@@ -3119,14 +3118,6 @@ class Node
     {
         this.nodeValueType = node.nodeValueType;
         this.arrayNodeValueType = node.arrayNodeValueType;
-    }
-
-    public boolean isHasBreak() {
-        return hasBreak;
-    }
-
-    public void setHasBreak(boolean hasBreak) {
-        this.hasBreak = hasBreak;
     }
 }
 
@@ -4116,6 +4107,8 @@ class CodeGen
     public static String textPart = ".text\n.globl main\n";
     private static CodeGen codeGen = new CodeGen();
     private final static int INPUT_STRING_SIZE = 64;
+    private Stack<String> breakLabelStack;
+    private Stack<String> continueLabelStack;
 
 
     public static CodeGen getInstance()
@@ -4134,7 +4127,8 @@ class CodeGen
         addToData("_string_false", ".asciiz", "\"false\"");
         addToData("errorMsg", ".asciiz","\"Semantic Error\"");
         addToData("_array_size_negative_error", ".asciiz", "\"ERROR : array size is negative\"");
-
+        breakLabelStack = new Stack<>();
+        continueLabelStack = new Stack<>();
     }
 
     public void cgen(Node node) throws Exception
@@ -4178,11 +4172,14 @@ class CodeGen
                 cgenVariableUsage(node);
                 break;
             case "Stmt":
-                cgen(node.getChildNodes().get(0));
-                node.setHasBreak(node.getChildNodes().get(0).isHasBreak());
+                Node child = node.getChildNodes().get(0);
+                cgen(child);
                 break;
             case "BreakStmt":
                 cgenBreakStmt(node);
+                break;
+            case "ContinueStmt":
+                cgenContinueStmt(node);
                 break;
             case "ExprEpsilon":
                 if (node.getChildNodes().size() != 0)
@@ -4286,8 +4283,20 @@ class CodeGen
         }
     }
 
+    private void cgenContinueStmt(Node node) {
+        String continueLabel = continueLabelStack.pop();
+        addEmptyLine();
+        addToText("# Continue to " + continueLabel);
+        addToText("j " + continueLabel);
+        addEmptyLine();
+    }
+
     private void cgenBreakStmt(Node node) {
-        node.setHasBreak(true);
+        String breakLabel = breakLabelStack.pop();
+        addEmptyLine();
+        addToText("# Break to " + breakLabel);
+        addToText("j " + breakLabel);
+        addEmptyLine();
     }
 
     private void cgenExprWith(Node node) throws Exception{
@@ -4351,13 +4360,21 @@ class CodeGen
         Node stmtNode = childs.get(4);
         addToText("# while Loop");
         cgen(exprNode);
+        Description exprDescription = exprNode.getDescription();
+
         // getting bool for while condition
         String loop = getLabel();
         String exit = getLabel();
 
         addToText(loop + ":", true);
-        addToText("beq $zero, " + exprNode.getDescription().getName() + ", " + exit);
-        // in while block
+        addToText("lw $a0, " + exprDescription.getName());
+        if(exprDescription.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+        addToText("beq $a0, 0, "+ exit);
+
+        breakLabelStack.push(exit);
+        continueLabelStack.push(loop);
         cgen(stmtNode);
         addToText("j " + loop);
         addToText(exit + ":", true);
@@ -4390,10 +4407,9 @@ class CodeGen
             addToText("lw $a0, 0($a0)");
         }
         addToText("beq $a0, 0, " + exit);
+        breakLabelStack.push(exit);
+        continueLabelStack.push(loop);
         cgen(stmtNode);
-        if(stmtNode.isHasBreak()){
-            addToText("j " + exit);
-        }
         addToText("j " + loop);
         addToText(exit + ":", true);
         addEmptyLine();
