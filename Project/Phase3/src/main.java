@@ -4978,7 +4978,7 @@ class CodeGen
         addToText("round.w.s $f0, $f0\n");
         addToText("mfc1 $a0, $f0");
         addToText("la $a1, " + dNew.getName());
-        addToText("sw $a0, 0(a1)");
+        addToText("sw $a0, 0($a1)");
         addEmptyLine();
         node.setDescription(dNew);
     }
