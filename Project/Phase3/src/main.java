@@ -4356,11 +4356,16 @@ class CodeGen
         cgen(conditionExpr);
         cgen(thirdExpr);
 
+        Description conditionDesc = conditionExpr.getDescription();
         String loop = getLabel();
         String exit = getLabel();
         //in for
         addToText(loop + ":", true);
-        addToText("beq $zero, " + conditionExpr.getDescription().getName() + ", " + exit);
+        addToText("lw $a0, " + conditionDesc.getName());
+        if (conditionDesc.isInArray()){
+            addToText("lw $a0, 0($a0)");
+        }
+        addToText("beq $a0, 0, " + exit);
         cgen(stmtNode);
         addToText("j " + loop);
         addToText(exit + ":", true);
