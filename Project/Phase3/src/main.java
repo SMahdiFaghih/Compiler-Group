@@ -5747,7 +5747,7 @@ class CodeGen
         String mipsType = getMipsType("STRING");
         addToData(stringName, mipsType, INPUT_STRING_SIZE);   // 64 is default use input stirng size
         addToText("# Read String from input");
-        addToText("li $v8, 8");
+        addToText("li $v0, 8");
         addToText("la $a0, " + stringName);
         addToText("li $a1, " + INPUT_STRING_SIZE);
         addToText("syscall");

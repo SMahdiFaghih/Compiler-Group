@@ -34,12 +34,14 @@ do
 		program_input="$filename.in"
 		report_filename="$filename.report.txt"
 		echo "Running Test $filename -------------------------------------"
-		javac main.java;
+		javac -cp ./src/java-cup-11b.jar -cp ./src/java-cup-11b-runtime.jar ./src/main.java
 		if [[ $? -eq 1 ]]; then
 			echo "Compiler Error"
 		else
 			echo "Code compiled successfuly"
-			java main -i "$folder/$filelist" -o "$folder/$output_asm"
+			cd ./src
+			java -cp ./java-cup-11b.jar -cp  ./java-cup-11b-runtime.jar ./main.java -i "$folder/$filelist" -o "$folder/$output_asm"
+			cd ../
 			if [ $? -eq 0 ]; then
 				echo "MIPS Generated Successfuly!"
 			fi
@@ -89,4 +91,3 @@ done
 
 echo "Final score: "
 echo "$score"
-
