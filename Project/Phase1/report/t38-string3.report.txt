@@ -1,0 +1,1 @@
+different line count in these files! : file out/t38-string3.out : #4 , file tests/t38-string3.out : #3 

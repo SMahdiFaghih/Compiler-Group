@@ -1,0 +1,1 @@
+difference in line #1: file: out/t250-funcinher-4.out -----> content: Syntax Error <> file: tests/t250-funcinher-4.out -----> content: OK 

@@ -1,0 +1,28 @@
+interface
+T_ID a
+{
+T_ID Private
+void
+T_ID b2
+(
+)
+;
+}
+class
+T_ID aa
+implements
+T_ID a
+{
+private
+void
+T_ID b2
+(
+)
+{
+T_ID print
+(
+T_STRINGLITERAL "a"
+)
+;
+}
+}

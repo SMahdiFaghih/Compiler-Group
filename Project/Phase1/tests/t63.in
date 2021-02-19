@@ -1,0 +1,9 @@
+interface a {
+    Private void b2();
+}
+
+class aa implements a {
+    private void b2() {
+        print("a");
+    }
+}

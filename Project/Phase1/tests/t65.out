@@ -1,0 +1,8 @@
+while
+(
+T_BOOLEANLITERAL true
+)
+{
+T_ID Continue
+;
+}

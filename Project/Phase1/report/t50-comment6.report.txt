@@ -1,0 +1,1 @@
+different line count in these files! : file out/t50-comment6.out : #3 , file tests/t50-comment6.out : #20 

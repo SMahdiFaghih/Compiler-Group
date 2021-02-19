@@ -1,0 +1,15 @@
+if
+(
+T_INTLITERAL 00434143
++
+T_INTLITERAL 0X1f30da
+T_ID x
+-
+T_ID b
+)
+{
+T_ID While
+=
+T_ID If
+;
+}

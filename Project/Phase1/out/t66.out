@@ -1,0 +1,9 @@
+itob
+(
+T_INTLITERAL 2
+)
+*
+btoi
+(
+T_DOUBLELITERAL 1.
+)

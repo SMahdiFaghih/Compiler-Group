@@ -1,0 +1,4 @@
+T_STRINGLITERAL "A string with \"
+T_ID escaped
+UNDEFINED_TOKEN
+T_STRINGLITERAL " quotes... shouldn't exist!"

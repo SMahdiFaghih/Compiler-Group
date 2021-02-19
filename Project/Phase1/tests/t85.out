@@ -1,0 +1,37 @@
+class
+T_ID A
+{
+private
+int
+T_ID a
+;
+public
+T_ID setA
+(
+int
+T_ID a
+)
+{
+this
+.
+T_ID a
+=
+T_ID a
+;
+}
+}
+class
+T_ID B
+extends
+T_ID A
+{
+}
+void
+T_ID main
+(
+)
+{
+T_ID A
+T_ID a
+;
+}

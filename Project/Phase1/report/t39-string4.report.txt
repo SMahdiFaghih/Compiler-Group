@@ -1,0 +1,1 @@
+different line count in these files! : file out/t39-string4.out : #16 , file tests/t39-string4.out : #1 

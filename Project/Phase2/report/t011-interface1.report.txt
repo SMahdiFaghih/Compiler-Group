@@ -1,0 +1,1 @@
+difference in line #1: file: out/t011-interface1.out -----> content: Syntax Error <> file: tests/t011-interface1.out -----> content: OK 

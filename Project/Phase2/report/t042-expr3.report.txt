@@ -1,0 +1,1 @@
+difference in line #1: file: out/t042-expr3.out -----> content: Syntax Error <> file: tests/t042-expr3.out -----> content: OK 

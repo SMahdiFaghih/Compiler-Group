@@ -1,0 +1,1 @@
+different line count in these files! : file out/t56.out : #6 , file tests/t56.out : #4 
